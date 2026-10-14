@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import type { Learn } from '../../content/data/roadmap'
 import { resourceById } from '../../content/data/resources'
-import { noteById } from '../lib/notes'
+import { noteExists } from '../lib/noteIndex'
 import type { Task } from '../lib/plan'
 import { leetcodeUrl, problemBySlug } from '../lib/problems'
 import { toggleDone, useProgress } from '../store/progress'
@@ -47,7 +47,7 @@ export function ProblemMeta({ slug }: { slug: string }) {
 /** Turns a roadmap "learn" item into a link chip. Notes not written yet show as plain text. */
 export function LearnLink({ learn }: { learn: Learn }) {
   if (learn.note) {
-    return noteById(learn.note) ? (
+    return noteExists(learn.note) ? (
       <Link className="chip" to={`/notes/${learn.note}`}>Open note</Link>
     ) : (
       <span className="chip is-muted" title="This note is not written yet">Note coming soon</span>

@@ -14,7 +14,8 @@ export type NoteMeta = {
 export type Note = NoteMeta & { body: string }
 
 // Vite reads all the files and bundles their text (eager = no extra network request).
-const files = import.meta.glob('/content/notes/**/*.md', { query: '?raw', import: 'default', eager: true }) as Record<string, string>
+// Files starting with _ (like _template.md) are skipped.
+const files = import.meta.glob(['/content/notes/**/*.md', '!**/_*.md'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>
 
 /**
  * Split "---\nkey: value\n---\nbody" into fields and body.
@@ -59,3 +60,39 @@ export const NOTES: Note[] = Object.entries(files)
 
 const byId = new Map(NOTES.map((n) => [n.id, n]))
 export const noteById = (id: string) => byId.get(id)
+
+export const SECTIONS: Record<string, string> = {
+  A: 'Python foundations',
+  B: 'Complexity',
+  C: 'Data structures',
+  D: 'Techniques',
+  E: 'SQL',
+  F: 'Backend engineering',
+  G: 'CS fundamentals',
+  H: 'OOP and low-level design',
+  I: 'System design',
+  J: 'AI engineering',
+  K: 'Interview skills',
+  L: 'Learning skills',
+}
+
+/** The text inside every ```name fenced block of a note. */
+export function fencedBlocks(body: string, name: string) {
+  const re = new RegExp('^```' + name + '\\s*\\n([\\s\\S]*?)^```', 'gm')
+  return [...body.matchAll(re)].map((m) => m[1])
+}
+
+export type Flashcard = { id: string; noteId: string; front: string; back: string }
+
+/** Flashcards are written in a note as  ```flashcards  blocks, one "front :: back" per line. */
+export function cardsOf(note: Note): Flashcard[] {
+  return fencedBlocks(note.body, 'flashcards')
+    .flatMap((block) => block.split('\n'))
+    .filter((line) => line.includes('::'))
+    .map((line, i) => {
+      const [front, back] = line.split('::').map((s) => s.trim())
+      return { id: `${note.id}:${i}`, noteId: note.id, front, back }
+    })
+}
+
+export const ALL_CARDS: Flashcard[] = NOTES.flatMap(cardsOf)

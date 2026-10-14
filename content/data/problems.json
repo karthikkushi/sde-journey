@@ -2014,5 +2014,334 @@
   "title": "Making A Large Island",
   "difficulty": "Hard",
   "premium": false
+ },
+ {
+  "slug": "add-two-integers",
+  "tag": "basics",
+  "title": "Add Two Integers",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "convert-the-temperature",
+  "tag": "basics",
+  "title": "Convert the Temperature",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "smallest-even-multiple",
+  "tag": "basics",
+  "title": "Smallest Even Multiple",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "number-of-steps-to-reduce-a-number-to-zero",
+  "tag": "basics",
+  "title": "Number of Steps to Reduce a Number to Zero",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "subtract-the-product-and-sum-of-digits-of-an-integer",
+  "tag": "basics",
+  "title": "Subtract the Product and Sum of Digits of an Integer",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "palindrome-number",
+  "tag": "basics",
+  "title": "Palindrome Number",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "to-lower-case",
+  "tag": "string",
+  "title": "To Lower Case",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "length-of-last-word",
+  "tag": "string",
+  "title": "Length of Last Word",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "reverse-words-in-a-string",
+  "tag": "string",
+  "title": "Reverse Words in a String",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "goal-parser-interpretation",
+  "tag": "string",
+  "title": "Goal Parser Interpretation",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "check-if-the-sentence-is-pangram",
+  "tag": "freq",
+  "title": "Check if the Sentence Is Pangram",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "first-unique-character-in-a-string",
+  "tag": "freq",
+  "title": "First Unique Character in a String",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "count-the-number-of-consistent-strings",
+  "tag": "freq",
+  "title": "Count the Number of Consistent Strings",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "maximum-number-of-words-found-in-sentences",
+  "tag": "string",
+  "title": "Maximum Number of Words Found in Sentences",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "truncate-sentence",
+  "tag": "string",
+  "title": "Truncate Sentence",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "determine-color-of-a-chessboard-square",
+  "tag": "basics",
+  "title": "Determine Color of a Chessboard Square",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sign-of-the-product-of-an-array",
+  "tag": "basics",
+  "title": "Sign of the Product of an Array",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "maximum-69-number",
+  "tag": "basics",
+  "title": "Maximum 69 Number",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "count-odd-numbers-in-an-interval-range",
+  "tag": "basics",
+  "title": "Count Odd Numbers in an Interval Range",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sum-of-all-odd-length-subarrays",
+  "tag": "prefix",
+  "title": "Sum of All Odd Length Subarrays",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "find-numbers-with-even-number-of-digits",
+  "tag": "basics",
+  "title": "Find Numbers with Even Number of Digits",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "count-of-matches-in-tournament",
+  "tag": "basics",
+  "title": "Count of Matches in Tournament",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "calculate-money-in-leetcode-bank",
+  "tag": "basics",
+  "title": "Calculate Money in Leetcode Bank",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "build-array-from-permutation",
+  "tag": "basics",
+  "title": "Build Array from Permutation",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "create-target-array-in-the-given-order",
+  "tag": "basics",
+  "title": "Create Target Array in the Given Order",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "decompress-run-length-encoded-list",
+  "tag": "basics",
+  "title": "Decompress Run-Length Encoded List",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "final-value-of-variable-after-performing-operations",
+  "tag": "basics",
+  "title": "Final Value of Variable After Performing Operations",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sort-the-people",
+  "tag": "basics",
+  "title": "Sort the People",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "height-checker",
+  "tag": "basics",
+  "title": "Height Checker",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "how-many-numbers-are-smaller-than-the-current-number",
+  "tag": "freq",
+  "title": "How Many Numbers Are Smaller Than the Current Number",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "unique-number-of-occurrences",
+  "tag": "freq",
+  "title": "Unique Number of Occurrences",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "intersection-of-two-arrays",
+  "tag": "freq",
+  "title": "Intersection of Two Arrays",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sort-array-by-parity",
+  "tag": "tp-opposite",
+  "title": "Sort Array By Parity",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sort-array-by-increasing-frequency",
+  "tag": "freq",
+  "title": "Sort Array by Increasing Frequency",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "sort-characters-by-frequency",
+  "tag": "freq",
+  "title": "Sort Characters By Frequency",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "relative-sort-array",
+  "tag": "freq",
+  "title": "Relative Sort Array",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "largest-number",
+  "tag": "greedy",
+  "title": "Largest Number",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "number-of-recent-calls",
+  "tag": "design",
+  "title": "Number of Recent Calls",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "find-the-difference",
+  "tag": "freq",
+  "title": "Find the Difference",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "relative-ranks",
+  "tag": "top-k",
+  "title": "Relative Ranks",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "find-smallest-letter-greater-than-target",
+  "tag": "bs-index",
+  "title": "Find Smallest Letter Greater Than Target",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "count-negative-numbers-in-a-sorted-matrix",
+  "tag": "bs-index",
+  "title": "Count Negative Numbers in a Sorted Matrix",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "power-of-two",
+  "tag": "recursion",
+  "title": "Power of Two",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "design-parking-system",
+  "tag": "design",
+  "title": "Design Parking System",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "implement-queue-using-stacks",
+  "tag": "design",
+  "title": "Implement Queue using Stacks",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "design-hashmap",
+  "tag": "design",
+  "title": "Design HashMap",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "design-hashset",
+  "tag": "design",
+  "title": "Design HashSet",
+  "difficulty": "Easy",
+  "premium": false
  }
 ]

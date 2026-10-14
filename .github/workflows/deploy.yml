@@ -24,6 +24,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # Python runs every code block in the notes (npm run notes), so they never teach broken code.
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
       - run: npm ci
       # Lint, unit tests, type check and build. If any step fails, nothing is deployed.
       - run: npm run check
