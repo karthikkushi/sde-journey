@@ -315,3 +315,30 @@ select.input { min-height: 44px; }
 .hljs-title, .hljs-title.function_, .hljs-title.class_ { color: light-dark(#1d4ed8, #93c5fd); }
 .hljs-params, .hljs-attr, .hljs-variable { color: inherit; }
 .hljs-meta { color: var(--muted); }
+
+/* ---------- Patterns, resources, projects, timetable, career ---------- */
+.clue-list { margin: 0; padding-left: 1.2em; }
+.clue-list li { margin-bottom: 4px; }
+.cheat { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+.cheat-item { display: flex; flex-direction: column; gap: 4px; padding: 12px 14px; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); color: var(--text); text-decoration: none; }
+.cheat-item:hover { border-color: var(--accent); }
+.notice-accent { border-color: var(--accent); background: var(--accent-soft); }
+.resource { padding: 10px 0; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 2px; }
+.resource:first-child { border-top: 0; padding-top: 0; }
+.project-row { display: flex; flex-direction: column; gap: 2px; padding: 10px 0; border-top: 1px solid var(--border); color: var(--text); text-decoration: none; }
+.card h2 + .project-row { border-top: 0; }
+.project-row:hover strong { color: var(--accent); }
+.timetable { padding: 6px 0; }
+.tt-row { display: flex; gap: 14px; padding: 10px 16px; border-left: 4px solid transparent; }
+.tt-time { flex: none; width: 48px; font-variant-numeric: tabular-nums; color: var(--muted); font-weight: 600; }
+.tt-row.kind-study { border-left-color: var(--accent); }
+.tt-row.kind-body { border-left-color: var(--warn); }
+.tt-row.kind-work { border-left-color: var(--border); }
+.tt-row.is-now { background: var(--accent-soft); }
+.prompt { white-space: pre-wrap; font-size: 0.85rem; background: var(--surface-2); padding: 12px; border-radius: var(--radius-sm); margin: 12px 0 0; }
+.story, .history { border-top: 1px solid var(--border); padding: 10px 0; }
+.story summary, .history summary { cursor: pointer; font-weight: 600; min-height: 28px; }
+.history dl { margin: 8px 0 0; }
+.history dd { margin: 0 0 8px; }
+.mock-row { border-top: 1px solid var(--border); padding: 10px 0; margin-top: 10px; }
+button.chip { border: 0; cursor: pointer; font: inherit; font-size: 0.8rem; font-weight: 600; }

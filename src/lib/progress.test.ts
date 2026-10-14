@@ -92,3 +92,29 @@ describe('XP and levels', () => {
     expect(levelOf(999999)).toMatchObject({ index: LEVELS.length - 1, name: 'L3 Ready', share: 1, toNext: 0 })
   })
 })
+
+import { weekStats } from './review'
+
+describe('weekly review stats', () => {
+  it('counts problems, focus, exercise and energy inside the plan week only', () => {
+    const p = withDone(
+      {
+        'p:two-sum': '2026-10-14', // week 1 (Wed)
+        'p:valid-anagram': '2026-10-20', // week 1 (Tue)
+        'p:contains-duplicate': '2026-10-21', // week 2: not counted
+        'w1:l0': '2026-10-15', // a task, not a problem
+        'h:2026-10-15:exercise': '2026-10-15',
+        'm:2026-10-16:exercise': '2026-10-16',
+      },
+      { focus: { '2026-10-14': 90, '2026-10-20': 45, '2026-10-21': 500 }, energy: { '2026-10-14': 'fresh', '2026-10-16': 'tired' } },
+    )
+    expect(weekStats(p, 1)).toEqual({
+      first: '2026-10-14',
+      last: '2026-10-20',
+      solved: 2,
+      focusHours: 2.3,
+      exerciseDays: 2,
+      energy: { fresh: 1, tired: 1, low: 0 },
+    })
+  })
+})

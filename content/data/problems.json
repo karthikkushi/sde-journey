@@ -498,7 +498,7 @@
  },
  {
   "slug": "merge-two-sorted-lists",
-  "tag": "linked-list",
+  "tag": "k-way-merge",
   "title": "Merge Two Sorted Lists",
   "difficulty": "Easy",
   "premium": false
@@ -988,7 +988,7 @@
  },
  {
   "slug": "find-the-duplicate-number",
-  "tag": "tp-same",
+  "tag": "cyclic-sort",
   "title": "Find the Duplicate Number",
   "difficulty": "Medium",
   "premium": false
@@ -1219,7 +1219,7 @@
  },
  {
   "slug": "best-time-to-buy-and-sell-stock-ii",
-  "tag": "greedy",
+  "tag": "dp-state",
   "title": "Best Time to Buy and Sell Stock II",
   "difficulty": "Medium",
   "premium": false
@@ -1709,7 +1709,7 @@
  },
  {
   "slug": "kth-smallest-element-in-a-sorted-matrix",
-  "tag": "bs-answer",
+  "tag": "k-way-merge",
   "title": "Kth Smallest Element in a Sorted Matrix",
   "difficulty": "Medium",
   "premium": false
@@ -2342,6 +2342,160 @@
   "tag": "design",
   "title": "Design HashSet",
   "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "find-k-pairs-with-smallest-sums",
+  "tag": "k-way-merge",
+  "title": "Find K Pairs with Smallest Sums",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "smallest-range-covering-elements-from-k-lists",
+  "tag": "k-way-merge",
+  "title": "Smallest Range Covering Elements from K Lists",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "shortest-subarray-with-sum-at-least-k",
+  "tag": "mono-queue",
+  "title": "Shortest Subarray with Sum at Least K",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "constrained-subsequence-sum",
+  "tag": "mono-queue",
+  "title": "Constrained Subsequence Sum",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "jump-game-vi",
+  "tag": "mono-queue",
+  "title": "Jump Game VI",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "longest-continuous-subarray-with-absolute-diff-less-than-or-equal-to-limit",
+  "tag": "mono-queue",
+  "title": "Longest Continuous Subarray With Absolute Diff Less Than or Equal to Limit",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "best-time-to-buy-and-sell-stock-with-transaction-fee",
+  "tag": "dp-state",
+  "title": "Best Time to Buy and Sell Stock with Transaction Fee",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "best-time-to-buy-and-sell-stock-iii",
+  "tag": "dp-state",
+  "title": "Best Time to Buy and Sell Stock III",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "best-time-to-buy-and-sell-stock-iv",
+  "tag": "dp-state",
+  "title": "Best Time to Buy and Sell Stock IV",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "ipo",
+  "tag": "two-heaps",
+  "title": "IPO",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "find-right-interval",
+  "tag": "two-heaps",
+  "title": "Find Right Interval",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "process-tasks-using-servers",
+  "tag": "two-heaps",
+  "title": "Process Tasks Using Servers",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "reverse-linked-list-ii",
+  "tag": "ll-reverse",
+  "title": "Reverse Linked List II",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "palindrome-linked-list",
+  "tag": "ll-reverse",
+  "title": "Palindrome Linked List",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "swap-nodes-in-pairs",
+  "tag": "ll-reverse",
+  "title": "Swap Nodes in Pairs",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "find-eventual-safe-states",
+  "tag": "topo",
+  "title": "Find Eventual Safe States",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "minimum-height-trees",
+  "tag": "topo",
+  "title": "Minimum Height Trees",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "course-schedule-iv",
+  "tag": "topo",
+  "title": "Course Schedule IV",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "find-all-duplicates-in-an-array",
+  "tag": "cyclic-sort",
+  "title": "Find All Duplicates in an Array",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "satisfiability-of-equality-equations",
+  "tag": "union-find",
+  "title": "Satisfiability of Equality Equations",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "number-of-operations-to-make-network-connected",
+  "tag": "union-find",
+  "title": "Number of Operations to Make Network Connected",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "path-with-maximum-probability",
+  "tag": "dijkstra",
+  "title": "Path with Maximum Probability",
+  "difficulty": "Medium",
   "premium": false
  }
 ]

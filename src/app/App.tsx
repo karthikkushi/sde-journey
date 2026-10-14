@@ -18,12 +18,30 @@ const Settings = page(() => import('../pages/Settings'), 'Settings')
 const Focus = page(() => import('../pages/Focus'), 'Focus')
 const Notes = page(() => import('../pages/Notes'), 'Notes')
 const NoteView = page(() => import('../pages/NoteView'), 'NoteView')
+const Patterns = page(() => import('../pages/Patterns'), 'Patterns')
+const PatternView = page(() => import('../pages/Patterns'), 'PatternView')
+const CheatSheet = page(() => import('../pages/Patterns'), 'CheatSheet')
+const Resources = page(() => import('../pages/Resources'), 'Resources')
+const Projects = page(() => import('../pages/Projects'), 'Projects')
+const ProjectView = page(() => import('../pages/Projects'), 'ProjectView')
+const Earning = page(() => import('../pages/Projects'), 'Earning')
+const Timetable = page(() => import('../pages/Timetable'), 'Timetable')
+const Review = page(() => import('../pages/Review'), 'Review')
+const AiTutor = page(() => import('../pages/AiTutor'), 'AiTutor')
+const Career = page(() => import('../pages/Career'), 'Career')
 
 // Pages that are built. Everything else in NAV shows "coming soon".
 const PAGES: Record<string, ReactNode> = {
   '/': <Today />,
   '/roadmap': <Roadmap />,
   '/notes': <Notes />,
+  '/patterns': <Patterns />,
+  '/resources': <Resources />,
+  '/projects': <Projects />,
+  '/timetable': <Timetable />,
+  '/review': <Review />,
+  '/ai-tutor': <AiTutor />,
+  '/career': <Career />,
   '/settings': <Settings />,
 }
 
@@ -42,6 +60,10 @@ export default function App() {
           <Route path="/roadmap/week/:n" element={<Week />} />
           <Route path="/checkpoint/:m" element={<Checkpoint />} />
           <Route path="/notes/:id" element={<NoteView />} />
+          <Route path="/patterns/cheatsheet" element={<CheatSheet />} />
+          <Route path="/patterns/:id" element={<PatternView />} />
+          <Route path="/projects/:id" element={<ProjectView />} />
+          <Route path="/earning" element={<Earning />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Soon title="Page not found" hint="This page does not exist yet." />} />
         </Route>

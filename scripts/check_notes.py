@@ -1,4 +1,4 @@
-"""Run every Python code block in the notes and check what it prints.
+"""Run every Python code block in the notes and patterns, and check what it prints.
 
 Rules (so notes never teach broken code):
   * Each ```python block runs on its own, so it must be self-contained.
@@ -17,7 +17,8 @@ import subprocess
 import sys
 import tempfile
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent / "content" / "notes"
+CONTENT = pathlib.Path(__file__).resolve().parent.parent / "content"
+ROOTS = [CONTENT / "notes", CONTENT / "patterns"]
 FENCE = re.compile(r"^```(\w[\w-]*)?[^\n]*\n(.*?)^```\s*$", re.M | re.S)
 
 
@@ -78,7 +79,7 @@ def check_file(path):
 
 def main():
     words = sys.argv[1:]
-    files = sorted(p for p in ROOT.rglob("*.md") if not p.name.startswith("_") and all(w in p.name for w in words))
+    files = sorted(p for root in ROOTS for p in root.rglob("*.md") if not p.name.startswith("_") and all(w in p.name for w in words))
     total, all_failures = 0, []
     for f in files:
         n, fails = check_file(f)
@@ -86,7 +87,7 @@ def main():
         all_failures += fails
     for f in all_failures:
         print("FAIL", f, "\n")
-    print(f"{total} Python blocks in {len(files)} notes, {len(all_failures)} failures.")
+    print(f"{total} Python blocks in {len(files)} files, {len(all_failures)} failures.")
     sys.exit(1 if all_failures else 0)
 
 

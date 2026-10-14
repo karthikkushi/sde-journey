@@ -5,7 +5,7 @@ import { resourceById } from '../../content/data/resources'
 import { noteExists } from '../lib/noteIndex'
 import type { Task } from '../lib/plan'
 import { leetcodeUrl, problemBySlug } from '../lib/problems'
-import { toggleDone, useProgress } from '../store/progress'
+import { toggleDone, update, useProgress } from '../store/progress'
 
 /** A checkbox row. The whole row is the tap target. */
 export function CheckRow({ id, text, children }: { id: string; text: ReactNode; children?: ReactNode }) {
@@ -32,14 +32,27 @@ export function TaskRow({ task }: { task: Task }) {
 }
 
 export function ProblemMeta({ slug }: { slug: string }) {
+  const progress = useProgress()
   const p = problemBySlug(slug)
   if (!p) return null
+  const solved = !!progress.done[`p:${slug}`]
+  const honest = !!progress.honest[slug]
   return (
     <>
       <span className={`badge diff-${p.difficulty.toLowerCase()}`}>{p.difficulty}</span>
       {p.premium && <span className="badge" title="Needs LeetCode Premium. NeetCode has a free version.">Premium</span>}
       <Link className="chip" to={`/patterns/${p.tag}`}>{p.tag}</Link>
       <a className="chip" href={leetcodeUrl(slug)} target="_blank" rel="noreferrer">LeetCode ↗</a>
+      {solved && (
+        // "Did I write this myself?" — only you see it. Be honest.
+        <button
+          className={`chip${honest ? ' is-accent' : ''}`}
+          aria-pressed={honest}
+          onClick={() => update((d) => { if (d.honest[slug]) delete d.honest[slug]; else d.honest[slug] = true })}
+        >
+          {honest ? '✓ I wrote it myself' : 'I wrote it myself?'}
+        </button>
+      )}
     </>
   )
 }
