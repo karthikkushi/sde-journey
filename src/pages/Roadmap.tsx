@@ -21,11 +21,11 @@ export function Roadmap() {
   const allWeeks = range(1, TOTAL_WEEKS)
 
   return (
-    <section className="page">
-      <h1>Roadmap</h1>
-      <div className="card">
+    <section className="page roadmap-page">
+      <header className="page-heading"><span className="eyebrow">The bigger picture</span><h1>Your roadmap<span className="accent-text">.</span></h1><p>From your first line of Python to your next opportunity.</p></header>
+      <div className="card roadmap-progress">
         <div className="row" style={{ justifyContent: 'space-between' }}>
-          <strong>Whole plan</strong>
+          <strong>65 weeks. One step at a time.</strong>
           <span className="muted small">{Math.round(share(allWeeks) * 100)}%</span>
         </div>
         <Bar share={share(allWeeks)} label="Whole plan progress" />
@@ -34,12 +34,13 @@ export function Roadmap() {
         )}
       </div>
 
-      <h2>Phases</h2>
-      <div className="stack">
+      <h2 className="section-heading">The five phases</h2>
+      <div className="phase-grid">
         {PHASES.map((ph) => (
-          <div key={ph.n} className="card">
+          <div key={ph.n} className={`card phase-card${currentWeek >= ph.from && currentWeek <= ph.to ? ' is-current' : ''}`}>
+            <span className="phase-number">{String(ph.n).padStart(2, '0')}</span>
             <div className="row" style={{ justifyContent: 'space-between' }}>
-              <strong>Phase {ph.n} · {ph.name}</strong>
+              <strong>{ph.name}</strong>
               <span className="muted small">Weeks {ph.from}–{ph.to}</span>
             </div>
             <p className="muted small" style={{ margin: '4px 0 8px' }}>{ph.summary}</p>
@@ -48,7 +49,7 @@ export function Roadmap() {
         ))}
       </div>
 
-      <h2>Months and weeks</h2>
+      <h2 className="section-heading">Your path, week by week</h2>
       <div className="stack">
         {range(1, TOTAL_MONTHS).map((m) => {
           const weeks = allWeeks.filter((n) => monthOfWeek(n) === m)

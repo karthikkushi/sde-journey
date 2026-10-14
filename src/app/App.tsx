@@ -4,6 +4,7 @@ import { More } from '../pages/More'
 import { Soon } from '../pages/Soon'
 import { Today } from '../pages/Today'
 import { Celebrations } from '../components/Celebrations'
+import { SaveWarning } from '../components/SaveWarning'
 import { Layout } from './Layout'
 import { NAV } from './nav'
 
@@ -66,6 +67,7 @@ export default function App() {
   return (
     <Suspense fallback={loading}>
       <Celebrations />
+      <SaveWarning />
       <Routes>
         {/* Focus mode is full screen: no menu, no tabs. */}
         <Route path="/focus" element={<Focus />} />

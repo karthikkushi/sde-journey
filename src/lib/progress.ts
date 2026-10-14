@@ -9,6 +9,7 @@ export type Energy = 'fresh' | 'tired' | 'low'
 export type Card = { ease: number; interval: number; reps: number; due: string }
 
 export type Mock = { date: string; kind: string; notes: string }
+export type ProblemReview = { level: 'helped' | 'independent' | 'recalled'; date: string }
 
 export type Progress = {
   version: 1
@@ -27,6 +28,8 @@ export type Progress = {
   weekly: Record<string, Record<string, string>> // week number -> review answers
   mocks: Mock[]
   games: Record<string, number> // game id -> best score
+  problemReviews: Record<string, ProblemReview>
+  lastBackup: string // date a backup download was requested
 }
 
 export const defaultProgress = (): Progress => ({
@@ -46,9 +49,13 @@ export const defaultProgress = (): Progress => ({
   weekly: {},
   mocks: [],
   games: {},
+  problemReviews: {},
+  lastBackup: '',
 })
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
+const isDate = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) &&
+  Number.isFinite(Date.parse(v)) && new Date(v).toISOString().slice(0, 10) === v
 
 /**
  * Check an imported (or stored) object and turn it into a safe Progress.
@@ -66,6 +73,10 @@ export function parseProgress(raw: unknown): Progress {
     if (sameShape) out[key] = value
   }
   if (!/^\d{4}-\d{2}-\d{2}$/.test(result.startDate)) result.startDate = ''
+  if (!isDate(result.lastBackup)) result.lastBackup = ''
+  result.problemReviews = Object.fromEntries(Object.entries(result.problemReviews).filter(([, value]) =>
+    isObject(value) && ['helped', 'independent', 'recalled'].includes(String(value.level)) && isDate(value.date),
+  ))
   // Older backups had a fixed start (14 Oct 2026) moved by "shiftWeeks". Keep their dates.
   if (!result.startDate && Object.keys(result.done).length) {
     const shift = typeof raw.shiftWeeks === 'number' ? raw.shiftWeeks : 0

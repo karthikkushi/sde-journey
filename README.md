@@ -12,6 +12,14 @@ Live: https://karthikkushi.github.io/sde-journey/
   charts, strengths, weak spots and next actions.
 - No login, no backend, no paid services.
 
+## Daily study and revision
+
+Today starts with your energy check-in and next main task. Pick a daily budget of 25, 45, 90 or 180 minutes; focus time counts against it. Task durations are rough planning estimates, not measured lesson lengths. The full daily plan and unfinished work remain available in expandable sections. One optional catch-up task is suggested when it fits after today's main work.
+
+After ticking a problem, record the attempt: **Needed help**, **Solved independently**, or **Solved again on a later day**. Today brings these back for revision after 1, 7 or 30 days respectively. Same-day recall is disabled. Older solved problems without an assessment become due after 7 days. Unticking a problem clears its revision assessment.
+
+Failed progress saves show a warning with retry and backup options. Keep the tab open and export before reloading. Today reminds you to back up weekly, and Settings records the last requested backup download; check that the file actually appears in your downloads. Existing version-1 backups remain supported.
+
 ## Run it on your computer
 
 ```bash

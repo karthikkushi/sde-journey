@@ -32,3 +32,14 @@ export const TABS: NavItem[] = [
   nav('/focus'),
   { to: '/more', label: 'More', icon: 'grid', hint: '' },
 ]
+
+export const NAV_GROUPS = [
+  { label: 'Your day', items: ['/', '/focus', '/timetable', '/review', '/performance'].map(nav) },
+  { label: 'Learn & practise', items: ['/roadmap', '/notes', '/patterns', '/viz', '/cards', '/games', '/resources'].map(nav) },
+  { label: 'Build your future', items: ['/projects', '/career', '/ai-tutor', '/badges'].map(nav) },
+  { label: 'Preferences', items: ['/settings'].map(nav) },
+]
+
+export const mobileTabFor = (path: string) => TABS.find((item) =>
+  item.to === path || (item.to !== '/' && path.startsWith(`${item.to}/`)),
+)?.to ?? '/more'

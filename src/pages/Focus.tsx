@@ -8,17 +8,18 @@ import {
   BLOCKS_PER_ROUND, BREAK_ACTIVITIES, DEFAULT_PRESET, PRESETS, breakMinutes, clock, loadSession, minutesSpent,
   msLeft, phaseLength, presetById, saveSession, type Session,
 } from '../lib/focus'
-import { buildWeek, planStartOf, position, weekSpec } from '../lib/plan'
+import { buildWeek, isCore, planStartOf, position, weekSpec } from '../lib/plan'
+import { studyBudget } from '../lib/study'
 import { getProgress, logFocus, setText, toggleDone, useProgress } from '../store/progress'
 
 const randomActivity = () => Math.floor(Math.random() * BREAK_ACTIVITIES.length)
 
-/** First roadmap task of today that is not ticked yet: a good default for "what to focus on". */
+/** Match the next main task shown on Today. */
 function nextTask() {
   const p = getProgress()
   const pos = position(todayIST(), planStartOf(p))
   if (pos.status !== 'during') return undefined
-  return buildWeek(weekSpec(pos.week), planStartOf(p))[pos.dayIndex].tasks.find((t) => !p.done[t.id])
+  return buildWeek(weekSpec(pos.week), planStartOf(p))[pos.dayIndex].tasks.find((t) => isCore(t) && !p.done[t.id])
 }
 
 // Full-screen focus timer. It lives outside the normal layout, so nothing else is on screen.
@@ -27,7 +28,8 @@ export function Focus() {
   const [session, setSessionState] = useState<Session | null>(loadSession)
   const sessionRef = useRef(session)
   const [now, setNow] = useState(() => Date.now())
-  const [presetId, setPresetId] = useState(session?.preset ?? DEFAULT_PRESET)
+  const budgetLeft = Math.max(0, studyBudget(p, todayIST()) - (p.focus[todayIST()] ?? 0))
+  const [presetId, setPresetId] = useState(session?.preset ?? (budgetLeft < 45 ? '25/5' : DEFAULT_PRESET))
   const suggested = nextTask()
   const [task, setTask] = useState(session?.task ?? suggested?.text ?? '')
   const [skipArmed, setSkipArmed] = useState(false)
@@ -213,6 +215,7 @@ export function Focus() {
           <p className="muted small" style={{ margin: 0 }}>
             {presetById(presetId).focus} minutes focus, {presetById(presetId).rest} minutes break. After {BLOCKS_PER_ROUND} blocks, a 20-minute long break.
           </p>
+          <p className="muted small">{budgetLeft} minutes left in today’s budget. You can end a block early and keep the minutes you spent.</p>
           <button className="btn primary big" onClick={startBlock}>Start focus</button>
           {session && <button className="link-btn" onClick={() => setSession(null)}>Finish for today</button>}
         </div>

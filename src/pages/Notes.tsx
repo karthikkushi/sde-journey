@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router'
 import { NOTES, SECTIONS } from '../lib/notes'
 import { useProgress } from '../store/progress'
+import { Icon } from '../components/Icon'
 
 const LEVELS = ['basic', 'core', 'advanced'] as const
 
@@ -28,12 +29,9 @@ export function Notes() {
 
   return (
     <section className="page">
-      <h1>Notes</h1>
-      <p className="muted" style={{ margin: 0 }}>
-        {Object.keys(done).length} of {NOTES.length} finished
-      </p>
+      <header className="page-heading"><span className="eyebrow">Study library</span><h1>Notes<span className="accent-text">.</span></h1><p>Understand the idea. Practise it. Make it yours.</p><span className="library-count">{Object.keys(done).length} of {NOTES.length} notes finished</span></header>
 
-      <div className="card stack">
+      <div className="card stack library-filters">
         <input className="input" type="search" placeholder="Search notes (for example: hash, append, recursion)" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search notes" />
         <div className="filters">
           <select className="input" value={section} onChange={(e) => setSection(e.target.value)} aria-label="Section">
@@ -51,18 +49,22 @@ export function Notes() {
         </div>
       </div>
 
-      {shown.length === 0 && <p className="muted">No notes match. Try fewer words.</p>}
+      <div className="section-title"><span className="muted small" role="status">{shown.length} notes in {sections.length} sections</span>{(q || section || level || phase) && <button className="link-btn" onClick={() => { setQ(''); setSection(''); setLevel(''); setPhase('') }}>Clear filters</button>}</div>
+      {shown.length === 0 && <div className="empty-state"><Icon name="book" size={32} /><h2>No notes found</h2><p>Try a broader topic or clear the filters to explore the library.</p></div>}
 
       {sections.map((s) => (
-        <div key={s} className="card">
-          <h2>{s}. {SECTIONS[s]}</h2>
+        <div key={s} className="card library-section">
+          <div className="section-title"><h2><span className="section-letter">{s}</span>{SECTIONS[s]}</h2><span className="muted small">{shown.filter((n) => n.section === s).length} notes</span></div>
           <ul className="note-list">
             {shown.filter((n) => n.section === s).map((n) => (
               <li key={n.id}>
                 <Link to={`/notes/${n.id}`} className="note-row">
                   <span className={done[n.id] ? 'note-done' : 'note-dot'} aria-hidden="true">{done[n.id] ? '✓' : ''}</span>
                   <span className="note-title">{n.title}</span>
+                  {done[n.id] && <span className="sr-only">Completed</span>}
+                  <span className="note-duration">{n.estMinutes} min</span>
                   <span className={`badge level-${n.level}`}>{n.level}</span>
+                  <span className="note-arrow" aria-hidden="true">↗</span>
                 </Link>
               </li>
             ))}

@@ -5,12 +5,13 @@ import { loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/p
 
 // A tiny global store. Every page reads progress with useProgress(),
 // and changes it with update(). Each change is saved to localStorage at once.
+let saveFailed = false
 
 /** No start date yet (first visit, or after a reset)? The plan starts today, from the device clock. */
 function withStart(p: Progress) {
   if (p.startDate) return p
   const started = { ...p, startDate: todayIST() }
-  saveProgress(started)
+  saveFailed = !saveProgress(started)
   return started
 }
 
@@ -31,6 +32,13 @@ export const useProgress = () => useSyncExternalStore(subscribe, () => state)
 
 /** Read progress outside React (for example in a timer callback). */
 export const getProgress = () => state
+export const getSaveFailed = () => saveFailed
+export const useSaveFailed = () => useSyncExternalStore(subscribe, getSaveFailed)
+
+export function retrySave() {
+  saveFailed = !saveProgress(state)
+  emit()
+}
 
 /**
  * Change progress. You get a copy ("draft") to edit freely:
@@ -40,22 +48,23 @@ export function update(change: (draft: Progress) => void) {
   const draft = structuredClone(state)
   change(draft)
   state = draft
-  saveProgress(state)
-  emit()
+  retrySave()
 }
 
 /** Replace everything (used by Import and Reset). */
 export function replaceProgress(p: Progress) {
   state = withStart(p)
-  saveProgress(state)
-  emit()
+  retrySave()
 }
 
 /** Tick or un-tick a task. The tick remembers today's date (for streaks). */
 export function toggleDone(id: string) {
   const before = state.done
   update((p) => {
-    if (p.done[id]) delete p.done[id]
+    if (p.done[id]) {
+      delete p.done[id]
+      if (id.startsWith('p:')) delete p.problemReviews[id.slice(2)]
+    }
     else p.done[id] = todayIST()
   })
   // Finished a whole week (or month, or phase)? Celebrate.
@@ -84,7 +93,8 @@ export function setText(key: string, value: string) {
 // If the app is open in two tabs, keep them in step.
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
-    if (e.key === STORAGE_KEY) {
+    // Keep this tab's unsaved work available for export if another tab changes storage.
+    if (e.key === STORAGE_KEY && !saveFailed) {
       state = withStart(loadProgress())
       emit()
     }

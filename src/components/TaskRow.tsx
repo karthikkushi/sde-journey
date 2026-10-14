@@ -4,6 +4,9 @@ import type { Learn } from '../../content/data/roadmap'
 import { resourceById } from '../../content/data/resources'
 import { noteExists } from '../lib/noteIndex'
 import type { Task } from '../lib/plan'
+import { formatDate, todayIST } from '../lib/dates'
+import type { ProblemReview } from '../lib/progress'
+import { recordProblemReview, REVIEW_LABELS } from '../lib/study'
 import { leetcodeUrl, problemBySlug, tagLink } from '../lib/problems'
 import { toggleDone, update, useProgress } from '../store/progress'
 
@@ -38,6 +41,8 @@ export function ProblemMeta({ slug }: { slug: string }) {
   if (!p) return null
   const solved = !!progress.done[`p:${slug}`]
   const honest = !!progress.honest[slug]
+  const review = progress.problemReviews[slug]
+  const today = todayIST()
   return (
     <>
       <span className={`badge diff-${p.difficulty.toLowerCase()}`}>{p.difficulty}</span>
@@ -62,6 +67,28 @@ export function ProblemMeta({ slug }: { slug: string }) {
             })}
           />
         </label>
+      )}
+      {solved && (
+        <>
+          <label className="attempt-control">
+            Attempt result
+            <select
+              className="input"
+              aria-label={`Record attempt for ${p.title}`}
+              value=""
+              onChange={(e) => {
+                const level = e.target.value as ProblemReview['level']
+                if (level in REVIEW_LABELS) update((d) => { recordProblemReview(d, slug, level, today) })
+              }}
+            >
+              <option value="" disabled>Record this attempt…</option>
+              {Object.entries(REVIEW_LABELS).map(([value, label]) => (
+                <option key={value} value={value} disabled={value === 'recalled' && (review?.date ?? progress.done[`p:${slug}`]) >= today}>{label}</option>
+              ))}
+            </select>
+          </label>
+          {review && <span className="muted small">Last attempt: {REVIEW_LABELS[review.level]} · {formatDate(review.date)}</span>}
+        </>
       )}
       {solved && (
         // "Did I write this myself?" — only you see it. Be honest.

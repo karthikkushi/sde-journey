@@ -26,7 +26,7 @@ export function NoteView() {
   const myKey = `note:${id}`
 
   return (
-    <article className="page">
+    <article className="page reading-page">
       <div className="row muted small">
         <Link to="/notes">Notes</Link> / {note.section}. {SECTIONS[note.section]}
       </div>

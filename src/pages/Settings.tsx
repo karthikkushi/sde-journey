@@ -1,21 +1,29 @@
 import { useState } from 'react'
 import { PlanDates } from '../components/PlanDates'
-import { todayIST } from '../lib/dates'
+import { formatLong, todayIST } from '../lib/dates'
+import { backupDue } from '../lib/study'
 import { backupFileName, defaultProgress, parseProgress } from '../lib/progress'
-import { getProgress, replaceProgress } from '../store/progress'
+import { getProgress, replaceProgress, update, useProgress } from '../store/progress'
 
 export function Settings() {
   const [message, setMessage] = useState('')
+  const p = useProgress()
 
   // Export: turn progress into a JSON file and let the browser download it.
   function exportProgress() {
-    const blob = new Blob([JSON.stringify(getProgress(), null, 1)], { type: 'application/json' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = backupFileName(todayIST())
-    a.click()
-    URL.revokeObjectURL(a.href)
-    setMessage('Backup downloaded. Keep it somewhere safe (Google Drive, email to yourself).')
+    try {
+      const date = todayIST()
+      const blob = new Blob([JSON.stringify({ ...getProgress(), lastBackup: date }, null, 1)], { type: 'application/json' })
+      const a = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      a.href = url
+      a.download = backupFileName(date)
+      try { a.click() } finally { setTimeout(() => URL.revokeObjectURL(url), 1000) }
+      update((d) => { d.lastBackup = date })
+      setMessage('Backup download requested. Check your downloads and keep the JSON file somewhere safe.')
+    } catch {
+      setMessage('Could not create the backup download. Keep this tab open and try again.')
+    }
   }
 
   // Import: read the chosen file, check it, then replace progress after a confirm.
@@ -46,6 +54,10 @@ export function Settings() {
         <h2>Backup</h2>
         <p className="muted small">
           Progress lives only in this browser. Export once a week, and to move between phone and laptop.
+        </p>
+        <p className="small">
+          {p.lastBackup ? `Last backup download requested: ${formatLong(p.lastBackup)}.` : 'No backup export recorded yet.'}
+          {backupDue(p.lastBackup, todayIST()) && ' Time to save a backup.'}
         </p>
         <div className="row">
           <button className="btn primary" onClick={exportProgress}>Export progress</button>
