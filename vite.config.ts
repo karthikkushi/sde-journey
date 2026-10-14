@@ -34,6 +34,11 @@ export default defineConfig({
       },
     }),
   ],
+  build: {
+    // The "notes" chunk is the text of every note (for search and offline use). It loads only
+    // on note pages and is cached once, so its size is expected. Code chunks stay far below this.
+    chunkSizeWarningLimit: 2000,
+  },
   test: {
     include: ['src/**/*.test.ts'],
     passWithNoTests: true,

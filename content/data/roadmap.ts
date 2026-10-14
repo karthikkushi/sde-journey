@@ -437,6 +437,7 @@ export const WEEKS: WeekSpec[] = [
     extras: [
       N('Backend: REST API design and status codes', 'f-rest'),
       R('Backend: FastAPI tutorial first steps', 'fastapi'),
+      N('AI: machine learning basics', 'j-ml-basics'),
     ],
     checkpoint: 'Coin Change: say what dp[i] means before coding.',
   },
@@ -468,7 +469,10 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: ['longest-palindromic-substring', 'palindromic-substrings', 'edit-distance', 'interleaving-string', 'best-time-to-buy-and-sell-stock-ii', 'best-time-to-buy-and-sell-stock-with-cooldown'],
     friday: N('Networking: OSI and TCP/IP layers', 'g-layers'),
-    extras: [N('Backend: testing (unit and integration with pytest)', 'f-testing')],
+    extras: [
+      N('Backend: testing (unit and integration with pytest)', 'f-testing'),
+      N('AI: neural networks in simple words', 'j-neural-nets'),
+    ],
     checkpoint: 'Edit Distance: fill the table by hand for "horse" → "ros".',
   },
   {
@@ -584,6 +588,7 @@ export const WEEKS: WeekSpec[] = [
       N('System design classic: news feed', 'i-news-feed'),
       D('Project: core feature 1 with tests'),
       D('Apply to 3 more companies'),
+      N('AI: guardrails and safety for LLM features', 'j-guardrails'),
     ],
     checkpoint: 'Month 10 check: mediums under a timer while explaining aloud.',
   },
@@ -620,6 +625,7 @@ export const WEEKS: WeekSpec[] = [
       D('Project: deploy v0.1. Share with 3 people you interviewed'),
       N('LLD: design a library system', 'h-library'),
       D('Apply to 3 more companies'),
+      N('AI: fine-tuning, and when not to', 'j-fine-tuning'),
     ],
     checkpoint: 'First Missing Positive in O(n) time and O(1) space.',
   },
