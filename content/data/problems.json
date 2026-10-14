@@ -2532,5 +2532,19 @@
   "title": "Reverse Pairs",
   "difficulty": "Hard",
   "premium": false
+ },
+ {
+  "slug": "shortest-path-visiting-all-nodes",
+  "tag": "bits",
+  "title": "Shortest Path Visiting All Nodes",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "partition-to-k-equal-sum-subsets",
+  "tag": "backtracking",
+  "title": "Partition to K Equal Sum Subsets",
+  "difficulty": "Medium",
+  "premium": false
  }
 ]
