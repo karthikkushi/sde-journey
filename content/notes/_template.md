@@ -22,7 +22,11 @@ HOW TO ADD A NOTE
                     or any other line = an exercise
      ```explain     one question per line (each gets an answer box)
      ```flashcards  one "front :: back" per line (they go into the flashcard review)
+     ```sql         SQL, run against SQLite (one database per note, blocks run in order);
+                    an ```output block after it shows the rows as "col | col" lines
    A python block whose first line starts with "# WRONG" shows a mistake and must fail.
+   Only for code that truly cannot run in the checker (needs a server, Docker, an API key),
+   write ```python norun  (or ```sql norun). Keep these rare.
 5. Run:  npm run notes   (checks every code block)   and   npm run check
 -->
 

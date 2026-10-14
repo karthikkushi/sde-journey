@@ -1,0 +1,5 @@
+# Packages the backend notes use in their checked code blocks.
+fastapi
+httpx
+sqlalchemy
+pydantic
