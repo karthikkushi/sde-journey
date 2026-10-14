@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router'
+import { Suspense, useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router'
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { Icon } from '../components/Icon'
 import { applyTheme, nextTheme, readTheme } from '../lib/theme'
 import { NAV, TABS } from './nav'
@@ -7,6 +8,7 @@ import { NAV, TABS } from './nav'
 // The frame around every page: side menu on laptop, bottom tabs on phone.
 export function Layout() {
   const [theme, setTheme] = useState(readTheme)
+  const { pathname } = useLocation()
 
   function cycleTheme() {
     const t = nextTheme(theme)
@@ -38,7 +40,13 @@ export function Layout() {
       </nav>
 
       <main className="main">
-        <Outlet />
+        {/* A new key on every page change clears an old error. */}
+        <ErrorBoundary key={pathname}>
+          {/* Pages download on first visit; the menu stays visible meanwhile. */}
+          <Suspense fallback={<p className="muted">Loading…</p>}>
+            <Outlet />
+          </Suspense>
+        </ErrorBoundary>
       </main>
 
       <nav className="tabbar" aria-label="Main">

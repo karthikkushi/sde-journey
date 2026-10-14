@@ -36,6 +36,8 @@ const BigOQuiz = page(() => import('../pages/Games'), 'BigOQuiz')
 const CodeOrder = page(() => import('../pages/Games'), 'CodeOrder')
 const Cards = page(() => import('../pages/Cards'), 'Cards')
 const Badges = page(() => import('../pages/Badges'), 'Badges')
+const VizList = page(() => import('../pages/Viz'), 'VizList')
+const VizView = page(() => import('../pages/Viz'), 'VizView')
 
 // Pages that are built. Everything else in NAV shows "coming soon".
 const PAGES: Record<string, ReactNode> = {
@@ -52,6 +54,7 @@ const PAGES: Record<string, ReactNode> = {
   '/games': <Games />,
   '/cards': <Cards />,
   '/badges': <Badges />,
+  '/viz': <VizList />,
   '/settings': <Settings />,
 }
 
@@ -78,6 +81,7 @@ export default function App() {
           <Route path="/games/pattern" element={<PatternGuess />} />
           <Route path="/games/bigo" element={<BigOQuiz />} />
           <Route path="/games/order" element={<CodeOrder />} />
+          <Route path="/viz/:id" element={<VizView />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Soon title="Page not found" hint="This page does not exist yet." />} />
         </Route>
