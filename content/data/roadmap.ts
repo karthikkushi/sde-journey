@@ -230,6 +230,7 @@ export const WEEKS: WeekSpec[] = [
       T('Visualizer: binary search', '/viz/binary-search'),
       T('Pattern: binary search on index', '/patterns/bs-index'),
       N('Read: bisect', 'a17-bisect'),
+      N('Read: Sorting algorithms and when to use which', 'd-sorting'),
     ],
     problems: ['binary-search', 'search-insert-position', 'guess-number-higher-or-lower', 'first-bad-version', 'search-a-2d-matrix', 'find-minimum-in-rotated-sorted-array', 'search-in-rotated-sorted-array'],
     friday: R('SQL 50: "Basic Joins" section', 'sql50'),

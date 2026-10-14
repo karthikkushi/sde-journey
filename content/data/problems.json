@@ -2497,5 +2497,40 @@
   "title": "Path with Maximum Probability",
   "difficulty": "Medium",
   "premium": false
+ },
+ {
+  "slug": "sort-an-array",
+  "tag": "basics",
+  "title": "Sort an Array",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "intersection-of-two-arrays-ii",
+  "tag": "tp-same",
+  "title": "Intersection of Two Arrays II",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "subarrays-with-k-different-integers",
+  "tag": "sw-variable",
+  "title": "Subarrays with K Different Integers",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "assign-cookies",
+  "tag": "greedy",
+  "title": "Assign Cookies",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "reverse-pairs",
+  "tag": "basics",
+  "title": "Reverse Pairs",
+  "difficulty": "Hard",
+  "premium": false
  }
 ]
