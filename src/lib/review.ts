@@ -1,10 +1,10 @@
 import { addDays } from './dates'
-import { weekStart } from './plan'
+import { planStartOf, weekStart } from './plan'
 import type { Progress } from './progress'
 
 /** Facts about one plan week, read from your logs, to help fill the Sunday review. */
 export function weekStats(p: Progress, week: number) {
-  const first = weekStart(week, p.shiftWeeks)
+  const first = weekStart(week, planStartOf(p))
   const dates = Array.from({ length: 7 }, (_, i) => addDays(first, i))
   const inWeek = new Set(dates)
 

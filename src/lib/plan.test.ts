@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { TOTAL_WEEKS, WEEKS } from '../../content/data/roadmap'
+import { START_DATE, TOTAL_WEEKS, WEEKS } from '../../content/data/roadmap'
 import { todayIST, minutesNowIST, addDays, dayOfWeek } from './dates'
-import { buildWeek, monthOfWeek, position, weekStart, TOTAL_MONTHS } from './plan'
+import { buildWeek, isCore, monthOfWeek, paceOf, planSchedule, position, weekStart, TOTAL_MONTHS } from './plan'
 import { PROBLEMS, problemBySlug } from './problems'
 
 describe('dates', () => {
@@ -17,24 +17,26 @@ describe('dates', () => {
   })
 })
 
+const S = START_DATE // '2026-10-14', a Wednesday
+
 describe('position in the plan', () => {
   it('start day is week 1, day 1, a Wednesday', () => {
-    expect(position('2026-10-14', 0)).toEqual({ status: 'during', week: 1, dayIndex: 0 })
+    expect(position('2026-10-14', S)).toEqual({ status: 'during', week: 1, dayIndex: 0 })
     expect(dayOfWeek('2026-10-14')).toBe(3)
   })
   it('phase 1 ends on 24 Nov 2026 (end of week 6)', () => {
-    expect(position('2026-11-24', 0)).toEqual({ status: 'during', week: 6, dayIndex: 6 })
-    expect(position('2026-11-25', 0)).toMatchObject({ week: 7, dayIndex: 0 })
+    expect(position('2026-11-24', S)).toEqual({ status: 'during', week: 6, dayIndex: 6 })
+    expect(position('2026-11-25', S)).toMatchObject({ week: 7, dayIndex: 0 })
   })
   it('before and after the plan', () => {
-    expect(position('2026-10-10', 0)).toEqual({ status: 'before', daysToGo: 4 })
-    expect(position(addDays('2026-10-14', 65 * 7), 0)).toEqual({ status: 'after' })
-    expect(position(addDays('2026-10-14', 65 * 7 - 1), 0)).toMatchObject({ week: 65 })
+    expect(position('2026-10-10', S)).toEqual({ status: 'before', daysToGo: 4 })
+    expect(position(addDays('2026-10-14', 65 * 7), S)).toEqual({ status: 'after' })
+    expect(position(addDays('2026-10-14', 65 * 7 - 1), S)).toMatchObject({ week: 65 })
   })
-  it('shifting the plan moves today back', () => {
-    expect(position('2026-12-02', 0)).toMatchObject({ week: 8 })
-    expect(position('2026-12-02', 2)).toMatchObject({ week: 6 })
-    expect(weekStart(1, 2)).toBe('2026-10-28')
+  it('a later start date moves today back', () => {
+    expect(position('2026-12-02', S)).toMatchObject({ week: 8 })
+    expect(position('2026-12-02', '2026-10-28')).toMatchObject({ week: 6 })
+    expect(weekStart(1, '2026-10-28')).toBe('2026-10-28')
   })
 })
 
@@ -61,7 +63,7 @@ describe('roadmap data', () => {
   })
   it('every week builds 7 days, each with tasks, and no task is lost', () => {
     for (const w of WEEKS) {
-      const days = buildWeek(w, 0)
+      const days = buildWeek(w, S)
       expect(days).toHaveLength(7)
       days.forEach((d) => expect(d.tasks.length).toBeGreaterThan(0))
       const ids = days.flatMap((d) => d.tasks.map((t) => t.id))
@@ -70,19 +72,71 @@ describe('roadmap data', () => {
     }
   })
   it('task ids are unique across the whole plan', () => {
-    const ids = WEEKS.flatMap((w) => buildWeek(w, 0).flatMap((d) => d.tasks.map((t) => t.id)))
+    const ids = WEEKS.flatMap((w) => buildWeek(w, S).flatMap((d) => d.tasks.map((t) => t.id)))
     expect(new Set(ids).size).toBe(ids.length)
   })
   it('Saturday gets the long block and Friday evening gets the Friday topic', () => {
-    const days = buildWeek(WEEKS[9], 0) // week 10
+    const days = buildWeek(WEEKS[9], S) // week 10
     const sat = days.find((d) => d.dow === 6)!
     const fri = days.find((d) => d.dow === 5)!
     expect(sat.tasks.some((t) => t.slot === 'block')).toBe(true)
     expect(fri.tasks.find((t) => t.slot === 's2')?.id).toBe('w10:fri')
   })
+  it('a Wednesday start hands out work as designed: Wed–Fri first, Mon–Tue last', () => {
+    const w = WEEKS[9] // week 10
+    const queue = [...w.learn.map((_, i) => `w10:l${i}`), ...w.problems.map((s) => `p:${s}`)]
+    const days = buildWeek(w, S)
+    const morning = (dow: number) => days.find((d) => d.dow === dow)!.tasks[0].id
+    expect([morning(3), morning(4), morning(5)]).toEqual(queue.slice(0, 3))
+    expect([morning(1), morning(2)]).toEqual(queue.slice(-2))
+  })
+  it('any start weekday works: same tasks, first task on day 1, weekend blocks kept', () => {
+    for (const start of ['2026-10-12', '2026-10-17', '2026-10-18']) { // Monday, Saturday, Sunday
+      for (const w of [WEEKS[0], WEEKS[9], WEEKS[40]]) {
+        const ids = (s: string) => buildWeek(w, s).flatMap((d) => d.tasks.map((t) => t.id))
+        expect(new Set(ids(start))).toEqual(new Set(ids(S)))
+        expect(ids(start).length).toBe(ids(S).length)
+      }
+      const days = buildWeek(WEEKS[9], start)
+      expect(days[0].date).toBe(weekStart(10, start)) // weeks begin on the start weekday
+      expect(buildWeek(WEEKS[0], start)[0].date).toBe(start)
+      const queue = [...WEEKS[9].learn.map((_, i) => `w10:l${i}`), ...WEEKS[9].problems.map((s) => `p:${s}`)]
+      expect(days.flatMap((d) => d.tasks.map((t) => t.id)).filter((id) => queue.includes(id))).toEqual(queue) // easy to hard
+      expect(days.find((d) => d.dow === 6)!.tasks.some((t) => t.slot === 'block')).toBe(true)
+    }
+  })
   it('about 150 problems by week 26 and about 250 by week 43', () => {
     const upTo = (n: number) => WEEKS.slice(0, n).reduce((s, w) => s + w.problems.length, 0)
     expect(upTo(26)).toBeGreaterThanOrEqual(140)
     expect(upTo(43)).toBeGreaterThanOrEqual(240)
+  })
+})
+
+describe('pace', () => {
+  const core = planSchedule(S).filter((s) => isCore(s.task))
+  const doneUpTo = (date: string) => Object.fromEntries(core.filter((s) => s.date <= date).map((s) => [s.task.id, s.date]))
+
+  it('on track when everything up to today is done', () => {
+    expect(paceOf(doneUpTo('2026-10-16'), S, '2026-10-16')).toMatchObject({ status: 'on-track', days: 0, overdue: [] })
+  })
+  it('behind = how far your finished tasks reach, counted in plan order', () => {
+    const pace = paceOf(doneUpTo('2026-10-14'), S, '2026-10-20') // nothing done after the first day
+    expect(pace).toMatchObject({ status: 'behind', days: 5 })
+    expect(pace.overdue[0].date).toBe('2026-10-15')
+  })
+  it('one old skipped task does not make you look far behind', () => {
+    const done = doneUpTo('2026-11-10')
+    delete done[core[0].task.id] // skipped one task in week 1, did everything else
+    expect(paceOf(done, S, '2026-11-10').days).toBeLessThanOrEqual(1)
+  })
+  it('ahead = future days already done', () => {
+    expect(paceOf(doneUpTo('2026-10-25'), S, '2026-10-20')).toMatchObject({ status: 'ahead', days: 5 })
+  })
+  it('before the start date', () => {
+    expect(paceOf({}, S, '2026-10-10')).toMatchObject({ status: 'not-started', days: 4 })
+  })
+  it('evening extras and Sunday chores do not count for pace', () => {
+    expect(core.some((s) => s.task.slot === 'review' || s.task.slot === 'extra')).toBe(false)
+    expect(core.some((s) => s.task.id === 'w10:fri')).toBe(true)
   })
 })

@@ -425,3 +425,27 @@ a.stat:hover { border-color: var(--accent); }
 .g-node.tone-found { fill: var(--accent); stroke: var(--accent); }
 .g-label { fill: var(--text); font-weight: 700; font-size: 14px; }
 .g-node.tone-found + .g-label { fill: var(--on-accent); }
+
+/* ---------- Performance page and charts ---------- */
+.perf-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+@media (max-width: 420px) { .perf-grid { grid-template-columns: repeat(2, 1fr); } }
+.warn-text { color: var(--warn); }
+.bar.is-warn > span { background: var(--warn); }
+.insights { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.chart { display: block; width: 100%; max-width: 560px; height: auto; margin: 4px 0 12px; overflow: visible; }
+.chart-bar { fill: var(--accent); }
+.chart-axis { stroke: var(--border); stroke-width: 1; }
+.chart-label, .chart-value { font-size: 9px; fill: var(--muted); }
+.chart-value { fill: var(--text); }
+.chart-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.series-actual { color: var(--accent); }
+.series-planned { color: var(--muted); }
+.series-actual .chart-line, .series-planned .chart-line { stroke: currentColor; }
+.series-planned .chart-line { stroke-dasharray: 4 4; }
+.chart-dot { fill: currentColor; }
+.chart-legend { gap: 16px; }
+.chart-swatch { display: inline-block; width: 14px; height: 3px; border-radius: 2px; background: currentColor; vertical-align: middle; }
+.bar-rows { display: grid; gap: 6px; }
+.bar-row { display: grid; grid-template-columns: minmax(70px, 34%) 1fr auto; align-items: center; gap: 10px; }
+.bar-row > span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-row .bar { margin: 0; }

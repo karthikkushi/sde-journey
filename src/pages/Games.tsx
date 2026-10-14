@@ -48,7 +48,8 @@ export function Games() {
 
 // ------------------------------------------------------------------ Quiz engine (Pattern Guess and Big-O)
 
-type QuizItem = { prompt: ReactNode; options: string[]; answer: string; explain: ReactNode }
+// topic = what the question tests (a pattern id, or a Big-O class); hits and misses per topic feed the Performance page.
+type QuizItem = { prompt: ReactNode; options: string[]; answer: string; explain: ReactNode; topic: string }
 
 function Quiz({ title, game, makeItem }: { title: string; game: string; makeItem: () => QuizItem }) {
   const best = useProgress().games[game] ?? 0
@@ -59,6 +60,8 @@ function Quiz({ title, game, makeItem }: { title: string; game: string; makeItem
   function pick(option: string) {
     if (picked) return
     setPicked(option)
+    const key = `${game}:${option === item.answer ? 'hit' : 'miss'}:${item.topic}`
+    update((d) => { d.games[key] = (d.games[key] ?? 0) + 1 })
     if (option === item.answer) {
       const s = streak + 1
       setStreak(s)
@@ -109,6 +112,7 @@ export function PatternGuess() {
       options: shuffle([answer, ...others]),
       answer,
       explain: <>It is <Link to={`/patterns/${id}`}>{answer}</Link>. Clue: {patternById(id)!.clues[0]}.</>,
+      topic: id,
     }
   }
   return <Quiz title="Pattern Guess" game="pattern" makeItem={makeItem} />
@@ -122,6 +126,7 @@ export function BigOQuiz() {
       options: shuffle(q.options),
       answer: q.answer,
       explain: <>It is <strong>{q.answer}</strong>. {q.why}</>,
+      topic: q.answer,
     }
   }
   return <Quiz title="Big-O Quiz" game="bigo" makeItem={makeItem} />

@@ -21,10 +21,11 @@ export function CheckRow({ id, text, children }: { id: string; text: ReactNode; 
   )
 }
 
-/** A roadmap task with its links (resource, note, page or LeetCode). */
-export function TaskRow({ task }: { task: Task }) {
+/** A roadmap task with its links (resource, note, page or LeetCode). `note` is an extra line, like its planned day. */
+export function TaskRow({ task, note }: { task: Task; note?: string }) {
   return (
     <CheckRow id={task.id} text={task.text}>
+      {note && <span className="muted small">{note}</span>}
       {task.problem && <ProblemMeta slug={task.problem} />}
       {task.learn && <LearnLink learn={task.learn} />}
     </CheckRow>

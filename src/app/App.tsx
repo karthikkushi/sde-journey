@@ -13,6 +13,7 @@ const page = <T extends Record<string, ComponentType>>(load: () => Promise<T>, n
   lazy(() => load().then((m) => ({ default: m[name] })))
 
 const Roadmap = page(() => import('../pages/Roadmap'), 'Roadmap')
+const Performance = page(() => import('../pages/Performance'), 'Performance')
 const Week = page(() => import('../pages/Week'), 'Week')
 const Checkpoint = page(() => import('../pages/Checkpoint'), 'Checkpoint')
 const Settings = page(() => import('../pages/Settings'), 'Settings')
@@ -43,6 +44,7 @@ const VizView = page(() => import('../pages/Viz'), 'VizView')
 const PAGES: Record<string, ReactNode> = {
   '/': <Today />,
   '/roadmap': <Roadmap />,
+  '/performance': <Performance />,
   '/notes': <Notes />,
   '/patterns': <Patterns />,
   '/resources': <Resources />,

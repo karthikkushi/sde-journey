@@ -1,5 +1,7 @@
 // Everything you do in the app is saved in ONE object, under one localStorage key.
 // Export = download this object as JSON. Import = upload it back.
+import { START_DATE } from '../../content/data/roadmap'
+import { addDays } from './dates'
 
 export type Energy = 'fresh' | 'tired' | 'low'
 
@@ -10,7 +12,7 @@ export type Mock = { date: string; kind: string; notes: string }
 
 export type Progress = {
   version: 1
-  shiftWeeks: number // "add a few weeks, don't rush"
+  startDate: string // day 1 of YOUR plan ('' until the first visit, then that day)
   done: Record<string, string> // task id -> date it was ticked
   energy: Record<string, Energy> // date -> energy check-in
   freezes: Record<string, true> // dates saved by a streak freeze
@@ -29,7 +31,7 @@ export type Progress = {
 
 export const defaultProgress = (): Progress => ({
   version: 1,
-  shiftWeeks: 0,
+  startDate: '',
   done: {},
   energy: {},
   freezes: {},
@@ -62,6 +64,12 @@ export function parseProgress(raw: unknown): Progress {
     const sameShape =
       Array.isArray(fallback) ? Array.isArray(value) : isObject(fallback) ? isObject(value) : typeof value === typeof fallback
     if (sameShape) out[key] = value
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(result.startDate)) result.startDate = ''
+  // Older backups had a fixed start (14 Oct 2026) moved by "shiftWeeks". Keep their dates.
+  if (!result.startDate && Object.keys(result.done).length) {
+    const shift = typeof raw.shiftWeeks === 'number' ? raw.shiftWeeks : 0
+    result.startDate = addDays(START_DATE, 7 * shift)
   }
   return result
 }

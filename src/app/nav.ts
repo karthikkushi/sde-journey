@@ -6,6 +6,7 @@ export type NavItem = { to: string; label: string; icon: IconName; hint: string 
 export const NAV: NavItem[] = [
   { to: '/', label: 'Today', icon: 'sun', hint: 'Your checklist for today' },
   { to: '/roadmap', label: 'Roadmap', icon: 'map', hint: '65 weeks, step by step' },
+  { to: '/performance', label: 'Performance', icon: 'chart', hint: 'Pace, graphs, strengths and weak spots' },
   { to: '/notes', label: 'Notes', icon: 'book', hint: 'Basic to advanced notes' },
   { to: '/patterns', label: 'Patterns', icon: 'puzzle', hint: 'DSA patterns and clues' },
   { to: '/viz', label: 'Visualizers', icon: 'play', hint: 'See data structures move' },
@@ -19,14 +20,15 @@ export const NAV: NavItem[] = [
   { to: '/projects', label: 'Projects', icon: 'hammer', hint: 'Portfolio ladder' },
   { to: '/ai-tutor', label: 'AI as tutor', icon: 'spark', hint: 'Prompts that teach, not solve' },
   { to: '/career', label: 'Career', icon: 'brief', hint: 'Hiring, resume, mocks' },
-  { to: '/settings', label: 'Settings', icon: 'gear', hint: 'Backup, theme, shift plan' },
+  { to: '/settings', label: 'Settings', icon: 'gear', hint: 'Backup, plan dates' },
 ]
 
 // The five tabs at the bottom of the phone screen.
+const nav = (to: string) => NAV.find((n) => n.to === to)!
 export const TABS: NavItem[] = [
-  NAV[0],
-  NAV[1],
-  NAV[2],
-  NAV.find((n) => n.to === '/focus')!,
+  nav('/'),
+  nav('/roadmap'),
+  nav('/notes'),
+  nav('/focus'),
   { to: '/more', label: 'More', icon: 'grid', hint: '' },
 ]

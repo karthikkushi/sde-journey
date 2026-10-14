@@ -3,7 +3,7 @@ import { TOTAL_WEEKS } from '../../content/data/roadmap'
 import { Bar } from '../components/Bar'
 import { LearnLink, TaskRow } from '../components/TaskRow'
 import { DAY_NAMES, formatDate, todayIST } from '../lib/dates'
-import { buildWeek, doneShare, monthOfWeek, phasesOfWeek, weekSpec } from '../lib/plan'
+import { buildWeek, doneShare, monthOfWeek, phasesOfWeek, planStartOf, weekSpec } from '../lib/plan'
 import { useProgress } from '../store/progress'
 
 const DAY_LABEL: Record<number, string> = { 6: 'Saturday: long DSA block', 0: 'Sunday: DSA, review, batch cook' }
@@ -14,7 +14,7 @@ export function Week() {
   if (!(n >= 1 && n <= TOTAL_WEEKS)) return <section className="page"><h1>No such week</h1></section>
 
   const spec = weekSpec(n)
-  const days = buildWeek(spec, p.shiftWeeks)
+  const days = buildWeek(spec, planStartOf(p))
   const tasks = days.flatMap((d) => d.tasks)
   const today = todayIST()
   const notes = spec.learn.filter((l) => l.note)

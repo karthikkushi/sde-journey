@@ -1,9 +1,9 @@
 // Works out what was just completed (a week, a month, a phase) when a task is ticked.
-import { PHASES, TOTAL_WEEKS, WEEKS } from '../../content/data/roadmap'
+import { PHASES, START_DATE, TOTAL_WEEKS, WEEKS } from '../../content/data/roadmap'
 import { buildWeek, monthOfWeek } from './plan'
 
 // task id -> ids of all tasks in the same week, built once.
-const weekIds: string[][] = WEEKS.map((w) => buildWeek(w, 0).flatMap((d) => d.tasks.map((t) => t.id)))
+const weekIds: string[][] = WEEKS.map((w) => buildWeek(w, START_DATE).flatMap((d) => d.tasks.map((t) => t.id)))
 const weekOfTask = new Map<string, number>()
 weekIds.forEach((ids, i) => ids.forEach((id) => weekOfTask.set(id, i + 1)))
 

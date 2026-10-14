@@ -8,7 +8,7 @@ import {
   BLOCKS_PER_ROUND, BREAK_ACTIVITIES, DEFAULT_PRESET, PRESETS, breakMinutes, clock, loadSession, minutesSpent,
   msLeft, phaseLength, presetById, saveSession, type Session,
 } from '../lib/focus'
-import { buildWeek, position, weekSpec } from '../lib/plan'
+import { buildWeek, planStartOf, position, weekSpec } from '../lib/plan'
 import { getProgress, logFocus, setText, toggleDone, useProgress } from '../store/progress'
 
 const randomActivity = () => Math.floor(Math.random() * BREAK_ACTIVITIES.length)
@@ -16,9 +16,9 @@ const randomActivity = () => Math.floor(Math.random() * BREAK_ACTIVITIES.length)
 /** First roadmap task of today that is not ticked yet: a good default for "what to focus on". */
 function nextTask() {
   const p = getProgress()
-  const pos = position(todayIST(), p.shiftWeeks)
+  const pos = position(todayIST(), planStartOf(p))
   if (pos.status !== 'during') return undefined
-  return buildWeek(weekSpec(pos.week), p.shiftWeeks)[pos.dayIndex].tasks.find((t) => !p.done[t.id])
+  return buildWeek(weekSpec(pos.week), planStartOf(p))[pos.dayIndex].tasks.find((t) => !p.done[t.id])
 }
 
 // Full-screen focus timer. It lives outside the normal layout, so nothing else is on screen.
@@ -235,7 +235,7 @@ export function Focus() {
             <span>Today: {p.focus[today] ?? 0} min</span>
             <span>Total: {(totalMin / 60).toFixed(1)} hours</span>
           </div>
-          <Heatmap minutes={p.focus} extraWeeks={p.shiftWeeks} />
+          <Heatmap minutes={p.focus} start={planStartOf(p)} />
           <div className="row muted small" style={{ gap: 6, marginTop: 8 }}>
             Less {[0, 1, 2, 3, 4].map((l) => <svg key={l} width="10" height="10"><rect width="10" height="10" rx="2" className={`hm-${l}`} /></svg>)} More
           </div>

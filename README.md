@@ -6,6 +6,10 @@ Live: https://karthikkushi.github.io/sde-journey/
 
 - Works offline and installs on a phone (PWA).
 - All progress is saved in the browser. Back it up regularly (see below).
+- Day 1 is the day you first open it (from the device's date). If you lose days to an emergency or race ahead,
+  the Today page shows how far behind or ahead you are, lists tasks to catch up, and offers to move the plan.
+- The **Performance** page turns your ticks, solve times, focus time, energy, flashcards and game answers into
+  charts, strengths, weak spots and next actions.
 - No login, no backend, no paid services.
 
 ## Run it on your computer
@@ -44,7 +48,7 @@ Everything is in `content/data/roadmap.ts`:
 - `WEEKS` is the list of 65 weeks. Each week has `learn` (spread over the week's days), `problems` (LeetCode slugs), `friday`, optional `extras` and a `checkpoint`.
 - Link a note with `N('text', 'note-id')`, a resource with `R('text', 'resource-id')`, a page with `T('text', '/path')`, or plain text with `D('text')`.
 - Add new items at the **end** of a list. Task ids come from positions, so inserting in the middle would move your ticks to other tasks.
-- Behind schedule? Use **Shift plan** on the Roadmap page instead of editing dates.
+- Behind schedule or ahead? Use **Plan dates** (Settings or the Roadmap page) to change the start date or move the plan a week. Never edit dates in code.
 
 A test checks that every note the roadmap links to exists.
 

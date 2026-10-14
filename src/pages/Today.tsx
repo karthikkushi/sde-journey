@@ -5,9 +5,9 @@ import { TIPS } from '../../content/data/tips'
 import { Bar } from '../components/Bar'
 import { Icon } from '../components/Icon'
 import { CheckRow, TaskRow } from '../components/TaskRow'
-import { addDays, formatDate, todayIST } from '../lib/dates'
+import { addDays, daysBetween, formatDate, todayIST } from '../lib/dates'
 import type { Energy } from '../lib/progress'
-import { buildWeek, monthOfWeek, phasesOfWeek, position, TOTAL_MONTHS, weekSpec, type Slot, type Task } from '../lib/plan'
+import { buildWeek, isCore, monthOfWeek, paceOf, phasesOfWeek, planStartOf, position, TOTAL_MONTHS, weekSpec, type Pace, type Scheduled, type Slot, type Task } from '../lib/plan'
 import { BADGES, earned } from '../lib/badges'
 import { canFreezeYesterday, streakOf } from '../lib/streak'
 import { levelOf, totalXp } from '../lib/xp'
@@ -33,7 +33,10 @@ function tipIndex(date: string) {
 export function Today() {
   const p = useProgress()
   const today = todayIST()
-  const pos = position(today, p.shiftWeeks)
+  const start = planStartOf(p)
+  const pos = position(today, start)
+  const pace = paceOf(p.done, start, today)
+  const recentOverdue = pace.overdue.filter((s) => s.date >= addDays(today, -14)) // older ones stay on the roadmap
   const energy = p.energy[today]
   const [showFull, setShowFull] = useState(false)
   const [tipOffset, setTipOffset] = useState(0)
@@ -58,7 +61,7 @@ export function Today() {
   const setEnergy = (e: Energy) => update((d) => { d.energy[today] = e })
 
   // Today's roadmap tasks (empty before or after the plan).
-  const day = pos.status === 'during' ? buildWeek(weekSpec(pos.week), p.shiftWeeks)[pos.dayIndex] : undefined
+  const day = pos.status === 'during' ? buildWeek(weekSpec(pos.week), start)[pos.dayIndex] : undefined
   const spec = pos.status === 'during' ? weekSpec(pos.week) : undefined
   const minimum = (energy === 'tired' || energy === 'low') && !showFull
 
@@ -75,6 +78,11 @@ export function Today() {
               ))}
               <span className="chip">Month {monthOfWeek(pos.week)} of {TOTAL_MONTHS}</span>
             </div>
+            {daysBetween(start, today) < 7 && (
+              <p className="muted small" style={{ margin: 0 }}>
+                Your plan started {formatDate(start)}, the day you first opened the app. <Link to="/settings">Change the date</Link>
+              </p>
+            )}
           </>
         ) : pos.status === 'before' ? (
           <h1>The plan starts in {pos.daysToGo} {pos.daysToGo === 1 ? 'day' : 'days'}</h1>
@@ -164,7 +172,10 @@ export function Today() {
               <p className="muted" style={{ margin: 0 }}>{spec.goal}</p>
             </div>
           )}
+          {pos.status === 'during' && <PaceCard pace={pace} />}
+          {recentOverdue.length > 0 && <TaskList title="Catch up: left from the last 2 weeks" items={recentOverdue} limit={5} />}
           {day && <DayTasks tasks={day.tasks} dow={day.dow} />}
+          {day && day.tasks.filter(isCore).every((t) => p.done[t.id]) && pace.next.length > 0 && <StudyAhead next={pace.next} />}
           <div className="card">
             <h2>Daily habits</h2>
             {HABITS.map((h) => (
@@ -185,8 +196,63 @@ export function Today() {
       {pos.status === 'during' && (
         <Link to={`/roadmap/week/${pos.week}`} className="btn">See the whole week</Link>
       )}
+      <Link to="/performance" className="btn">
+        <Icon name="chart" size={20} /> My performance
+      </Link>
     </section>
   )
+}
+
+/** On track, behind or ahead, with a one-tap fix when the gap is a week or more. */
+function PaceCard({ pace }: { pace: Pace }) {
+  const move = (days: number) => update((d) => { d.startDate = addDays(planStartOf(d), days) })
+  const n = `${pace.days} ${pace.days === 1 ? 'day' : 'days'}`
+  return (
+    <div className={`card${pace.status === 'behind' && pace.days >= 7 ? ' notice' : ''}`}>
+      {pace.status === 'behind' ? (
+        <>
+          <p style={{ margin: 0 }}><strong>{n} behind.</strong> {pace.days < 7 ? 'Catch up a little each day with the list below.' : 'Life happens. Move the plan so the coming weeks stay realistic.'}</p>
+          {pace.days >= 7 && <button className="btn" style={{ marginTop: 12 }} onClick={() => move(7)}>Move my plan 1 week later</button>}
+        </>
+      ) : pace.status === 'ahead' ? (
+        <>
+          <p style={{ margin: 0 }}><strong>{n} ahead.</strong> Great work. Keep the extra time for revision, or move on.</p>
+          {pace.days >= 7 && <button className="btn" style={{ marginTop: 12 }} onClick={() => move(-7)}>Move my plan 1 week earlier</button>}
+        </>
+      ) : (
+        <p style={{ margin: 0 }}><strong>On track.</strong> {pace.done} of {pace.total} main tasks done.</p>
+      )}
+    </div>
+  )
+}
+
+/** Roadmap tasks from other days, with the day they were planned for. */
+function TaskList({ title, items, limit }: { title: string; items: Scheduled[]; limit: number }) {
+  return (
+    <div className="card">
+      <h2>{title}</h2>
+      {items.slice(0, limit).map((s) => (
+        <TaskRow key={s.task.id} task={s.task} note={`Planned ${formatDate(s.date)} · week ${s.week}`} />
+      ))}
+      {items.length > limit && (
+        <Link to={`/roadmap/week/${items[limit].week}`} className="muted small">+ {items.length - limit} more on the roadmap</Link>
+      )}
+    </div>
+  )
+}
+
+/** Today is done: offer the next tasks for days with more free time. */
+function StudyAhead({ next }: { next: Scheduled[] }) {
+  const [open, setOpen] = useState(false)
+  if (!open) {
+    return (
+      <div className="card">
+        <p style={{ margin: 0 }}>Today’s main tasks are done. More free time today?</p>
+        <button className="btn" style={{ marginTop: 12 }} onClick={() => setOpen(true)}>Study ahead</button>
+      </div>
+    )
+  }
+  return <TaskList title="Study ahead: coming next" items={next} limit={3} />
 }
 
 /** Today's roadmap tasks, grouped by part of the day. */

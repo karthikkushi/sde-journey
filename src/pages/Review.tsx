@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { TOTAL_WEEKS } from '../../content/data/roadmap'
 import { formatDate, todayIST } from '../lib/dates'
-import { position } from '../lib/plan'
+import { planStartOf, position } from '../lib/plan'
 import { REVIEW_FIELDS, weekStats } from '../lib/review'
 import { update, useProgress } from '../store/progress'
 
 // Sunday review form. One saved review per plan week, plus a history.
 export function Review() {
   const p = useProgress()
-  const pos = position(todayIST(), p.shiftWeeks)
+  const pos = position(todayIST(), planStartOf(p))
   const current = pos.status === 'during' ? pos.week : pos.status === 'after' ? TOTAL_WEEKS : 1
   const [week, setWeek] = useState(current)
   const stats = weekStats(p, week)

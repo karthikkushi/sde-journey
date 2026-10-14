@@ -1,5 +1,5 @@
-import { START_DATE } from '../../content/data/roadmap'
 import { addDays, daysBetween } from './dates'
+import { planStartOf } from './plan'
 import type { Progress } from './progress'
 
 /**
@@ -32,12 +32,12 @@ export function streakOf(p: Progress, today: string) {
   return count
 }
 
-/** Freeze "week" = the plan week (Wed to Tue) a date falls in. */
-const freezeWeek = (date: string) => Math.floor(daysBetween(START_DATE, date) / 7)
+/** Freeze "week" = the plan week a date falls in. */
+const freezeWeek = (p: Progress, date: string) => Math.floor(daysBetween(planStartOf(p), date) / 7)
 
 /** True if no freeze has been used yet in the same week as `date`. */
 export const freezeAvailable = (p: Progress, date: string) =>
-  !Object.keys(p.freezes).some((d) => freezeWeek(d) === freezeWeek(date))
+  !Object.keys(p.freezes).some((d) => freezeWeek(p, d) === freezeWeek(p, date))
 
 /**
  * Should the Today page offer to freeze yesterday?

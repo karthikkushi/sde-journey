@@ -11,7 +11,7 @@ const withDone = (entries: Record<string, string>, extra: Partial<Progress> = {}
 
 describe('import / export', () => {
   it('round-trips through JSON', () => {
-    const p = withDone({ 'p:two-sum': '2026-10-14' }, { shiftWeeks: 2, texts: { 'note:a01': 'hello' } })
+    const p = withDone({ 'p:two-sum': '2026-10-14' }, { startDate: '2026-11-02', texts: { 'note:a01': 'hello' } })
     expect(parseProgress(JSON.parse(JSON.stringify(p)))).toEqual(p)
   })
   it('rejects files that are not backups', () => {
@@ -21,11 +21,15 @@ describe('import / export', () => {
     expect(() => parseProgress({ version: 2 })).toThrow()
   })
   it('keeps defaults for missing or wrong-shaped fields', () => {
-    const p = parseProgress({ version: 1, shiftWeeks: 'three', done: [], mocks: {}, cardReviews: 7 })
-    expect(p.shiftWeeks).toBe(0)
+    const p = parseProgress({ version: 1, startDate: 'soon', done: [], mocks: {}, cardReviews: 7 })
+    expect(p.startDate).toBe('')
     expect(p.done).toEqual({})
     expect(p.mocks).toEqual([])
     expect(p.cardReviews).toBe(7)
+  })
+  it('old backups (fixed start + shiftWeeks) keep their dates', () => {
+    expect(parseProgress({ version: 1, shiftWeeks: 2, done: { 'w1:l0': '2026-10-28' } }).startDate).toBe('2026-10-28')
+    expect(parseProgress({ version: 1, shiftWeeks: 2, done: {} }).startDate).toBe('') // nothing done: start fresh
   })
   it('drops unknown fields', () => {
     const p = parseProgress({ version: 1, evil: 'x' }) as unknown as Record<string, unknown>

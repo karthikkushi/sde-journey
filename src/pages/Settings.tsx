@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ShiftPlan } from '../components/ShiftPlan'
+import { PlanDates } from '../components/PlanDates'
 import { todayIST } from '../lib/dates'
 import { backupFileName, defaultProgress, parseProgress } from '../lib/progress'
 import { getProgress, replaceProgress } from '../store/progress'
@@ -57,7 +57,7 @@ export function Settings() {
         {message && <p role="status" style={{ marginTop: 12 }}>{message}</p>}
       </div>
 
-      <ShiftPlan />
+      <PlanDates />
 
       <div className="card">
         <h2>Danger zone</h2>

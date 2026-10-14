@@ -31,7 +31,9 @@ export type WeekSpec = {
 
 export type Phase = { n: number; name: string; from: number; to: number; summary: string }
 
-export const START_DATE = '2026-10-14' // Wednesday. Week 1 runs Wed 14 Oct to Tue 20 Oct.
+// Template start, used only to group weeks into months (monthly checkpoints) and for old backups.
+// YOUR start date is the day you first open the app; change it in Settings → Plan dates.
+export const START_DATE = '2026-10-14'
 export const TOTAL_WEEKS = 65
 
 // Phases 3, 4 and 5 overlap on purpose: they run as parallel tracks.

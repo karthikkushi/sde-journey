@@ -5,7 +5,16 @@ import { loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/p
 
 // A tiny global store. Every page reads progress with useProgress(),
 // and changes it with update(). Each change is saved to localStorage at once.
-let state: Progress = loadProgress()
+
+/** No start date yet (first visit, or after a reset)? The plan starts today, from the device clock. */
+function withStart(p: Progress) {
+  if (p.startDate) return p
+  const started = { ...p, startDate: todayIST() }
+  saveProgress(started)
+  return started
+}
+
+let state: Progress = withStart(loadProgress())
 const listeners = new Set<() => void>()
 
 function emit() {
@@ -25,7 +34,7 @@ export const getProgress = () => state
 
 /**
  * Change progress. You get a copy ("draft") to edit freely:
- *   update((p) => { p.shiftWeeks = 2 })
+ *   update((p) => { p.startDate = '2026-11-02' })
  */
 export function update(change: (draft: Progress) => void) {
   const draft = structuredClone(state)
@@ -37,7 +46,7 @@ export function update(change: (draft: Progress) => void) {
 
 /** Replace everything (used by Import and Reset). */
 export function replaceProgress(p: Progress) {
-  state = p
+  state = withStart(p)
   saveProgress(state)
   emit()
 }
@@ -76,7 +85,7 @@ export function setText(key: string, value: string) {
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.key === STORAGE_KEY) {
-      state = loadProgress()
+      state = withStart(loadProgress())
       emit()
     }
   })
