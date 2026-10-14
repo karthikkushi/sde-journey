@@ -1,0 +1,17 @@
+# Checks every external link in the content once a week. Fails if a link is dead.
+name: Link check
+
+on:
+  schedule:
+    - cron: '30 3 * * 1' # Monday 9:00 AM India time
+  workflow_dispatch:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: lycheeverse/lychee-action@v2
+        with:
+          args: --config lychee.toml 'content/**/*' README.md
+          fail: true

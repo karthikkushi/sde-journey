@@ -1,0 +1,7 @@
+# Settings for the weekly link checker (lychee).
+max_retries = 3
+timeout = 30
+# Some sites block robots with 403 or rate-limit with 429. Those links are alive, so accept them.
+accept = ["200..=299", "403", "429"]
+# LeetCode blocks automated checkers. Problem links are built from real NeetCode 150 slugs instead.
+exclude = ["^https://leetcode\\.com/problems/"]
