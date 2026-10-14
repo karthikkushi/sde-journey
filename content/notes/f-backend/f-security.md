@@ -21,30 +21,31 @@ A housing society: the gate guard checks visitors (authentication), but each fla
 ## Picture
 
 ```text
- OWASP Top 10 (2021 list; OWASP updates it every few years, check owasp.org)
- A01 Broken access control        user 7 can read /orders/8 (someone else's)
- A02 Cryptographic failures       plain passwords, no HTTPS
- A03 Injection                    SQL built from user text
- A04 Insecure design              no limits on OTP attempts
- A05 Security misconfiguration    debug pages in production, default passwords
- A06 Vulnerable components        old library with a known hole
- A07 Auth failures                weak passwords allowed, no lockout
- A08 Integrity failures           running unverified updates or packages
- A09 Logging failures             attacks happen and nobody notices
- A10 SSRF                         server fetches any URL a user gives it
+ OWASP Top 10 (2025 list; OWASP updates it every few years)
+ A01 Broken access control        user 7 can read /orders/8 (someone else's); also SSRF
+ A02 Security misconfiguration    debug pages in production, default passwords
+ A03 Supply chain failures        old or poisoned library, unprotected build pipeline
+ A04 Cryptographic failures       plain passwords, no HTTPS
+ A05 Injection                    SQL built from user text
+ A06 Insecure design              no limits on OTP attempts
+ A07 Authentication failures      weak passwords allowed, no lockout
+ A08 Integrity failures           running unverified updates or data
+ A09 Logging and alerting         attacks happen and nobody notices
+ A10 Exceptional conditions       errors that crash, leak details or "fail open"
 ```
 
 ## How it works inside
 
 - **Access control (A01)**: for every request, check "is this user allowed to do this to **this** object?" Fetch `WHERE id = :id AND owner_id = :current_user`. Return 404 or 403 otherwise. Never trust ids from the client alone.
-- **Injection (A03)**: user text must never become code. Use **parameters** for SQL, never f-strings. The same goes for shell commands and HTML.
+- **Injection (A05)**: user text must never become code. Use **parameters** for SQL, never f-strings. The same goes for shell commands and HTML.
 - **XSS** (a kind of injection): if user text is shown in a web page without escaping, it can run as JavaScript in other users' browsers. Escape output (templates usually do), and use a Content Security Policy.
 - **Secrets**: in environment variables or a secret manager; never in Git; rotate them if leaked.
-- **Passwords and crypto (A02, A07)**: salted slow hashes, HTTPS everywhere, rate-limit login and OTP attempts.
-- **Dependencies (A06)**: update regularly; let tools warn you (GitHub Dependabot, `pip-audit`).
-- **Misconfiguration (A05)**: `DEBUG=false` in production, no default admin passwords, least privilege for database users and cloud keys.
-- **SSRF (A10)**: if your server fetches URLs, allow only known hosts; block internal addresses.
+- **Passwords and crypto (A04, A07)**: salted slow hashes, HTTPS everywhere, rate-limit login and OTP attempts.
+- **Dependencies and supply chain (A03)**: update regularly, pin versions, install only packages you trust; let tools warn you (GitHub Dependabot, `pip-audit`).
+- **Misconfiguration (A02)**: `DEBUG=false` in production, no default admin passwords, least privilege for database users and cloud keys.
+- **SSRF (part of A01 since 2025)**: if your server fetches URLs, allow only known hosts; block internal addresses.
 - **Logging (A09)**: log logins, permission failures and admin actions (without secrets), and alert on spikes.
+- **Errors (A10)**: catch errors, show users a short message (never a stack trace), and **fail closed**: if a permission check errors, deny.
 
 ## Python, step by step
 

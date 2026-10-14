@@ -4,7 +4,7 @@ import type { Learn } from '../../content/data/roadmap'
 import { resourceById } from '../../content/data/resources'
 import { noteExists } from '../lib/noteIndex'
 import type { Task } from '../lib/plan'
-import { leetcodeUrl, problemBySlug } from '../lib/problems'
+import { leetcodeUrl, problemBySlug, tagLink } from '../lib/problems'
 import { toggleDone, update, useProgress } from '../store/progress'
 
 /** A checkbox row. The whole row is the tap target. */
@@ -42,7 +42,7 @@ export function ProblemMeta({ slug }: { slug: string }) {
     <>
       <span className={`badge diff-${p.difficulty.toLowerCase()}`}>{p.difficulty}</span>
       {p.premium && <span className="badge" title="Needs LeetCode Premium. NeetCode has a free version.">Premium</span>}
-      <Link className="chip" to={`/patterns/${p.tag}`}>{p.tag}</Link>
+      {tagLink(p.tag) ? <Link className="chip" to={tagLink(p.tag)!}>{p.tag}</Link> : <span className="chip">{p.tag}</span>}
       <a className="chip" href={leetcodeUrl(slug)} target="_blank" rel="noreferrer">LeetCode ↗</a>
       {solved && (
         // Minutes it took: used for the "medium in under 30 minutes" badge.

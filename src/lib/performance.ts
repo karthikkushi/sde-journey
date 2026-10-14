@@ -5,7 +5,7 @@ import { HABITS } from '../../content/data/roadmap'
 import { addDays, DAY_NAMES, dayOfWeek, daysBetween } from './dates'
 import { patternById } from './patterns'
 import { isCore, paceOf, planEnd, planSchedule, planStartOf, position, type Pace } from './plan'
-import { problemBySlug, type Problem } from './problems'
+import { problemBySlug, tagLink, type Problem } from './problems'
 import type { Progress } from './progress'
 import { keptDays } from './streak'
 
@@ -243,8 +243,8 @@ export function insights(p: Progress, today: string): Insights {
   if (ps.timed >= 5) {
     for (const t of ps.tags.filter((t) => t.timed >= 2)) {
       if (t.avgMin >= ps.avgMin * 1.4) {
-        out.weaknesses.push({ text: `Slow on ${t.name}: ${t.avgMin} min per problem vs ${ps.avgMin} min overall.`, to: patternById(t.tag) ? `/patterns/${t.tag}` : undefined })
-        out.actions.push({ text: `Re-read the ${t.name} pattern, then redo 2 of its problems from a blank page this Sunday.`, to: patternById(t.tag) ? `/patterns/${t.tag}` : undefined })
+        out.weaknesses.push({ text: `Slow on ${t.name}: ${t.avgMin} min per problem vs ${ps.avgMin} min overall.`, to: tagLink(t.tag) })
+        out.actions.push({ text: `Re-read ${t.name}, then redo 2 of its problems from a blank page this Sunday.`, to: tagLink(t.tag) })
       } else if (t.avgMin <= ps.avgMin * 0.75) out.strengths.push({ text: `Fast on ${t.name}: ${t.avgMin} min per problem.` })
     }
   } else if (ps.solved >= 5) {

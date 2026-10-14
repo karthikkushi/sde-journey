@@ -33,7 +33,7 @@ export const RESOURCES: Resource[] = [
 
   // SQL
   { id: 'sqlbolt', name: 'SQLBolt', url: 'https://sqlbolt.com', topic: 'SQL', goodFor: 'Interactive lessons in the browser. Start here.', when: 'Weeks 7–11 (Fridays)', role: 'main' },
-  { id: 'modesql', name: 'Mode SQL tutorial', url: 'https://mode.com/sql-tutorial/', topic: 'SQL', goodFor: 'Longer explanations, good for window functions.', when: 'Weeks 14–19', role: 'backup' },
+  { id: 'modesql', name: 'SQL tutorial (ThoughtSpot, formerly Mode)', url: 'https://www.thoughtspot.com/sql-tutorial', topic: 'SQL', goodFor: 'Longer explanations, good for window functions.', when: 'Weeks 14–19', role: 'backup' },
   { id: 'sql50', name: 'LeetCode SQL 50', url: 'https://leetcode.com/studyplan/top-sql-50/', topic: 'SQL', goodFor: 'Interview-style SQL practice.', when: 'Weeks 12–25 (Fridays)', role: 'main' },
   { id: 'datalemur', name: 'DataLemur', url: 'https://datalemur.com', topic: 'SQL', goodFor: 'Real company SQL questions.', when: 'Weeks 19–26', role: 'backup' },
 
@@ -53,7 +53,7 @@ export const RESOURCES: Resource[] = [
   { id: 'docker', name: 'Docker: Get started', url: 'https://docs.docker.com/get-started/', topic: 'Backend', goodFor: 'Containers from zero.', when: 'Week 32', role: 'main' },
   { id: 'gh-actions', name: 'GitHub Actions docs', url: 'https://docs.github.com/en/actions', topic: 'Backend', goodFor: 'CI/CD: run tests and deploy on every push.', when: 'Week 33', role: 'main' },
   { id: 'redis', name: 'Redis docs', url: 'https://redis.io/docs/latest/', topic: 'Backend', goodFor: 'Caching and rate limiting basics.', when: 'Week 36', role: 'main' },
-  { id: 'owasp', name: 'OWASP Top 10', url: 'https://owasp.org/www-project-top-ten/', topic: 'Backend', goodFor: 'The 10 most common web security problems.', when: 'Week 38', role: 'main' },
+  { id: 'owasp', name: 'OWASP Top 10', url: 'https://owasp.org/projects/top-ten', topic: 'Backend', goodFor: 'The 10 most common web security problems.', when: 'Week 38', role: 'main' },
   { id: 'hnasr', name: 'Hussein Nasser (YouTube)', url: 'https://www.youtube.com/@hnasr', topic: 'Backend', goodFor: 'Deep but friendly backend and database talks.', when: 'Commute audio', role: 'backup' },
 
   // Design
@@ -66,7 +66,7 @@ export const RESOURCES: Resource[] = [
   { id: 'tih', name: 'Tech Interview Handbook', url: 'https://www.techinterviewhandbook.org', topic: 'Interviews', goodFor: 'Resume, coding rounds, behavioural, negotiation.', when: 'Week 44 onward', role: 'main' },
 
   // AI and ML
-  { id: 'claude-docs', name: 'Claude API docs', url: 'https://docs.claude.com', topic: 'AI and ML', goodFor: 'Calling an LLM from code, prompt design, tool use.', when: 'Week 19 onward (weekends)', role: 'main' },
+  { id: 'claude-docs', name: 'Claude API docs', url: 'https://platform.claude.com/docs', topic: 'AI and ML', goodFor: 'Calling an LLM from code, prompt design, tool use.', when: 'Week 19 onward (weekends)', role: 'main' },
   { id: 'hf', name: 'Hugging Face courses', url: 'https://huggingface.co/learn', topic: 'AI and ML', goodFor: 'Embeddings, transformers, open models.', when: 'Week 21 onward', role: 'main' },
   { id: 'karpathy', name: 'Karpathy: Neural Networks Zero to Hero', url: 'https://karpathy.ai/zero-to-hero.html', topic: 'AI and ML', goodFor: 'Build a neural net from scratch. Later, slowly.', when: 'After week 44', role: 'backup' },
   { id: 'andrewng', name: 'Andrew Ng: Machine Learning (audit free)', url: 'https://www.coursera.org/specializations/machine-learning-introduction', topic: 'AI and ML', goodFor: 'ML basics: regression, classification, overfitting.', when: 'After week 44', role: 'main' },
