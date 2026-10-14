@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from 'react'
+import { celebrate, celebrationsFor } from '../lib/celebrate'
 import { todayIST } from '../lib/dates'
 import { loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/progress'
 
@@ -43,10 +44,14 @@ export function replaceProgress(p: Progress) {
 
 /** Tick or un-tick a task. The tick remembers today's date (for streaks). */
 export function toggleDone(id: string) {
+  const before = state.done
   update((p) => {
     if (p.done[id]) delete p.done[id]
     else p.done[id] = todayIST()
   })
+  // Finished a whole week (or month, or phase)? Celebrate.
+  const wins = celebrationsFor(id, before, state.done)
+  if (wins.length) celebrate(wins.join(' '))
 }
 
 /** Add focus minutes to today. `block` = a full focus block was finished. */

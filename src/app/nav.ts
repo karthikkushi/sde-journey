@@ -11,6 +11,7 @@ export const NAV: NavItem[] = [
   { to: '/viz', label: 'Visualizers', icon: 'play', hint: 'See data structures move' },
   { to: '/games', label: 'Games', icon: 'game', hint: 'Pattern Guess, Big-O, Code Order' },
   { to: '/cards', label: 'Flashcards', icon: 'cards', hint: 'Spaced repetition review' },
+  { to: '/badges', label: 'Badges', icon: 'trophy', hint: 'Levels and badges' },
   { to: '/focus', label: 'Focus', icon: 'timer', hint: '45/10 focus timer' },
   { to: '/timetable', label: 'Timetable', icon: 'clock', hint: 'Your daily plan' },
   { to: '/review', label: 'Weekly review', icon: 'check', hint: 'Sunday review form' },
@@ -26,6 +27,6 @@ export const TABS: NavItem[] = [
   NAV[0],
   NAV[1],
   NAV[2],
-  NAV[7],
+  NAV.find((n) => n.to === '/focus')!,
   { to: '/more', label: 'More', icon: 'grid', hint: '' },
 ]

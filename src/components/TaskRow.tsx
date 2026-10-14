@@ -44,6 +44,25 @@ export function ProblemMeta({ slug }: { slug: string }) {
       <Link className="chip" to={`/patterns/${p.tag}`}>{p.tag}</Link>
       <a className="chip" href={leetcodeUrl(slug)} target="_blank" rel="noreferrer">LeetCode ↗</a>
       {solved && (
+        // Minutes it took: used for the "medium in under 30 minutes" badge.
+        <label className="chip chip-input">
+          ⏱
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            placeholder="min"
+            aria-label={`Minutes taken for ${p.title}`}
+            value={progress.solveMinutes[slug] ?? ''}
+            onChange={(e) => update((d) => {
+              const m = Math.round(Number(e.target.value))
+              if (m > 0) d.solveMinutes[slug] = m
+              else delete d.solveMinutes[slug]
+            })}
+          />
+        </label>
+      )}
+      {solved && (
         // "Did I write this myself?" — only you see it. Be honest.
         <button
           className={`chip${honest ? ' is-accent' : ''}`}

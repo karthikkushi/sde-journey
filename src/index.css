@@ -342,3 +342,44 @@ select.input { min-height: 44px; }
 .history dd { margin: 0 0 8px; }
 .mock-row { border-top: 1px solid var(--border); padding: 10px 0; margin-top: 10px; }
 button.chip { border: 0; cursor: pointer; font: inherit; font-size: 0.8rem; font-weight: 600; }
+
+/* ---------- Gamification ---------- */
+a.stat { color: var(--text); text-decoration: none; }
+a.stat:hover { border-color: var(--accent); }
+.due-card { color: var(--text); text-decoration: none; border-color: var(--accent); }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 50; width: 100%; height: 100%; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(var(--tabbar-h) + 20px + env(safe-area-inset-bottom)); transform: translateX(-50%);
+  z-index: 51; max-width: calc(100% - 32px); padding: 12px 18px; border-radius: 999px;
+  background: var(--accent); color: var(--on-accent); font-weight: 700; box-shadow: 0 6px 24px rgb(0 0 0 / 0.25);
+}
+.chip-input { gap: 4px; }
+.chip-input input { width: 3.2em; border: 0; background: transparent; font: inherit; color: inherit; padding: 0; text-align: right; }
+.chip-input input:focus { outline: none; }
+.levels { list-style: none; margin: 12px 0; padding: 0; display: grid; gap: 4px; }
+.levels li { display: flex; justify-content: space-between; padding: 6px 10px; border-radius: var(--radius-sm); color: var(--muted); }
+.levels li.is-reached { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+.badge-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.badge-card { display: flex; flex-direction: column; gap: 4px; text-align: center; align-items: center; opacity: 0.7; }
+.badge-card.is-earned { opacity: 1; border-color: var(--accent); }
+.badge-card .bar { width: 100%; }
+.badge-medal { font-size: 2rem; line-height: 1; filter: grayscale(1); }
+.is-earned .badge-medal { filter: none; }
+.study-card { width: 100%; min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; cursor: pointer; font: inherit; color: inherit; }
+.study-front { font-size: 1.15rem; font-weight: 600; }
+.study-back { font-size: 1.05rem; color: var(--accent); }
+.grade-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.grade-row .btn { flex-direction: column; gap: 0; padding: 6px 4px; border-radius: var(--radius-sm); min-height: 56px; }
+.grade-again { border-color: var(--danger); }
+.grade-easy { border-color: var(--accent); }
+.btn.option { justify-content: flex-start; text-align: left; border-radius: var(--radius-sm); padding: 10px 14px; }
+.btn.option.is-right { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.btn.option.is-wrong { border-color: var(--danger); color: var(--danger); }
+.quiz-code, .order-line code { font-family: var(--mono); font-size: 0.85rem; white-space: pre; }
+.quiz-code { margin: 0; overflow-x: auto; }
+.order-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.order-line {
+  width: 100%; text-align: left; padding: 10px 12px; border-radius: var(--radius-sm); cursor: grab; overflow-x: auto;
+  background: var(--surface); border: 1px solid var(--border); color: var(--text); min-height: 44px;
+}
+.order-line.is-selected { border-color: var(--accent); background: var(--accent-soft); }

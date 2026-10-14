@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { HABITS, MINIMUM_DAY, TOTAL_WEEKS } from '../../content/data/roadmap'
 import { TIPS } from '../../content/data/tips'
@@ -8,6 +8,7 @@ import { CheckRow, TaskRow } from '../components/TaskRow'
 import { addDays, formatDate, todayIST } from '../lib/dates'
 import type { Energy } from '../lib/progress'
 import { buildWeek, monthOfWeek, phasesOfWeek, position, TOTAL_MONTHS, weekSpec, type Slot, type Task } from '../lib/plan'
+import { BADGES, earned } from '../lib/badges'
 import { canFreezeYesterday, streakOf } from '../lib/streak'
 import { levelOf, totalXp } from '../lib/xp'
 import { update, useProgress } from '../store/progress'
@@ -42,6 +43,17 @@ export function Today() {
   const streak = streakOf(p, today)
   const focusMin = p.focus[today] ?? 0
   const tip = TIPS[(tipIndex(today) + tipOffset) % TIPS.length]
+  const badgeCount = BADGES.filter((b) => earned(b, p)).length
+
+  // Flashcards live in the notes bundle, so load it only for this small count.
+  const [dueCount, setDueCount] = useState(0)
+  useEffect(() => {
+    let alive = true
+    Promise.all([import('../lib/notes'), import('../lib/srs')]).then(([notes, srs]) => {
+      if (alive) setDueCount(srs.dueCards(notes.ALL_CARDS, p, today).length)
+    })
+    return () => { alive = false }
+  }, [p, today])
 
   const setEnergy = (e: Energy) => update((d) => { d.energy[today] = e })
 
@@ -78,16 +90,16 @@ export function Today() {
           <strong>{streak}</strong>
           <span className="muted small">day streak</span>
         </div>
-        <div className="stat stat-wide">
+        <Link to="/badges" className="stat stat-wide">
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <strong>{level.name}</strong>
             <span className="muted small">{xp.toLocaleString('en-IN')} XP</span>
           </div>
           <Bar share={level.share} label="Progress to next level" />
           <span className="muted small">
-            {level.next ? `${level.toNext.toLocaleString('en-IN')} XP to ${level.next.name}` : 'Top level reached'}
+            {level.next ? `${level.toNext.toLocaleString('en-IN')} XP to ${level.next.name}` : 'Top level reached'} · 🏅 {badgeCount}/{BADGES.length}
           </span>
-        </div>
+        </Link>
         <div className="stat">
           <Icon name="timer" />
           <strong>{focusMin}</strong>
@@ -97,6 +109,13 @@ export function Today() {
       <Link to="/focus" className="btn primary">
         <Icon name="timer" size={20} /> Start focus
       </Link>
+
+      {dueCount > 0 && (
+        <Link to="/cards" className="card row due-card" style={{ justifyContent: 'space-between' }}>
+          <span><strong>{dueCount}</strong> flashcards due today</span>
+          <span className="chip is-accent">Review</span>
+        </Link>
+      )}
 
       {canFreezeYesterday(p, today) && (
         <div className="card notice">

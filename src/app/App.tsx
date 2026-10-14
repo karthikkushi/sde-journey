@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router'
 import { More } from '../pages/More'
 import { Soon } from '../pages/Soon'
 import { Today } from '../pages/Today'
+import { Celebrations } from '../components/Celebrations'
 import { Layout } from './Layout'
 import { NAV } from './nav'
 
@@ -29,6 +30,12 @@ const Timetable = page(() => import('../pages/Timetable'), 'Timetable')
 const Review = page(() => import('../pages/Review'), 'Review')
 const AiTutor = page(() => import('../pages/AiTutor'), 'AiTutor')
 const Career = page(() => import('../pages/Career'), 'Career')
+const Games = page(() => import('../pages/Games'), 'Games')
+const PatternGuess = page(() => import('../pages/Games'), 'PatternGuess')
+const BigOQuiz = page(() => import('../pages/Games'), 'BigOQuiz')
+const CodeOrder = page(() => import('../pages/Games'), 'CodeOrder')
+const Cards = page(() => import('../pages/Cards'), 'Cards')
+const Badges = page(() => import('../pages/Badges'), 'Badges')
 
 // Pages that are built. Everything else in NAV shows "coming soon".
 const PAGES: Record<string, ReactNode> = {
@@ -42,6 +49,9 @@ const PAGES: Record<string, ReactNode> = {
   '/review': <Review />,
   '/ai-tutor': <AiTutor />,
   '/career': <Career />,
+  '/games': <Games />,
+  '/cards': <Cards />,
+  '/badges': <Badges />,
   '/settings': <Settings />,
 }
 
@@ -50,6 +60,7 @@ const loading = <p className="muted" style={{ padding: 16 }}>Loading…</p>
 export default function App() {
   return (
     <Suspense fallback={loading}>
+      <Celebrations />
       <Routes>
         {/* Focus mode is full screen: no menu, no tabs. */}
         <Route path="/focus" element={<Focus />} />
@@ -64,6 +75,9 @@ export default function App() {
           <Route path="/patterns/:id" element={<PatternView />} />
           <Route path="/projects/:id" element={<ProjectView />} />
           <Route path="/earning" element={<Earning />} />
+          <Route path="/games/pattern" element={<PatternGuess />} />
+          <Route path="/games/bigo" element={<BigOQuiz />} />
+          <Route path="/games/order" element={<CodeOrder />} />
           <Route path="/more" element={<More />} />
           <Route path="*" element={<Soon title="Page not found" hint="This page does not exist yet." />} />
         </Route>
