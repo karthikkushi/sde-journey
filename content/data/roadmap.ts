@@ -144,6 +144,7 @@ export const WEEKS: WeekSpec[] = [
       N('Read: Space and the recursion stack', 'b04-space-recursion'),
       N('Read: Guess the Big O from input size', 'b05-estimate-n'),
       N('Read: Modules and virtual environments', 'a22-modules-venv'),
+      N('Read: Git workflow and pull requests', 'f-git'),
     ],
     problems: [
       'running-sum-of-1d-array', 'concatenation-of-array', 'shuffle-the-array', 'richest-customer-wealth',
@@ -474,7 +475,7 @@ export const WEEKS: WeekSpec[] = [
     learn: [N('Read: Tries', 'c-tries'), T('Pattern: trie', '/patterns/trie')],
     problems: ['implement-trie-prefix-tree', 'design-add-and-search-words-data-structure', 'replace-words', 'search-suggestions-system', 'word-search-ii'],
     friday: N('Networking: TCP vs UDP, the 3-way handshake', 'g-tcp-udp'),
-    extras: [N('Backend: Docker basics, containerize your API', 'f-docker')],
+    extras: [N('Backend: Docker basics, containerize your API', 'f-docker'), N('Backend: Linux and shell basics', 'f-linux')],
     checkpoint: 'Implement Trie from a blank page in 20 minutes.',
   },
   {
@@ -528,6 +529,7 @@ export const WEEKS: WeekSpec[] = [
     extras: [
       N('System design: rate limiter', 'i-rate-limiter'),
       N('Backend: caching with Redis', 'f-caching'),
+      N('Backend: API rate limiting', 'f-rate-limiting'),
       D('Project: talk to 5 people who have your problem. Write notes'),
       N('Resume v1: one page, honest', 'k-resume'),
     ],
