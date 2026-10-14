@@ -421,7 +421,7 @@ export const WEEKS: WeekSpec[] = [
       D('For each problem: draw the recursion tree, add memo, then build the table'),
     ],
     problems: ['climbing-stairs', 'min-cost-climbing-stairs', 'n-th-tribonacci-number', 'house-robber', 'house-robber-ii'],
-    friday: R('OS: processes vs threads (OSTEP chapters 4–5)', 'ostep'),
+    friday: N('OS: processes vs threads (then OSTEP chapters 4–5)', 'g-processes-threads'),
     extras: [
       N('Backend: how the internet works (DNS, TCP, HTTP)', 'f-internet'),
       R('Backend: skim the roadmap.sh backend map', 'roadmapsh'),
