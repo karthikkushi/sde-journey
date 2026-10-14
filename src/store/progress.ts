@@ -49,6 +49,16 @@ export function toggleDone(id: string) {
   })
 }
 
+/** Add focus minutes to today. `block` = a full focus block was finished. */
+export function logFocus(minutes: number, block: boolean) {
+  if (minutes <= 0 && !block) return
+  const today = todayIST()
+  update((p) => {
+    p.focus[today] = (p.focus[today] ?? 0) + minutes
+    if (block) p.focusBlocks[today] = (p.focusBlocks[today] ?? 0) + 1
+  })
+}
+
 /** Save a textbox value. Empty text removes the key, keeping the backup small. */
 export function setText(key: string, value: string) {
   update((p) => {

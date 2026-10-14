@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { Route, Routes } from 'react-router'
 import { Checkpoint } from '../pages/Checkpoint'
+import { Focus } from '../pages/Focus'
 import { More } from '../pages/More'
 import { Roadmap } from '../pages/Roadmap'
 import { Settings } from '../pages/Settings'
@@ -20,8 +21,10 @@ const PAGES: Record<string, ReactNode> = {
 export default function App() {
   return (
     <Routes>
+      {/* Focus mode is full screen: no menu, no tabs. */}
+      <Route path="/focus" element={<Focus />} />
       <Route element={<Layout />}>
-        {NAV.map((n) => (
+        {NAV.filter((n) => n.to !== '/focus').map((n) => (
           <Route key={n.to} path={n.to} element={PAGES[n.to] ?? <Soon title={n.label} hint={n.hint} />} />
         ))}
         <Route path="/roadmap/week/:n" element={<Week />} />

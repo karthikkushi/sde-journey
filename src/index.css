@@ -214,3 +214,40 @@ a.chip:hover { background: var(--accent-soft); color: var(--accent); }
 }
 .input:focus { outline: 2px solid var(--accent); outline-offset: 0; border-color: transparent; }
 .btn.danger { color: var(--danger); border-color: var(--danger); background: none; }
+
+/* ---------- Focus mode ---------- */
+.focus-page { max-width: 640px; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top)) 16px 40px; }
+.focus-top { display: flex; align-items: center; justify-content: space-between; min-height: 52px; margin-bottom: 8px; }
+.focus-screen {
+  min-height: 100dvh; display: flex; flex-direction: column; padding: calc(12px + env(safe-area-inset-top)) 20px calc(20px + env(safe-area-inset-bottom));
+  max-width: 640px; margin: 0 auto;
+}
+.focus-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; text-align: center; }
+.focus-task { font-size: clamp(1.4rem, 5vw, 2rem); max-width: 22ch; }
+.focus-actions { display: flex; flex-direction: column; gap: 10px; align-items: stretch; }
+.btn.big { min-height: 56px; font-size: 1.1rem; }
+.break-card { padding: 20px; border-radius: var(--radius); background: var(--accent-soft); max-width: 420px; }
+.break-card h2 { color: var(--accent); }
+.break-card p { margin: 0; }
+
+.ring { position: relative; width: min(72vw, 300px); aspect-ratio: 1; }
+.ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 8; }
+.ring-bg { stroke: var(--surface-2); }
+.ring-fg { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.is-break .ring-fg { stroke: var(--warn); }
+.ring-label {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-size: clamp(2.6rem, 13vw, 4rem); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+
+/* ---------- Heatmap ---------- */
+.heatmap { overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+.heatmap svg { display: block; max-width: none; }
+.hm-label { font-size: 9px; fill: var(--muted); }
+.hm-0 { fill: var(--surface-2); }
+.hm-1 { fill: color-mix(in srgb, var(--accent) 30%, var(--surface-2)); }
+.hm-2 { fill: color-mix(in srgb, var(--accent) 55%, var(--surface-2)); }
+.hm-3 { fill: color-mix(in srgb, var(--accent) 80%, var(--surface-2)); }
+.hm-4 { fill: var(--accent); }
+.hm-today { stroke: var(--text); stroke-width: 1.5; }
