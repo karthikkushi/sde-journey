@@ -32,6 +32,13 @@ describe('notes content', () => {
     }
   })
 
+  it('every ``` code fence is closed', () => {
+    for (const n of NOTES) {
+      const fences = n.body.split('\n').filter((l) => l.trimStart().startsWith('```')).length
+      expect(fences % 2, `${n.id} has an unclosed code block`).toBe(0)
+    }
+  })
+
   it('follows the template: the key sections are present', () => {
     for (const n of NOTES) {
       for (const h of ['## What it is', '## Real-life example', '## Picture', '## Practice', '## Explain it back', '## Flashcards']) {

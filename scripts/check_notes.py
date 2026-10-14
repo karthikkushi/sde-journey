@@ -83,7 +83,7 @@ def check_file(path):
     text = path.read_text(encoding="utf-8")
     found = list(blocks(text))
     failures, counts = [], {"python": 0, "sql": 0, "norun": 0}
-    conn = sqlite3.connect(":memory:")
+    conn = sqlite3.connect(":memory:", isolation_level=None)   # autocommit: SQL behaves like a SQL shell (BEGIN/ROLLBACK work)
     for i, (lang, meta, code, start, end) in enumerate(found):
         if lang not in ("python", "sql"):
             continue
