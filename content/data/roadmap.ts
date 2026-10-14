@@ -408,6 +408,7 @@ export const WEEKS: WeekSpec[] = [
     extras: [
       N('System design: CAP theorem', 'i-cap'),
       N('AI: cost and latency of LLM calls', 'j-cost-latency'),
+      N('System design: queues and streams', 'i-queues-streams'),
     ],
     checkpoint: 'Month 6 check: most mediums in 30–40 minutes without help.',
   },
