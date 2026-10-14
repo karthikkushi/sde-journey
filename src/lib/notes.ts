@@ -54,9 +54,10 @@ function toNote(path: string, text: string): Note {
   }
 }
 
+// Learning order: by section, then by the roadmap week the note belongs to.
 export const NOTES: Note[] = Object.entries(files)
   .map(([path, text]) => toNote(path, text))
-  .sort((a, b) => a.id.localeCompare(b.id))
+  .sort((a, b) => a.section.localeCompare(b.section) || a.week - b.week || a.id.localeCompare(b.id))
 
 const byId = new Map(NOTES.map((n) => [n.id, n]))
 export const noteById = (id: string) => byId.get(id)

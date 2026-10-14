@@ -68,6 +68,10 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: [],
     friday: R('CS50P Problem Set 0: try 2 problems', 'cs50p'),
+    extras: [
+      N('Learning: how to learn (so it stays)', 'l-how-to-learn'),
+      N('Learning: studying after a full working day', 'l-energy-after-office'),
+    ],
     checkpoint: 'CS50P lecture 0 done. 5 list exercises written by me, no AI.',
   },
   {
@@ -84,6 +88,10 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: [],
     friday: R('CS50P Problem Set 1: try 2 problems', 'cs50p'),
+    extras: [
+      N('Learning: active recall', 'l-active-recall'),
+      N('Learning: AI as a tutor, not a solver', 'l-ai-tutor'),
+    ],
     checkpoint: 'Find the second-largest number in a list with a loop, no help.',
   },
   {
@@ -101,6 +109,10 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: [],
     friday: R('CS50P Problem Set 2 or 3: try 2 problems', 'cs50p'),
+    extras: [
+      N('Learning: how the flashcards work (spaced repetition)', 'l-spaced-repetition'),
+      N('Learning: focus sessions and breaks', 'l-focus-breaks'),
+    ],
     checkpoint: 'Split a sentence into words, clean them (strip, lower), and count them. No help.',
   },
   {
@@ -117,6 +129,10 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: [],
     friday: R('Exercism Python: 2 exercises on dicts or sets', 'exercism'),
+    extras: [
+      N('Learning: the thinking loop for practice problems', 'l-thinking-loop'),
+      N('Learning: sleep and learning', 'l-sleep'),
+    ],
     checkpoint: 'Count each word in a paragraph using a dict. No help.',
   },
   {
@@ -165,6 +181,9 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: ['remove-element', 'merge-sorted-array', 'remove-duplicates-from-sorted-array', 'majority-element', 'longest-common-prefix', 'is-subsequence', 'move-zeroes', 'pascals-triangle'],
     friday: R('SQL: SQLBolt lessons 1–4 (SELECT, WHERE)', 'sqlbolt'),
+    extras: [
+      N('SQL: SELECT and WHERE (pairs with Friday)', 'e-select-where'),
+    ],
     checkpoint: 'Remove duplicates from a sorted array in place, no help.',
   },
   {
@@ -176,6 +195,9 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: ['range-sum-query-immutable', 'find-pivot-index', 'product-of-array-except-self', 'maximum-subarray', 'subarray-sum-equals-k', 'contiguous-array'],
     friday: R('SQL: SQLBolt lessons 5–6 (joins)', 'sqlbolt'),
+    extras: [
+      N('SQL: JOINs (pairs with Friday)', 'e-joins'),
+    ],
     checkpoint: 'Explain prefix sums with a cricket score example. Solve Find Pivot Index again.',
   },
   {
@@ -198,6 +220,9 @@ export const WEEKS: WeekSpec[] = [
     ],
     problems: ['squares-of-a-sorted-array', 'valid-palindrome', 'two-sum-ii-input-array-is-sorted', '3sum', 'container-with-most-water', 'trapping-rain-water'],
     friday: R('SQL: SQLBolt lessons 10–12 (GROUP BY, HAVING)', 'sqlbolt'),
+    extras: [
+      N('SQL: GROUP BY and HAVING (pairs with Friday)', 'e-group-by'),
+    ],
     checkpoint: '3Sum without hints in 40 minutes.',
   },
   {

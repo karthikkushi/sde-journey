@@ -66,8 +66,9 @@ describe('notes content', () => {
     }
   })
 
-  it('roadmap links to section A and B notes all work', () => {
+  it('every note the roadmap links to exists', () => {
     const refs = WEEKS.flatMap((w) => [...w.learn, w.friday, ...(w.extras ?? [])]).map((l) => l.note).filter(Boolean) as string[]
-    for (const id of refs.filter((r) => /^[ab]\d/.test(r))) expect(noteById(id), id).toBeDefined()
+    expect(refs.length).toBeGreaterThan(0)
+    for (const id of refs) expect(noteById(id), id).toBeDefined()
   })
 })
