@@ -2,7 +2,13 @@
 
 A personal 15-month study site: Python basics → DSA → backend → system design → interviews.
 
+**What:** a daily study planner with notes, practice problems, flashcards, a focus timer and progress charts, all in the browser.
+**For:** self-taught developers preparing for software engineering interviews (I built it for my own plan).
+**Run:** `npm install`, then `npm run dev`. No login, no backend.
+
 Live: https://karthikkushi.github.io/sde-journey/
+
+![Today page: next study session, energy check-in and progress](docs/screenshot.jpg)
 
 - Works offline and installs on a phone (PWA).
 - All progress is saved in the browser. Back it up regularly (see below).
