@@ -18,8 +18,8 @@ export default defineConfig({
         name: 'SDE Journey',
         short_name: 'SDE Journey',
         description: '15-month study plan: Python, DSA, backend, interviews.',
-        theme_color: '#0f1419',
-        background_color: '#0f1419',
+        theme_color: '#090b0c',
+        background_color: '#090b0c',
         display: 'standalone',
         icons: [
           { src: 'pwa-192.png', sizes: '192x192', type: 'image/png' },

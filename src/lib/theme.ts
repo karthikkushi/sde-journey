@@ -3,6 +3,8 @@
 export type Theme = 'system' | 'light' | 'dark'
 
 const KEY = 'sdej-theme'
+// The phone's status bar matches the top bar (--chrome in index.css).
+const BAR = { light: '#ffffff', dark: '#090b0c' }
 
 export function readTheme(): Theme {
   try {
@@ -17,6 +19,9 @@ export function applyTheme(t: Theme) {
   const root = document.documentElement
   if (t === 'system') delete root.dataset.theme
   else root.dataset.theme = t
+  // "system": each meta keeps the colour of its own media query; a forced theme sets both.
+  for (const m of document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'))
+    m.content = BAR[t === 'system' ? (m.media.includes('dark') ? 'dark' : 'light') : t]
   try {
     if (t === 'system') localStorage.removeItem(KEY)
     else localStorage.setItem(KEY, t)

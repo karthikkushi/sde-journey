@@ -35,8 +35,13 @@ function burst(canvas: HTMLCanvasElement) {
   if (!ctx) return
   canvas.width = innerWidth
   canvas.height = innerHeight
-  const css = getComputedStyle(document.documentElement)
-  const colors = ['--accent', '--warn', '--danger', '--text'].map((v) => css.getPropertyValue(v).trim() || '#2dd4bf')
+  // The variables hold light-dark(...) pairs, which a canvas can't read. A real `color` resolves them for the current theme.
+  const probe = document.body.appendChild(document.createElement('i'))
+  const colors = ['--accent', '--warn', '--danger', '--text'].map((v) => {
+    probe.style.color = `var(${v})`
+    return getComputedStyle(probe).color
+  })
+  probe.remove()
   const pieces = Array.from({ length: 140 }, () => ({
     x: canvas.width / 2 + (Math.random() - 0.5) * 80,
     y: canvas.height / 3,
