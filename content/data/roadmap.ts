@@ -32,7 +32,7 @@ export type WeekSpec = {
 export type Phase = { n: number; name: string; from: number; to: number; summary: string }
 
 // Template start, used only to group weeks into months (monthly checkpoints) and for old backups.
-// YOUR start date is the day you first open the app; change it in Settings → Plan dates.
+// YOUR start date is the day you tick your first task (until then, today); change it in Settings → Plan dates.
 export const START_DATE = '2026-10-14'
 export const TOTAL_WEEKS = 65
 

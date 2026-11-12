@@ -84,14 +84,14 @@ export function Today() {
             <span><strong>Week {pos.week} <span className="muted">/ {TOTAL_WEEKS}</span></strong><small>{phasesOfWeek(pos.week).map((ph) => ph.name).join(' · ')} · Month {monthOfWeek(pos.week)} of {TOTAL_MONTHS}</small></span>
             <span aria-hidden="true">↗</span>
           </Link>
-        ) : <p>{pos.status === 'before' ? `Your plan starts in ${pos.daysToGo} days.` : pace.status === 'finished' ? 'Every main task complete. Look how far you’ve come.' : 'Your scheduled plan has ended. Pick up your unfinished work below.'}</p>}
+        ) : <p>{pos.status === 'before' ? `Your plan starts ${pos.daysToGo === 1 ? 'tomorrow' : `in ${pos.daysToGo} days`}.` : pace.status === 'finished' ? 'Every main task complete. Look how far you’ve come.' : 'Your scheduled plan has ended. Pick up your unfinished work below.'}</p>}
       </header>
 
       <div className="today-grid">
         <div className="today-primary">
           <div className="energy-check">
             <div><h2>How are you feeling?</h2><p className="muted small">Let’s find your pace for today.</p></div>
-            <div className="segmented" aria-label="Energy">
+            <div className="segmented" role="group" aria-label="Energy">
               {([['fresh', 'Fresh'], ['tired', 'Tired'], ['low', 'Very low']] as const).map(([value, label]) => (
                 <button key={value} aria-pressed={energy === value} className={energy === value ? 'on' : ''} onClick={() => setEnergy(value)}>{label}</button>
               ))}
@@ -111,7 +111,7 @@ export function Today() {
           {!minimum && (
             <>
               {day && <details className="card plan-disclosure"><summary><span><Icon name="check" size={19} />Full plan for today</span><span className="muted small">{day.tasks.filter((task) => p.done[task.id]).length} / {day.tasks.length}</span></summary><DayTasks tasks={day.tasks} dow={day.dow} /></details>}
-              {catchUp.length > 0 && <details className="card plan-disclosure"><summary><span><Icon name="clock" size={19} />Pick up where you left off</span><span className="muted small">{catchUp.length} tasks</span></summary><TaskList title={`Catch up: the last ${CATCH_UP_DAYS} days`} items={catchUp} limit={5} />{olderOpen > 0 && <p className="muted small">{olderOpen} older unfinished {olderOpen === 1 ? 'task stays' : 'tasks stay'} on their weeks in the <Link to="/roadmap">roadmap</Link>.</p>}</details>}
+              {catchUp.length > 0 && <details className="card plan-disclosure"><summary><span><Icon name="clock" size={19} />Pick up where you left off</span><span className="muted small">{catchUp.length} {catchUp.length === 1 ? 'task' : 'tasks'}</span></summary><TaskList title={`Catch up: the last ${CATCH_UP_DAYS} days`} items={catchUp} limit={5} />{olderOpen > 0 && <p className="muted small">{olderOpen} older unfinished {olderOpen === 1 ? 'task stays on its week' : 'tasks stay on their weeks'} in the <Link to="/roadmap">roadmap</Link>.</p>}</details>}
               {revisions.length > 0 && (
                 <div className="card">
                   <div className="section-title"><h2>Keep it fresh</h2><span className="chip is-accent">{revisions.length} due</span></div>
@@ -176,21 +176,20 @@ function DailyStudy({ tasks, overdue, today }: { tasks: Task[]; overdue: Schedul
   return (
     <div className="card daily-study">
       <div className="session-topline"><span className="eyebrow"><Icon name="timer" size={16} /> Your next session</span><span className="session-tag">{remainingBudget} min available</span></div>
-      <h2>{remainingBudget === 0 ? 'Your focus budget is complete' : next ? 'A clear place to begin.' : 'Today’s main tasks are complete'}</h2>
+      {remainingBudget === 0 ? <h2>Your focus budget is complete</h2> : next ? <TaskRow task={next} note={`About ${taskMinutes(next)} minutes · planning estimate`} /> : <h2>Today’s main tasks are complete</h2>}
       <label className="budget-control">
         Study time today
         <select className="input" value={budget} onChange={(e) => update((d) => { d.texts[budgetKey] = e.target.value })}>
           {[25, 45, 90, 180].map((value) => <option key={value} value={value}>{value} minutes</option>)}
         </select>
       </label>
-      <div className="session-progress"><Bar share={main.length ? (main.length - remaining.length) / main.length : 1} label="Today’s main tasks" /><span>{main.length - remaining.length} of {main.length} main tasks complete</span></div>
+      {remainingBudget > 0 && next && <Link className="btn primary session-start" to="/focus"><Icon name="play" size={18} /> Start focus <span aria-hidden="true">→</span></Link>}
+      <div className="session-progress"><Bar share={main.length ? (main.length - remaining.length) / main.length : 1} label="Today’s main tasks" /><span>{main.length - remaining.length} of {main.length} main {main.length === 1 ? 'task' : 'tasks'} complete</span></div>
       {remainingBudget === 0 ? (
         <p>You can stop for today. Unfinished tasks stay on your plan; increase the budget only if you have more time.</p>
       ) : next ? (
         <>
-          <TaskRow task={next} note={`About ${taskMinutes(next)} minutes · planning estimate`} />
-          <p className="muted small">{minutes > remainingBudget ? `The remaining main tasks may take about ${minutes} minutes. Work for up to ${remainingBudget} minutes today; you don’t have to finish everything.` : `About ${minutes} minutes of main work remaining. You can stop when it is done.`} Log study time with the focus timer.</p>
-          <Link className="btn primary session-start" to="/focus"><Icon name="play" size={18} /> Start focus <span aria-hidden="true">→</span></Link>
+          <p className="muted small">{minutes > remainingBudget ? `About ${minutes} minutes planned. Start with ${remainingBudget} minutes; the rest can wait.` : `About ${minutes} minutes left. Finish your main work, then call it a day.`}</p>
         </>
       ) : <p>You can stop here, review a problem, or use spare time to catch up.</p>}
       {main.filter((task) => task.problem && p.done[task.id]).map((task) => (
@@ -217,7 +216,7 @@ function PaceCard({ pace }: { pace: Pace }) {
     <div className={`card${pace.status === 'behind' && pace.days >= 7 ? ' notice' : ''}`}>
       {pace.status === 'behind' ? (
         <>
-          <p style={{ margin: 0 }}><strong>{n} behind.</strong> {pace.days < 7 ? 'Catch up a little each day with the list below.' : 'Life happens. Move the plan so the coming weeks stay realistic.'}</p>
+          <p style={{ margin: 0 }}><strong>{n} behind.</strong> {pace.days < 7 ? 'Pick up one unfinished task when you have time.' : 'Life happens. Move the plan so the coming weeks stay realistic.'}</p>
           {pace.days >= 7 && <button className="btn" style={{ marginTop: 12 }} onClick={() => move(7)}>Move my plan 1 week later</button>}
         </>
       ) : pace.status === 'ahead' ? (

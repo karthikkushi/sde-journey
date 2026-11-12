@@ -13,7 +13,7 @@ export type ProblemReview = { level: 'helped' | 'independent' | 'recalled'; date
 
 export type Progress = {
   version: 1
-  startDate: string // day 1 of YOUR plan ('' until the first visit, then that day)
+  startDate: string // day 1 of YOUR plan (today, on every visit, until the first plan task is ticked)
   done: Record<string, string> // task id -> date it was ticked
   energy: Record<string, Energy> // date -> energy check-in
   freezes: Record<string, true> // dates saved by a streak freeze

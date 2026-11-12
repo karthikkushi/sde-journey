@@ -35,7 +35,7 @@ export function Layout() {
         </NavLink>
         <span className="workspace-label">Your learning workspace</span>
         <div className="topbar-actions">
-          <Link to="/notes" className="search-link"><Icon name="book" size={17} /><span>Find a note</span><span aria-hidden="true">↗</span></Link>
+          <Link to="/notes" className="search-link" aria-label="Find a note"><Icon name="book" size={17} /><span>Find a note</span><span aria-hidden="true">↗</span></Link>
           <button className="icon-btn" onClick={cycleTheme} aria-label={`Theme: ${theme}. Tap to change.`} title={`Theme: ${theme}`}>
             <Icon name={themeIcon} size={20} />
           </button>

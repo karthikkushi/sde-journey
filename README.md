@@ -12,7 +12,8 @@ Live: https://karthikkushi.github.io/sde-journey/
 
 - Works offline and installs on a phone (PWA).
 - All progress is saved in the browser. Back it up regularly (see below).
-- Day 1 is the day you first open it (from the device's date). If you lose days to an emergency or race ahead,
+- Day 1 is the day you tick your first task (from the device's date). Until then the plan always starts today,
+  so opening the site early never puts you behind. If you lose days to an emergency or race ahead,
   the Today page shows how far behind or ahead you are, lists tasks to catch up, and offers to move the plan.
 - The **Performance** page turns your ticks, solve times, focus time, energy, flashcards and game answers into
   charts, strengths, weak spots and next actions.

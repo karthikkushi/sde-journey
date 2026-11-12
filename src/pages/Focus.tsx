@@ -205,9 +205,9 @@ export function Focus() {
           )}
 
           <strong>Timer</strong>
-          <div className="segmented" role="radiogroup" aria-label="Timer preset">
+          <div className="segmented" role="group" aria-label="Timer preset">
             {PRESETS.map((pr) => (
-              <button key={pr.id} role="radio" aria-checked={presetId === pr.id} className={presetId === pr.id ? 'on' : ''} onClick={() => setPresetId(pr.id)}>
+              <button key={pr.id} aria-pressed={presetId === pr.id} className={presetId === pr.id ? 'on' : ''} onClick={() => setPresetId(pr.id)}>
                 {pr.id}
               </button>
             ))}

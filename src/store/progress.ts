@@ -1,16 +1,21 @@
 import { useSyncExternalStore } from 'react'
 import { celebrate, celebrationsFor } from '../lib/celebrate'
 import { todayIST } from '../lib/dates'
+import { hasStarted } from '../lib/plan'
 import { loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/progress'
 
 // A tiny global store. Every page reads progress with useProgress(),
 // and changes it with update(). Each change is saved to localStorage at once.
 let saveFailed = false
 
-/** No start date yet (first visit, or after a reset)? The plan starts today, from the device clock. */
+/**
+ * Until you tick your first plan task, the plan starts today (from the device clock),
+ * so opening the app early never makes you "behind". A later start day you picked stays.
+ */
 function withStart(p: Progress) {
-  if (p.startDate) return p
-  const started = { ...p, startDate: todayIST() }
+  const today = todayIST()
+  if (p.startDate && (p.startDate >= today || hasStarted(p.done))) return p
+  const started = { ...p, startDate: today }
   saveFailed = !saveProgress(started)
   return started
 }

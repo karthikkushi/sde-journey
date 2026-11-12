@@ -188,12 +188,12 @@ a.chip:hover { background: var(--accent-soft); color: var(--accent); }
 .daily-study > h2 { font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.04em; margin-bottom: 20px; }
 .budget-control { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; padding-bottom: 16px; }
 .budget-control .input { width: auto; max-width: 150px; font-size: 12px; min-height: 40px; background: var(--surface); padding: 6px 10px; }
-.session-progress { display: flex; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.session-progress { display: flex; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); padding-bottom: 16px; }
 .session-progress .bar { flex: 1; height: 5px; margin: 0; }
-.daily-study > .task { margin: 16px 0; padding: 6px 0; }
-.daily-study > .task .task-text { font-size: 19px; font-weight: 600; line-height: 1.45; letter-spacing: -0.025em; }
+.daily-study > .task { margin: 0 0 22px; padding: 0; border-top: 0; }
+.daily-study > .task .task-text { font-size: 23px; font-weight: 600; line-height: 1.4; letter-spacing: -0.025em; }
 .daily-study > .muted { font-size: 12px; max-width: 60ch; margin-bottom: 20px; }
-.session-start { min-height: 48px; }
+.session-start { min-height: 48px; margin-bottom: 16px; }
 .session-start > span { margin-left: 24px; }
 .session-actions { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-top: 20px; }
 .minimum-study .eyebrow { margin-bottom: 16px; }

@@ -17,8 +17,11 @@ export type Task = {
 
 export type Day = { date: string; dow: number; tasks: Task[] }
 
-/** Day 1 of your plan: the day you first opened the app (change it in Settings). */
+/** Day 1 of your plan: the day you tick your first task (change it in Settings). */
 export const planStartOf = (p: Pick<Progress, 'startDate'>) => p.startDate || START_DATE
+
+/** True once a plan task or problem is ticked. Habit ticks don't start the plan. */
+export const hasStarted = (done: Record<string, string>) => Object.keys(done).some((k) => /^(w\d|p:)/.test(k))
 
 /** First day of week n. Weeks start on the same weekday as your start date. */
 export const weekStart = (n: number, start: string) => addDays(start, 7 * (n - 1))
