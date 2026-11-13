@@ -9,6 +9,7 @@ import {
 } from '../lib/performance'
 import { paceOf, planEnd, planStartOf, type Pace } from '../lib/plan'
 import { keptDays, streakOf } from '../lib/streak'
+import { problemBySlug } from '../lib/problems'
 import { useProgress } from '../store/progress'
 
 const paceText = (pace: Pace) =>
@@ -40,6 +41,7 @@ export function Performance() {
   const { pace, end, trend, weekdays, problems, vsPlan, habits, energy, cards, patternGame, bigoGame, advice } = data
   const focusHours = Math.round(Object.values(p.focus).reduce((a, b) => a + b, 0) / 6) / 10
   const late = end && end > planEnd(start)
+  const mistakes = Object.entries(p.texts).filter(([k]) => k.startsWith('mistake:')).map(([k, v]) => [k.slice(8), v])
   const noAdvice = !advice.strengths.length && !advice.weaknesses.length && !advice.actions.length
 
   return (
@@ -81,6 +83,17 @@ export function Performance() {
           <InsightCard title="Weak spots" items={advice.weaknesses} empty="No weak spots found right now. Nice." warn />
           <InsightCard title="What to do next" items={advice.actions} empty="Keep following the plan." />
         </>
+      )}
+
+      {/* Mistake log */}
+      {mistakes.length > 0 && (
+        <div className="card">
+          <h2>Your mistake log</h2>
+          <p className="muted small">Read these before a mock or an interview. The same mistake twice is a weak spot.</p>
+          <ul className="insights">
+            {mistakes.map(([slug, text]) => <li key={slug}><strong>{problemBySlug(slug)?.title ?? slug}:</strong> {text}</li>)}
+          </ul>
+        </div>
       )}
 
       {/* Weekly trend */}

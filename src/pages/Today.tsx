@@ -5,13 +5,13 @@ import { TIPS } from '../../content/data/tips'
 import { Bar } from '../components/Bar'
 import { Icon } from '../components/Icon'
 import { CheckRow, ProblemMeta, TaskRow } from '../components/TaskRow'
-import { addDays, daysBetween, formatDate, todayIST } from '../lib/dates'
+import { addDays, dayOfWeek, daysBetween, formatDate, todayIST } from '../lib/dates'
 import type { Energy } from '../lib/progress'
 import { buildWeek, isCore, monthOfWeek, paceOf, phasesOfWeek, planStartOf, position, TOTAL_MONTHS, weekSpec, type Pace, type Scheduled, type Slot, type Task } from '../lib/plan'
 import { BADGES, earned } from '../lib/badges'
-import { canFreezeYesterday, streakOf } from '../lib/streak'
+import { canFreezeYesterday, keptDays, streakOf } from '../lib/streak'
 import { levelOf, totalXp } from '../lib/xp'
-import { backupDue, CATCH_UP_DAYS, catchUpTask, dueProblems, recentOverdue, studyBudget, taskMinutes } from '../lib/study'
+import { backupDue, CATCH_UP_DAYS, catchUpTask, dueProblems, recentOverdue, redoCap, reviewMinutes, studyBudget, taskMinutes } from '../lib/study'
 import { problemBySlug } from '../lib/problems'
 import { update, useProgress } from '../store/progress'
 
@@ -47,6 +47,8 @@ export function Today() {
   const xp = totalXp(p)
   const level = levelOf(xp)
   const streak = streakOf(p, today)
+  // A broken streak is never shown: count the last 7 days instead.
+  const weekDays = [...keptDays(p)].filter((d) => d > addDays(today, -7) && d <= today).length
   const focusMin = p.focus[today] ?? 0
   const tip = TIPS[(tipIndex(today) + tipOffset) % TIPS.length]
   const badgeCount = BADGES.filter((b) => earned(b, p)).length
@@ -55,10 +57,17 @@ export function Today() {
   const [dueCount, setDueCount] = useState(0)
   useEffect(() => {
     let alive = true
-    Promise.all([import('../lib/notes'), import('../lib/srs')]).then(([notes, srs]) => {
+    // Wait until the phone is idle: evaluating every note must not block the first tap.
+    // ponytail: still loads all notes for one count; a build-time card index would avoid it.
+    const load = () => Promise.all([import('../lib/notes'), import('../lib/srs')]).then(([notes, srs]) => {
       if (alive) setDueCount(srs.dueCards(notes.ALL_CARDS, p, today).length)
     })
-    return () => { alive = false }
+    const id = 'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 3000 }) : setTimeout(load, 1500)
+    return () => {
+      alive = false
+      if ('cancelIdleCallback' in window) cancelIdleCallback(id)
+      else clearTimeout(id)
+    }
   }, [p, today])
 
   const setEnergy = (e: Energy) => update((d) => { d.energy[today] = e })
@@ -68,6 +77,7 @@ export function Today() {
   const spec = pos.status === 'during' ? weekSpec(pos.week) : undefined
   const minimum = (energy === 'tired' || energy === 'low') && !showFull
   const revisions = dueProblems(p, today)
+  const cap = redoCap(dayOfWeek(today))
   const hasProgress = Object.keys(p.done).length > 0 || Object.keys(p.notesDone).length > 0 || Object.keys(p.focus).length > 0
 
   return (
@@ -106,7 +116,7 @@ export function Today() {
               {MINIMUM_DAY.map((m) => <CheckRow key={m.id} id={`m:${today}:${m.id}`} text={m.text} />)}
               <div className="session-actions"><Link to="/focus" className="btn primary"><Icon name="timer" size={18} /> Start focus</Link><button className="link-btn" onClick={() => setShowFull(true)}>Show the full plan</button></div>
             </div>
-          ) : day ? <DailyStudy tasks={day.tasks} overdue={catchUp} today={today} /> : <Link to="/focus" className="btn primary"><Icon name="timer" size={20} /> Start a focus session</Link>}
+          ) : day ? <DailyStudy tasks={day.tasks} overdue={catchUp} today={today} dueCards={dueCount} dueProblems={Math.min(revisions.length, cap)} /> : <Link to="/focus" className="btn primary"><Icon name="timer" size={20} /> Start a focus session</Link>}
 
           {!minimum && (
             <>
@@ -115,11 +125,11 @@ export function Today() {
               {revisions.length > 0 && (
                 <div className="card">
                   <div className="section-title"><h2>Keep it fresh</h2><span className="chip is-accent">{revisions.length} due</span></div>
-                  <p className="muted small">Try these problems from a blank page, then record how it went.</p>
-                  {revisions.slice(0, 3).map((slug) => (
+                  <p className="muted small">Up to {cap} today, oldest first. Start with 5 minutes of recall: name the pattern, the key idea, the time cost and two edge cases. Re-code from a blank page only if you can’t, then record how it went.</p>
+                  {revisions.slice(0, cap).map((slug) => (
                     <div className="revision-item" key={slug}><strong>{problemBySlug(slug)!.title}</strong><div className="row"><ProblemMeta slug={slug} /></div></div>
                   ))}
-                  {revisions.length > 3 && <p className="muted small">The next problems appear as you record attempts.</p>}
+                  {revisions.length > cap && <p className="muted small">The rest wait for another day. Problems you recall cleanly come back less often, then retire.</p>}
                 </div>
               )}
               {day && day.tasks.filter(isCore).every((t) => p.done[t.id]) && pace.next.length > 0 && <StudyAhead next={pace.next} />}
@@ -140,7 +150,9 @@ export function Today() {
           <div className="card progress-card">
             <div className="section-title"><h2>Your momentum</h2><Icon name="chart" size={18} /></div>
             <div className="momentum-stats">
-              <div><Icon name="flame" size={19} /><strong>{streak}<small>days</small></strong><span>Study streak</span></div>
+              {streak > 0
+                ? <div><Icon name="flame" size={19} /><strong>{streak}<small>days</small></strong><span>Study streak</span></div>
+                : <div><Icon name="flame" size={19} /><strong>{weekDays}<small>of 7</small></strong><span>Days studied this week</span></div>}
               <div><Icon name="timer" size={19} /><strong>{focusMin}<small>min</small></strong><span>Focused today</span></div>
             </div>
             <Link to="/badges" className="level-summary">
@@ -162,21 +174,25 @@ export function Today() {
   )
 }
 
-function DailyStudy({ tasks, overdue, today }: { tasks: Task[]; overdue: Scheduled[]; today: string }) {
+function DailyStudy({ tasks, overdue, today, dueCards, dueProblems }: { tasks: Task[]; overdue: Scheduled[]; today: string; dueCards: number; dueProblems: number }) {
   const p = useProgress()
   const budgetKey = `study-budget:${today}`
   const budget = studyBudget(p, today)
   const spent = p.focus[today] ?? 0
+  // Review first, inside the budget: it is the best-proven study, and skipping it lets a backlog grow.
+  const review = dueCards + dueProblems > 0 ? reviewMinutes(budget) : 0
   const remainingBudget = Math.max(0, budget - spent)
   const main = tasks.filter(isCore)
   const remaining = main.filter((task) => !p.done[task.id])
   const minutes = remaining.reduce((sum, task) => sum + taskMinutes(task), 0)
   const next = remaining[0]
-  const catchUp = catchUpTask(overdue, budget, spent, minutes)
+  const catchUp = catchUpTask(overdue, budget, spent + review, minutes)
+  const newWork = Math.max(0, remainingBudget - review)
   return (
     <div className="card daily-study">
       <div className="session-topline"><span className="eyebrow"><Icon name="timer" size={16} /> Your next session</span><span className="session-tag">{remainingBudget} min available</span></div>
       {remainingBudget === 0 ? <h2>Your focus budget is complete</h2> : next ? <TaskRow task={next} note={`About ${taskMinutes(next)} minutes · planning estimate`} /> : <h2>Today’s main tasks are complete</h2>}
+      {review > 0 && remainingBudget > 0 && <p className="small review-first"><strong>First, {review} minutes of review:</strong>{dueCards > 0 && <> <Link to="/cards">{dueCards} {dueCards === 1 ? 'card' : 'cards'}</Link></>}{dueCards > 0 && dueProblems > 0 && ' and'}{dueProblems > 0 && <> {dueProblems} {dueProblems === 1 ? 'problem' : 'problems'} to recall (Keep it fresh, below)</>}. Then the task above.</p>}
       <label className="budget-control">
         Study time today
         <select className="input" value={budget} onChange={(e) => update((d) => { d.texts[budgetKey] = e.target.value })}>
@@ -189,7 +205,7 @@ function DailyStudy({ tasks, overdue, today }: { tasks: Task[]; overdue: Schedul
         <p>You can stop for today. Unfinished tasks stay on your plan; increase the budget only if you have more time.</p>
       ) : next ? (
         <>
-          <p className="muted small">{minutes > remainingBudget ? `About ${minutes} minutes planned. Start with ${remainingBudget} minutes; the rest can wait.` : `About ${minutes} minutes left. Finish your main work, then call it a day.`}</p>
+          <p className="muted small">{minutes > newWork ? `About ${minutes} minutes planned. After review you have ${newWork} minutes; the rest can wait.` : `About ${minutes} minutes left. Finish your main work, then call it a day.`}</p>
         </>
       ) : <p>You can stop here, review a problem, or use spare time to catch up.</p>}
       {main.filter((task) => task.problem && p.done[task.id]).map((task) => (

@@ -38,3 +38,25 @@ it('keeps unsaved work available for export and clears the warning after retry s
   expect(store.getSaveFailed()).toBe(false)
   expect(JSON.parse(saved.get('sdej-progress')!).texts['note:test']).toBe('Keep this answer')
 })
+
+it('never saves over stored data it cannot read, until the user imports or resets', async () => {
+  const newer = JSON.stringify({ version: 2, done: { 'w1:l0': '2026-11-01' } })
+  const saved = new Map([['sdej-progress', newer]])
+  vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) })
+  const store = await import('./progress')
+  store.setText('note:a', 'x')
+  expect(saved.get('sdej-progress')).toBe(newer) // untouched
+  expect(store.getSaveFailed()).toBe(true) // the warning shows
+  store.replaceProgress({ ...store.getProgress(), texts: { 'note:a': 'imported' } })
+  expect(JSON.parse(saved.get('sdej-progress')!).texts['note:a']).toBe('imported')
+})
+
+it('keeps fields from a newer version when saving', async () => {
+  const saved = new Map([['sdej-progress', JSON.stringify({ version: 1, startDate: '2026-11-01', done: { 'w1:l0': '2026-11-01' }, futureField: [1, 2] })]])
+  vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) })
+  const store = await import('./progress')
+  store.setText('note:a', 'x')
+  const after = JSON.parse(saved.get('sdej-progress')!)
+  expect(after.futureField).toEqual([1, 2])
+  expect(after.texts['note:a']).toBe('x')
+})

@@ -24,6 +24,7 @@ export type Session = {
   task: string
   taskId?: string // roadmap task id, if the task came from the plan
   activity: number // which break activity to show
+  extraMin?: number // minutes added with "+10 min" to finish a thought
 }
 
 /** Break length after finishing `blocksDone` blocks: long break after every 3rd block. */
@@ -36,7 +37,7 @@ export const msLeft = (s: Session, now: number) => s.pausedLeft ?? Math.max(0, s
 /** Length of the current phase in ms (for the progress ring). */
 export const phaseLength = (s: Session) => {
   const p = presetById(s.preset)
-  return (s.phase === 'focus' ? p.focus : breakMinutes(s.blocks, p)) * 60_000
+  return (s.phase === 'focus' ? p.focus + (s.extraMin ?? 0) : breakMinutes(s.blocks, p)) * 60_000
 }
 
 /** 125000 -> "02:05" */

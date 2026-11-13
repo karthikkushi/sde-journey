@@ -3,7 +3,7 @@ id: k-thinking-aloud
 title: Thinking aloud in interviews
 level: core
 phase: 3
-week: 40
+week: 10
 tags: [interview, communication]
 estMinutes: 15
 ---

@@ -3,7 +3,7 @@ id: k-salary
 title: Salary talk basics
 level: core
 phase: 5
-week: 49
+week: 42
 tags: [career, negotiation, money]
 estMinutes: 20
 ---

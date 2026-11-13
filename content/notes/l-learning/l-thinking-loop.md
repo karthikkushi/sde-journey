@@ -37,7 +37,7 @@ Learning a new dish from your mother: you try, it goes wrong, she gives one tip 
 - **Hints in steps**: pattern name → key idea → pseudocode → full solution, only as far as needed.
 - **Re-solve from scratch**: reading a solution is not solving it. Close it and type it yourself.
 - **Explain back**: three lines on the key insight ("Sorted + pair sum → two pointers from both ends").
-- **Log honestly** how you solved it, and set the redo date by that: on your own → in 2 weeks; with a hint → in 3 days; after reading the solution → tomorrow.
+- **Log honestly** how you solved it, and the app sets the redo date from that: needed help → tomorrow; on your own → in 7 days; each clean redo after that → 21 days, then 60, then the problem retires.
 - **Sunday redo**: the roadmap's Sunday block is for these redos.
 
 ## Python, step by step

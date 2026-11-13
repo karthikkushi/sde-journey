@@ -3,7 +3,7 @@ id: h-parking-lot
 title: LLD - design a parking lot
 level: advanced
 phase: 3
-week: 43
+week: 33
 tags: [design, lld, interview, oop]
 estMinutes: 35
 ---

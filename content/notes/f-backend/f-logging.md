@@ -170,7 +170,7 @@ Logging costs a little time per line and a lot of storage over time. Keep DEBUG 
 
 ## Patterns that use it
 
-Every deployed project (the serious project needs a dashboard: users, latency, error rate), system design ("how would you monitor this?"), and incident debugging.
+Every deployed project (the webhook service needs a dashboard: deliveries, latency, error rate), system design ("how would you monitor this?"), and incident debugging.
 
 ## Practice
 

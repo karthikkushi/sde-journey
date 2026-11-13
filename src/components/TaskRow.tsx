@@ -8,7 +8,7 @@ import { formatDate, todayIST } from '../lib/dates'
 import type { ProblemReview } from '../lib/progress'
 import { recordProblemReview, REVIEW_LABELS } from '../lib/study'
 import { leetcodeUrl, problemBySlug, tagLink } from '../lib/problems'
-import { toggleDone, update, useProgress } from '../store/progress'
+import { setText, toggleDone, update, useProgress } from '../store/progress'
 
 /** A checkbox row. The whole row is the tap target. */
 export function CheckRow({ id, text, children }: { id: string; text: ReactNode; children?: ReactNode }) {
@@ -88,6 +88,9 @@ export function ProblemMeta({ slug }: { slug: string }) {
             </select>
           </label>
           {review && <span className="muted small">Last attempt: {REVIEW_LABELS[review.level]} · {formatDate(review.date)}</span>}
+          {/* Mistake log: a wrong idea you write down and fix is one you rarely repeat. */}
+          <input className="input" aria-label={`What tripped you up on ${p.title}`} placeholder="What tripped you up? One line for your mistake log"
+            value={progress.texts[`mistake:${slug}`] ?? ''} onChange={(e) => setText(`mistake:${slug}`, e.target.value)} />
         </>
       )}
       {solved && (

@@ -9,24 +9,46 @@ export const REVIEW_LABELS = {
   recalled: 'Solved again on a later day',
 } as const
 
-const REVIEW_DAYS = { helped: 1, independent: 7, recalled: 30 }
+/**
+ * Revision ladder. Needed help -> tomorrow. Solved alone -> in 7 days. Each later clean recall
+ * -> 21 days, then 60, then the problem retires: you know it. A fixed gap that never ends would
+ * pile up to 8+ redos a day by mid-plan.
+ */
+const RECALL_DAYS = [21, 60]
+export const RETIRED = '9999-12-31'
+
+/** When a solved problem should come back. No attempt logged yet: tomorrow unless you wrote it yourself. */
+export function nextReview(p: Progress, slug: string) {
+  const solved = p.done[`p:${slug}`]
+  const review = p.problemReviews[slug]
+  if (!review) return addDays(solved, p.honest[slug] ? 7 : 1)
+  if (review.level === 'helped') return addDays(review.date, 1)
+  if (review.level === 'independent') return addDays(review.date, 7)
+  const gap = RECALL_DAYS[(review.streak ?? 1) - 1]
+  return gap ? addDays(review.date, gap) : RETIRED
+}
+
+/** Minutes kept for due cards and redos, out of the day's study budget. */
+export const reviewMinutes = (budget: number) => (budget <= 25 ? 5 : budget <= 45 ? 10 : 15)
+
+/** Full redos per day: one short slot on weekdays, more at weekends. */
+export const redoCap = (dow: number) => (dow === 0 || dow === 6 ? 4 : 2)
 
 export function recordProblemReview(p: Progress, slug: string, level: ProblemReview['level'], today: string) {
   const solved = p.done[`p:${slug}`]
   if (!solved || !problemBySlug(slug)) return false
   if (level === 'recalled' && (p.problemReviews[slug]?.date ?? solved) >= today) return false
-  p.problemReviews[slug] = { level, date: today }
+  const before = p.problemReviews[slug]
+  p.problemReviews[slug] = level === 'recalled'
+    ? { level, date: today, streak: before?.level === 'recalled' ? (before.streak ?? 1) + 1 : 1 }
+    : { level, date: today }
   return true
 }
 
 export function dueProblems(p: Progress, today: string) {
   return Object.entries(p.done)
     .filter(([id]) => id.startsWith('p:') && problemBySlug(id.slice(2)))
-    .map(([id, solved]) => {
-      const slug = id.slice(2)
-      const review = p.problemReviews[slug]
-      return { slug, due: addDays(review?.date ?? solved, review ? REVIEW_DAYS[review.level] : 7) }
-    })
+    .map(([id]) => ({ slug: id.slice(2), due: nextReview(p, id.slice(2)) }))
     .filter(({ due }) => due <= today)
     .sort((a, b) => a.due.localeCompare(b.due) || a.slug.localeCompare(b.slug))
     .map(({ slug }) => slug)

@@ -3,7 +3,7 @@ id: h-patterns-2
 title: Design patterns 2 - observer, adapter, decorator
 level: core
 phase: 3
-week: 42
+week: 33
 tags: [design, patterns, lld, oop]
 estMinutes: 30
 ---

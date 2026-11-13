@@ -6,14 +6,14 @@ import { useProgress } from '../store/progress'
 
 const stepId = (projectId: string, i: number) => `proj:${projectId}:${i}`
 
-/** The project ladder, from small terminal games to a real product. */
+/** The project ladder, from small terminal games to two flagship projects. */
 export function Projects() {
   const done = useProgress().done
   const tiers = [...new Set(PROJECTS.map((p) => p.tier))]
   return (
     <section className="page">
       <h1>Projects</h1>
-      <p className="muted" style={{ margin: 0 }}>Climb one step at a time. Write every line yourself.</p>
+      <p className="muted" style={{ margin: 0 }}>Climb one step at a time. Write every line yourself. Tiers 1–2 are for learning; your resume gets the two flagships and the RAG app.</p>
       {tiers.map((tier) => (
         <div key={tier} className="card">
           <h2>{tier}. {PROJECTS.find((p) => p.tier === tier)!.tierName}</h2>

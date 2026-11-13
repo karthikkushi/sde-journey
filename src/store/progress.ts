@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react'
 import { celebrate, celebrationsFor } from '../lib/celebrate'
 import { todayIST } from '../lib/dates'
 import { hasStarted } from '../lib/plan'
-import { loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/progress'
+import { allowOverwrite, loadProgress, saveProgress, STORAGE_KEY, type Progress } from '../lib/progress'
 
 // A tiny global store. Every page reads progress with useProgress(),
 // and changes it with update(). Each change is saved to localStorage at once.
@@ -58,6 +58,7 @@ export function update(change: (draft: Progress) => void) {
 
 /** Replace everything (used by Import and Reset). */
 export function replaceProgress(p: Progress) {
+  allowOverwrite()
   state = withStart(p)
   retrySave()
 }

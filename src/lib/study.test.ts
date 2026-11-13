@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { defaultProgress, parseProgress } from './progress'
-import { backupDue, catchUpTask, dueProblems, recentOverdue, recordProblemReview, studyBudget, taskMinutes } from './study'
+import { backupDue, catchUpTask, dueProblems, nextReview, recentOverdue, recordProblemReview, redoCap, RETIRED, studyBudget, taskMinutes } from './study'
 import type { Scheduled, Task } from './plan'
 
 describe('problem revision', () => {
-  it('brings helped problems back tomorrow, independent solves after a week, and later recall after a month', () => {
+  it('climbs a ladder: help -> tomorrow, alone -> 7 days, recalls -> 21, then 60 days, then retired', () => {
     const p = defaultProgress()
     p.done['p:two-sum'] = '2026-10-14'
     recordProblemReview(p, 'two-sum', 'helped', '2026-10-14')
@@ -14,8 +14,24 @@ describe('problem revision', () => {
     expect(dueProblems(p, '2026-10-21')).toEqual([])
     expect(dueProblems(p, '2026-10-22')).toEqual(['two-sum'])
     recordProblemReview(p, 'two-sum', 'recalled', '2026-10-22')
-    expect(dueProblems(p, '2026-11-20')).toEqual([])
-    expect(dueProblems(p, '2026-11-21')).toEqual(['two-sum'])
+    expect(nextReview(p, 'two-sum')).toBe('2026-11-12')
+    recordProblemReview(p, 'two-sum', 'recalled', '2026-11-12')
+    expect(nextReview(p, 'two-sum')).toBe('2027-01-11')
+    recordProblemReview(p, 'two-sum', 'recalled', '2027-01-11')
+    expect(nextReview(p, 'two-sum')).toBe(RETIRED)
+    expect(dueProblems(p, '2030-01-01')).toEqual([])
+    recordProblemReview(p, 'two-sum', 'helped', '2030-01-01') // forgot it: back on the ladder
+    expect(nextReview(p, 'two-sum')).toBe('2030-01-02')
+  })
+  it('a first solve comes back tomorrow unless you wrote it yourself', () => {
+    const p = defaultProgress()
+    p.done['p:two-sum'] = '2026-10-14'
+    expect(nextReview(p, 'two-sum')).toBe('2026-10-15')
+    p.honest['two-sum'] = true
+    expect(nextReview(p, 'two-sum')).toBe('2026-10-21')
+  })
+  it('caps full redos: 2 on weekdays, 4 at weekends', () => {
+    expect([0, 1, 5, 6].map(redoCap)).toEqual([4, 2, 2, 4])
   })
   it('does not allow same-day recall or revision of an unsolved problem', () => {
     const p = defaultProgress()

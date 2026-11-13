@@ -3,7 +3,7 @@ id: d-intervals
 title: Intervals
 level: core
 phase: 3
-week: 33
+week: 20
 tags: [dsa, intervals, sorting, greedy, sweep-line]
 estMinutes: 25
 ---

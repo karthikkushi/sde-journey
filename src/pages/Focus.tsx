@@ -25,6 +25,7 @@ function nextTask() {
 // Full-screen focus timer. It lives outside the normal layout, so nothing else is on screen.
 export function Focus() {
   const p = useProgress()
+  useEffect(() => { document.title = 'Focus - SDE Journey' }, []) // full-screen page, outside the shared layout
   const [session, setSessionState] = useState<Session | null>(loadSession)
   const sessionRef = useRef(session)
   const [now, setNow] = useState(() => Date.now())
@@ -50,10 +51,10 @@ export function Focus() {
     chime()
     if (s.phase === 'focus') {
       const blocks = s.blocks + 1
-      logFocus(preset.focus, true)
+      logFocus(preset.focus + (s.extraMin ?? 0), true)
       const rest = breakMinutes(blocks, preset)
       notify('Focus block done', `Well done. Take a ${rest}-minute break.`)
-      setSession({ ...s, phase: 'break', blocks, endsAt: Date.now() + rest * 60_000, activity: randomActivity() })
+      setSession({ ...s, phase: 'break', blocks, endsAt: Date.now() + rest * 60_000, activity: randomActivity(), extraMin: undefined })
     } else {
       notify('Break over', 'Ready for the next block?')
       setSession({ ...s, phase: 'ready' })
@@ -97,6 +98,13 @@ export function Focus() {
       activity: 0,
     })
     setNow(Date.now())
+  }
+
+  // In the middle of a thought when time runs out? Interrupting code costs more than 10 minutes to rebuild.
+  function addTen() {
+    if (!session || session.phase !== 'focus') return
+    const more = 10 * 60_000
+    setSession({ ...session, extraMin: (session.extraMin ?? 0) + 10, ...(session.pausedLeft != null ? { pausedLeft: session.pausedLeft + more } : { endsAt: session.endsAt + more }) })
   }
 
   function togglePause() {
@@ -170,6 +178,7 @@ export function Focus() {
           ) : (
             <>
               <button className="btn primary" onClick={togglePause}>{session.pausedLeft != null ? 'Resume' : 'Pause'}</button>
+              <button className="btn" onClick={addTen}>+10 min to finish the thought</button>
               <button className="btn" onClick={endBlock}>End block</button>
             </>
           )}

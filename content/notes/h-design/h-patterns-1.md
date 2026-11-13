@@ -3,7 +3,7 @@ id: h-patterns-1
 title: Design patterns 1 - singleton, factory, strategy
 level: core
 phase: 3
-week: 41
+week: 31
 tags: [design, patterns, lld, oop]
 estMinutes: 30
 ---

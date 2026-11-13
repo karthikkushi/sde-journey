@@ -142,7 +142,7 @@ Free tiers limit memory (often 512 MB), CPU and monthly hours, and may sleep aft
 
 ## Patterns that use it
 
-The kirana billing API ("deploy and share the live docs URL"), the URL shortener, the serious project, and the "it is live" badge in this app.
+The kirana billing API ("deploy and share the live docs URL"), the URL shortener, the webhook service, and the "it is live" badge in this app.
 
 ## Practice
 

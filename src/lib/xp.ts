@@ -11,6 +11,8 @@ export const XP = {
   card: 2, // one flashcard reviewed
   weekly: 30, // weekly review saved
   mock: 50, // mock interview logged
+  recall: 15, // a past problem solved again from a blank page: the work that makes skills stick
+  honest: 5, // an honest "Needed help" log: noticing a gap is progress too
 }
 
 export function totalXp(p: Progress) {
@@ -25,11 +27,12 @@ export function totalXp(p: Progress) {
   xp += p.cardReviews * XP.card
   xp += Object.keys(p.weekly).length * XP.weekly
   xp += p.mocks.length * XP.mock
+  for (const r of Object.values(p.problemReviews)) xp += r.level === 'recalled' ? XP.recall * (r.streak ?? 1) : r.level === 'helped' ? XP.honest : 0
   return xp
 }
 
-// Level names follow the career path. Thresholds assume roughly 550 XP per week,
-// so "L3 Ready" lands near the end of the 15 months.
+// Level names describe effort, not readiness: XP counts activity, and only mocks and
+// timed solves show whether you are ready. Thresholds assume roughly 550 XP per week.
 export const LEVELS = [
   { name: 'Beginner', xp: 0 },
   { name: 'Python Explorer', xp: 800 },
@@ -39,8 +42,8 @@ export const LEVELS = [
   { name: 'DP Warrior', xp: 14000 },
   { name: 'Backend Builder', xp: 17000 },
   { name: 'System Designer', xp: 21000 },
-  { name: 'Interview Ready', xp: 26000 },
-  { name: 'L3 Ready', xp: 34000 },
+  { name: 'Interview Trainer', xp: 26000 },
+  { name: 'Long Hauler', xp: 34000 },
 ]
 
 export function levelOf(xp: number) {

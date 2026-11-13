@@ -3,7 +3,7 @@ id: k-star
 title: Behavioural stories with STAR
 level: core
 phase: 5
-week: 44
+week: 36
 tags: [interview, behavioural, communication]
 estMinutes: 25
 ---

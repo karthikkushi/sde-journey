@@ -19,7 +19,7 @@ export const NAV: NavItem[] = [
   { to: '/resources', label: 'Resources', icon: 'link', hint: 'Free courses and sites' },
   { to: '/projects', label: 'Projects', icon: 'hammer', hint: 'Portfolio ladder' },
   { to: '/ai-tutor', label: 'AI as tutor', icon: 'spark', hint: 'Prompts that teach, not solve' },
-  { to: '/career', label: 'Career', icon: 'brief', hint: 'Hiring, resume, mocks' },
+  { to: '/career', label: 'Career', icon: 'brief', hint: 'Hiring, resume, mocks, jobs' },
   { to: '/settings', label: 'Settings', icon: 'gear', hint: 'Backup, plan dates' },
 ]
 

@@ -3,7 +3,7 @@ id: g-http
 title: HTTP versions, HTTPS and caching headers
 level: core
 phase: 3
-week: 33
+week: 42
 tags: [cs, networking, http, https, tls, caching]
 estMinutes: 30
 ---

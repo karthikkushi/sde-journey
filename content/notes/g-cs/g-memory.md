@@ -3,7 +3,7 @@ id: g-memory
 title: Memory and virtual memory
 level: core
 phase: 3
-week: 29
+week: 40
 tags: [cs, os, memory, virtual-memory]
 estMinutes: 30
 ---

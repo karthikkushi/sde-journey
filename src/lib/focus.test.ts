@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { breakMinutes, clock, heatLevel, minutesSpent, msLeft, presetById, type Session } from './focus'
+import { breakMinutes, clock, heatLevel, minutesSpent, msLeft, phaseLength, presetById, type Session } from './focus'
 
 const base: Session = { phase: 'focus', preset: '45/10', endsAt: 1_000_000, blocks: 0, task: 'x', activity: 0 }
 
@@ -32,4 +32,10 @@ describe('focus timer', () => {
   it('heatmap levels', () => {
     expect([0, 10, 45, 90, 135, 300].map(heatLevel)).toEqual([0, 1, 2, 3, 4, 4])
   })
+})
+
+it('"+10 min" makes the block longer, so spent minutes stay right', () => {
+  const s: Session = { ...base, extraMin: 10, endsAt: 0 }
+  expect(phaseLength(s)).toBe(55 * 60_000)
+  expect(minutesSpent({ ...s, pausedLeft: 5 * 60_000 }, 0)).toBe(50)
 })

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import { todayIST } from '../lib/dates'
 import { ALL_CARDS, noteById } from '../lib/notes'
-import { dueCards, schedule, type Grade } from '../lib/srs'
+import { dueCards, logLine, schedule, type Grade } from '../lib/srs'
 import { getProgress, update, useProgress } from '../store/progress'
 
 const GRADES: { grade: Grade; label: string; hint: string }[] = [
@@ -17,7 +17,7 @@ export function Cards() {
   const p = useProgress()
   const today = todayIST()
   // Fix the queue when the page opens, so cards do not jump around while you review.
-  const [queue] = useState(() => dueCards(ALL_CARDS, getProgress(), today))
+  const [queue, setQueue] = useState(() => dueCards(ALL_CARDS, getProgress(), today))
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const card = queue[index]
@@ -25,9 +25,12 @@ export function Cards() {
 
   function answer(grade: Grade) {
     update((d) => {
+      d.cardLog.push(logLine(today, card.id, grade, !d.cards[card.id]))
       d.cards[card.id] = schedule(d.cards[card.id], grade, today)
       d.cardReviews += 1
     })
+    // Forgot it? Ask again at the end of this session, while it's fresh.
+    if (grade === 'again') setQueue((q) => [...q, card])
     setFlipped(false)
     setIndex((i) => i + 1)
   }
@@ -42,7 +45,7 @@ export function Cards() {
       {!card ? (
         <div className="card">
           <h2>{queue.length ? 'Done for today 🎉' : 'Nothing due today'}</h2>
-          <p className="muted">{queue.length ? `You reviewed ${queue.length} cards. See you tomorrow.` : 'Open a note, read it, and tap "I finished this note". Its cards will show up here.'}</p>
+          <p className="muted">{queue.length ? `You answered ${queue.length} cards. See you tomorrow.` : 'Open a note, read it, and tap "I finished this note". Its cards will show up here.'}</p>
           <Link className="btn" to="/notes">Go to notes</Link>
         </div>
       ) : (

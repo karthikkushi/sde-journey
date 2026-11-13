@@ -3,7 +3,7 @@ import { BADGES, earned } from './badges'
 import { celebrationsFor, tasksOfWeek } from './celebrate'
 import type { Flashcard } from './notes'
 import { defaultProgress, type Progress } from './progress'
-import { dueCards, schedule } from './srs'
+import { dueCards, logLine, schedule } from './srs'
 
 const today = '2026-10-20'
 
@@ -16,12 +16,20 @@ describe('spaced repetition (SM-2)', () => {
     const c3 = schedule(c2, 'good', '2026-10-27')
     expect(c3).toMatchObject({ interval: 15, reps: 3 }) // round(6 * 2.5)
   })
-  it('easy raises ease, hard lowers it, and ease never drops below 1.3', () => {
+  it('easy raises ease, hard lowers it (never below 1.3), and forgetting leaves ease alone', () => {
     expect(schedule(undefined, 'easy', today).ease).toBe(2.6)
     expect(schedule(undefined, 'hard', today).ease).toBe(2.36)
-    let c = schedule(undefined, 'again', today)
-    for (let i = 0; i < 10; i++) c = schedule(c, 'again', today)
+    let c = schedule(undefined, 'hard', today)
+    for (let i = 0; i < 20; i++) c = schedule(c, 'hard', today)
     expect(c.ease).toBe(1.3)
+    expect(schedule({ ease: 2.5, interval: 30, reps: 5, due: today }, 'again', today).ease).toBe(2.5)
+  })
+  it('caps new cards at 10 a day', () => {
+    const many: Flashcard[] = Array.from({ length: 15 }, (_, i) => ({ id: `n:${i}`, noteId: 'n', front: 'q', back: 'a' }))
+    const p = { ...defaultProgress(), notesDone: { n: today } }
+    expect(dueCards(many, p, today)).toHaveLength(10)
+    p.cardLog = ['n:0', 'n:1', 'n:2'].map((id) => logLine(today, id, 'good', true))
+    expect(dueCards(many, p, today)).toHaveLength(7)
   })
   it('again resets the card to tomorrow', () => {
     const learned = { ease: 2.5, interval: 30, reps: 5, due: today }
@@ -57,7 +65,7 @@ describe('badges', () => {
     expect(earned(badge('fastMedium'), { ...base, solveMinutes: { 'group-anagrams': 25 } })).toBe(true)
   })
   it('first deployed project', () => {
-    expect(earned(badge('deployed'), { ...defaultProgress(), done: { 'proj:kirana:8': today } })).toBe(true)
+    expect(earned(badge('deployed'), { ...defaultProgress(), done: { 'proj:kirana:10': today } })).toBe(true)
     expect(earned(badge('deployed'), { ...defaultProgress(), done: { 'proj:kirana:2': today } })).toBe(false)
   })
   it('100 focus hours', () => {

@@ -31,6 +31,14 @@ describe('import / export', () => {
     expect(parseProgress({ version: 1, shiftWeeks: 2, done: { 'w1:l0': '2026-10-28' } }).startDate).toBe('2026-10-28')
     expect(parseProgress({ version: 1, shiftWeeks: 2, done: {} }).startDate).toBe('') // nothing done: start fresh
   })
+  it('keeps only well-formed jobs with web links', () => {
+    const job = { company: 'Acme', role: 'SDE 1', link: 'https://acme.com/jobs/1', status: 'Applied', date: '2026-11-12', channel: 'Referral' }
+    const jobs = [job, { ...job, link: '' }, { ...job, link: 'javascript:alert(1)' }, { ...job, status: 'Hired?' }, { ...job, date: 'soon' }, 'junk']
+    expect(parseProgress({ version: 1, jobs }).jobs).toEqual([job, { ...job, link: '' }])
+    expect(parseProgress({ version: 1 }).jobs).toEqual([]) // backups from before the tracker
+    const { channel: _, ...old } = job
+    expect(parseProgress({ version: 1, jobs: [old] }).jobs[0].channel).toBe('Applied online') // logged before channels
+  })
   it('drops unknown fields', () => {
     const p = parseProgress({ version: 1, evil: 'x' }) as unknown as Record<string, unknown>
     expect(p.evil).toBeUndefined()
@@ -93,7 +101,7 @@ describe('XP and levels', () => {
     expect(levelOf(0)).toMatchObject({ index: 0, name: 'Beginner', toNext: 800 })
     expect(levelOf(400).share).toBeCloseTo(0.5)
     expect(levelOf(800).name).toBe('Python Explorer')
-    expect(levelOf(999999)).toMatchObject({ index: LEVELS.length - 1, name: 'L3 Ready', share: 1, toNext: 0 })
+    expect(levelOf(999999)).toMatchObject({ index: LEVELS.length - 1, name: 'Long Hauler', share: 1, toNext: 0 })
   })
 })
 

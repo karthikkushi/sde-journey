@@ -3,7 +3,7 @@ id: h-solid
 title: SOLID principles
 level: core
 phase: 3
-week: 40
+week: 29
 tags: [design, oop, solid, clean-code]
 estMinutes: 30
 ---

@@ -3,7 +3,7 @@ id: h-splitwise
 title: LLD - design Splitwise (expense sharing)
 level: advanced
 phase: 5
-week: 45
+week: 36
 tags: [design, lld, interview, greedy]
 estMinutes: 30
 ---

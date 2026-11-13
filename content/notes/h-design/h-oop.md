@@ -3,7 +3,7 @@ id: h-oop
 title: OOP - the four pillars
 level: core
 phase: 3
-week: 39
+week: 28
 tags: [design, oop, lld, classes]
 estMinutes: 30
 ---

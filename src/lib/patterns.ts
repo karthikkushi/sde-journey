@@ -1,7 +1,7 @@
 // Loads the DSA pattern pages from content/patterns/*.md.
 // Each pattern's problem list comes from problems.json (problems tagged with the pattern id),
 // so every link is a verified LeetCode problem.
-import { fencedBlocks, parseFrontmatter } from './notes'
+import { fencedBlocks, parseFrontmatter } from './markdown'
 import { PROBLEMS, type Problem } from './problems'
 
 export type Pattern = { id: string; name: string; group: string; clues: string[]; body: string }

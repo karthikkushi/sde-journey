@@ -3,7 +3,7 @@ id: k-approach
 title: How to approach a coding problem
 level: core
 phase: 2
-week: 25
+week: 7
 tags: [interview, problem-solving]
 estMinutes: 20
 ---

@@ -172,7 +172,7 @@ print(sent)
 
 ## Patterns that use it
 
-System design (notification system, video processing, order pipelines), the serious project (emails, AI calls), and the outbox pattern.
+System design (notification system, video processing, order pipelines), the webhook service (its whole job is a queue), and the outbox pattern.
 
 ## Practice
 

@@ -2896,5 +2896,82 @@
   "title": "Find Users With Valid E-Mails",
   "difficulty": "Easy",
   "premium": false
+ },
+ {
+  "slug": "lowest-common-ancestor-of-a-binary-tree",
+  "tag": "tree-dfs",
+  "title": "Lowest Common Ancestor of a Binary Tree",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "basic-calculator",
+  "tag": "stack",
+  "title": "Basic Calculator",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "string-to-integer-atoi",
+  "tag": "string",
+  "title": "String to Integer (atoi)",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "maximum-profit-in-job-scheduling",
+  "tag": "dp-1d",
+  "title": "Maximum Profit in Job Scheduling",
+  "difficulty": "Hard",
+  "premium": false
+ },
+ {
+  "slug": "add-binary",
+  "tag": "bits",
+  "title": "Add Binary",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "longest-palindrome",
+  "tag": "freq",
+  "title": "Longest Palindrome",
+  "difficulty": "Easy",
+  "premium": false
+ },
+ {
+  "slug": "string-compression",
+  "tag": "string",
+  "title": "String Compression",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "nearest-exit-from-entrance-in-maze",
+  "tag": "graph-bfs",
+  "title": "Nearest Exit from Entrance in Maze",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "count-the-number-of-complete-components",
+  "tag": "graph-dfs",
+  "title": "Count the Number of Complete Components",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "find-all-possible-recipes-from-given-supplies",
+  "tag": "topo",
+  "title": "Find All Possible Recipes from Given Supplies",
+  "difficulty": "Medium",
+  "premium": false
+ },
+ {
+  "slug": "peeking-iterator",
+  "tag": "design",
+  "title": "Peeking Iterator",
+  "difficulty": "Medium",
+  "premium": false
  }
 ]

@@ -22,7 +22,8 @@ export function schedule(card: Card | undefined, grade: Grade, today: string): C
     reps += 1
   }
   // Ease goes up for easy answers and down for hard ones, but never below 1.3.
-  ease = Math.max(1.3, ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)))
+  // A forgotten card restarts without changing its ease (as in SM-2), so one lapse doesn't pin it forever.
+  if (q >= 3) ease = Math.max(1.3, ease + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)))
   return { ease: Math.round(ease * 100) / 100, interval, reps, due: addDays(today, interval) }
 }
 
@@ -33,5 +34,12 @@ export function schedule(card: Card | undefined, grade: Grade, today: string): C
 export function dueCards(all: Flashcard[], p: Progress, today: string) {
   const due = all.filter((c) => p.cards[c.id] && p.cards[c.id].due <= today).sort((a, b) => p.cards[a.id].due.localeCompare(p.cards[b.id].due))
   const fresh = all.filter((c) => !p.cards[c.id] && p.notesDone[c.noteId])
-  return [...due, ...fresh]
+  return [...due, ...fresh.slice(0, Math.max(0, NEW_PER_DAY - newToday(p, today)))]
 }
+
+/** At most this many new cards a day, so reviews never snowball. */
+export const NEW_PER_DAY = 10
+
+/** One review-log line: "date|card id|grade", plus "|n" for a card seen for the first time. Kept to measure real recall later. */
+export const logLine = (today: string, id: string, grade: Grade, isNew: boolean) => `${today}|${id}|${grade}${isNew ? '|n' : ''}`
+const newToday = (p: Progress, today: string) => p.cardLog.filter((l) => l.startsWith(`${today}|`) && l.endsWith('|n')).length

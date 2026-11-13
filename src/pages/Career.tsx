@@ -1,14 +1,18 @@
-import { useState } from 'react'
-import { todayIST } from '../lib/dates'
+import { useState, type FormEvent } from 'react'
+import { daysBetween, formatLong, todayIST } from '../lib/dates'
+import { JOB_CHANNELS, JOB_STATUSES, type Job } from '../lib/progress'
 import { setText, update, useProgress } from '../store/progress'
 
 const HIRING = [
-  ['Resume screen', 'A recruiter (or software) reads your resume for under a minute. Clear titles, numbers and the right skills matter.'],
-  ['Online test (OA)', '1 to 3 coding problems in 60 to 90 minutes, on a platform like HackerRank. Mostly easy and medium DSA.'],
-  ['Coding rounds', '2 to 4 rounds of 45 to 60 minutes. One or two problems each. They watch how you think, not only the final code.'],
-  ['System design / LLD', 'For SDE-1 often low-level design (classes) or basic system design. Deeper for senior roles.'],
-  ['Behavioural round', 'Stories about teamwork, conflict, failure and ownership. Use STAR.'],
+  ['Resume screen', 'A recruiter (or software) reads your resume for under a minute. Clear titles, numbers and the right skills matter. Notice period and experience filters are real.'],
+  ['Online test (OA)', '1 to 3 coding problems in 60 to 90 minutes, on a platform like HackerRank. Mostly easy and medium DSA. No AI.'],
+  ['Coding rounds', '1 to 3 rounds of 45 to 60 minutes. One or two problems each. They watch how you think, not only the final code.'],
+  ['Machine coding', 'Common at Indian product companies (Flipkart, Swiggy, PhonePe, Razorpay). 90 to 120 minutes to build working, modular code, then a demo and a new requirement. Clean classes in your strongest language.'],
+  ['Resume and project deep dive', 'Often the first or the hiring-manager round: why each design choice, what broke, what you measured. Know your project inside out.'],
+  ['System design / LLD', 'SDE-1: usually low-level design (classes) or a basic system. SDE-2: a real high-level design round that can reject you on its own.'],
+  ['Behavioural round', 'Stories about teamwork, conflict, failure and ownership. Use STAR. Expect "why leave .NET / your company?"'],
   ['Hiring manager / team match', 'Fit with the team, your interests, sometimes project deep-dives. Then the offer.'],
+  ['AI rules differ', 'Big tech, GCCs and banks ban AI in interviews. A few Indian startups now run AI-allowed rounds (build with your own AI agent). Ask the recruiter in writing what each round allows, and never use hidden help.'],
 ]
 
 const LEVELS = [
@@ -31,7 +35,7 @@ const RESUME_RULES = [
 const MOCK_CHECKLIST = [
   ['Before', ['Quiet place, charger, water', 'Editor ready (or a shared doc)', 'Read your STAR stories once']],
   ['During', ['Repeat the problem in your words', 'Ask about input size and edge cases', 'Say the brute force first, then improve', 'Think aloud while coding', 'Test with a small example by hand', 'State time and space complexity']],
-  ['After', ['Write what went well and what to fix', 'Redo the problem after 3 days', 'Log it below']],
+  ['After', ['Write what went well and what to fix', 'Record the problem as "Needed help" so it comes back tomorrow', 'Log it below']],
 ] as const
 
 const STAR = [
@@ -53,6 +57,15 @@ export function Career() {
     setMock({ date: todayIST(), kind: mock.kind, notes: '' })
   }
 
+  const [job, setJob] = useState<Job>({ company: '', role: '', link: '', status: 'Applied', date: todayIST(), channel: 'Applied online' })
+
+  function addJob(e: FormEvent) {
+    e.preventDefault()
+    if (!job.company.trim()) return
+    update((d) => { d.jobs.unshift({ ...job, company: job.company.trim(), role: job.role.trim() }) })
+    setJob({ ...job, company: '', role: '', link: '' })
+  }
+
   return (
     <section className="page">
       <h1>Interviews and career</h1>
@@ -64,7 +77,7 @@ export function Career() {
       </div>
 
       <nav className="row" aria-label="On this page">
-        {['hiring', 'levels', 'resume', 'stories', 'mocks'].map((a) => <a key={a} className="chip" href={`#${a}`} onClick={(e) => { e.preventDefault(); document.getElementById(a)?.scrollIntoView({ behavior: 'smooth' }) }}>{a}</a>)}
+        {['hiring', 'levels', 'resume', 'stories', 'mocks', 'jobs'].map((a) => <a key={a} className="chip" href={`#${a}`} onClick={(e) => { e.preventDefault(); document.getElementById(a)?.scrollIntoView({ behavior: 'smooth' }) }}>{a}</a>)}
       </nav>
 
       <div className="card" id="hiring">
@@ -142,6 +155,62 @@ export function Career() {
             </div>
             <p style={{ margin: '4px 0' }}>{m.notes}</p>
             <button className="link-btn small" onClick={() => confirm('Delete this mock?') && update((d) => { d.mocks.splice(i, 1) })}>Delete</button>
+          </div>
+        ))}
+      </div>
+
+      <div className="card" id="jobs">
+        <h2>Job applications ({p.jobs.length})</h2>
+        <p className="muted small">Log every application and move its status along. The date shows when it reached that status. Saved on this device.</p>
+        <form className="stack" onSubmit={addJob}>
+          <div className="filters">
+            <input className="input" required placeholder="Company" aria-label="Company" value={job.company} onChange={(e) => setJob({ ...job, company: e.target.value })} />
+            <input className="input" placeholder="Role, e.g. SDE 1" aria-label="Role" value={job.role} onChange={(e) => setJob({ ...job, role: e.target.value })} />
+          </div>
+          <input className="input" type="url" pattern="https?://.+" placeholder="Job link (optional)" aria-label="Job link" value={job.link} onChange={(e) => setJob({ ...job, link: e.target.value })} />
+          <div className="filters">
+            <input className="input" type="date" required aria-label="Status date" value={job.date} onChange={(e) => setJob({ ...job, date: e.target.value })} />
+            <select className="input" aria-label="Status" value={job.status} onChange={(e) => setJob({ ...job, status: e.target.value as Job['status'] })}>
+              {JOB_STATUSES.map((s) => <option key={s}>{s}</option>)}
+            </select>
+          </div>
+          <select className="input" aria-label="How you applied" value={job.channel} onChange={(e) => setJob({ ...job, channel: e.target.value as Job['channel'] })}>
+            {JOB_CHANNELS.map((c) => <option key={c}>{c}</option>)}
+          </select>
+          <button className="btn primary">Add job</button>
+        </form>
+        {p.jobs.length > 0 && (
+          <div className="row" style={{ marginTop: 12 }}>
+            {JOB_STATUSES.map((s) => {
+              const n = p.jobs.filter((j) => j.status === s).length
+              return n > 0 && <span key={s} className="chip">{s}: {n}</span>
+            })}
+          </div>
+        )}
+        {p.jobs.length >= 5 && (
+          <p className="small muted" style={{ marginTop: 8 }}>
+            Interviews by channel: {JOB_CHANNELS.map((c) => {
+              const all = p.jobs.filter((j) => j.channel === c)
+              const far = all.filter((j) => ['Interview', 'Offer'].includes(j.status)).length
+              return all.length ? `${c} ${far} of ${all.length}` : ''
+            }).filter(Boolean).join(' · ')}. Put more time into the channel that works.
+          </p>
+        )}
+        {p.jobs.map((j, i) => (
+          <div key={i} className="mock-row">
+            <div className="row" style={{ justifyContent: 'space-between' }}>
+              <strong>{j.link ? <a href={j.link} target="_blank" rel="noreferrer">{j.company} ↗</a> : j.company}</strong>
+              <span className="muted small">since {formatLong(j.date)}</span>
+            </div>
+            <p className="small muted" style={{ margin: '4px 0' }}>{[j.role, j.channel].filter(Boolean).join(' · ')}</p>
+            {j.status === 'Applied' && daysBetween(j.date, todayIST()) >= 7 && <p className="small warn-text" style={{ margin: '4px 0' }}>No reply for {daysBetween(j.date, todayIST())} days. Follow up once, then move on.</p>}
+            <div className="row">
+              <select className="input" style={{ width: 'auto' }} aria-label={`Status at ${j.company}`} value={j.status}
+                onChange={(e) => update((d) => { d.jobs[i].status = e.target.value as Job['status']; d.jobs[i].date = todayIST() })}>
+                {JOB_STATUSES.map((s) => <option key={s}>{s}</option>)}
+              </select>
+              <button className="link-btn small" onClick={() => confirm(`Delete ${j.company}?`) && update((d) => { d.jobs.splice(i, 1) })}>Delete</button>
+            </div>
           </div>
         ))}
       </div>

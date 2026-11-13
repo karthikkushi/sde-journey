@@ -145,7 +145,7 @@ Security checks cost microseconds. Breaches cost money, trust and sometimes lega
 
 ## Patterns that use it
 
-Every endpoint you build: the billing API (only the owner changes prices), the serious project, AI apps (prompt injection is the new injection; see the guardrails note), and system design reviews.
+Every endpoint you build: the billing API (only the owner changes prices), the webhook service (signed deliveries, SSRF protection), AI apps (prompt injection is the new injection; see the guardrails note), and system design reviews.
 
 ## Practice
 

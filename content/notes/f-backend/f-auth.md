@@ -192,7 +192,7 @@ print(client.get("/me", headers={"Authorization": f"Bearer {token}"}).json())
 
 ## Patterns that use it
 
-Every backend: the kirana billing API ("only the owner can change prices"), the serious project, and system design ("an auth service issues short tokens").
+Every backend: the kirana billing API ("only the owner can change prices"), the webhook service (an API key per tenant), and system design ("an auth service issues short tokens").
 
 ## Practice
 

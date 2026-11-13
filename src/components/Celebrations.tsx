@@ -24,7 +24,7 @@ export function Celebrations() {
   return (
     <>
       <canvas ref={canvas} className="confetti" aria-hidden="true" />
-      {message && <div className="toast" role="status">🎉 {message}</div>}
+      <div role="status">{message && <div className="toast">🎉 {message}</div>}</div>
     </>
   )
 }

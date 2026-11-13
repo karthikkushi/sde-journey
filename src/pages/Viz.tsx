@@ -55,6 +55,7 @@ function Player({ viz }: { viz: (typeof VISUALIZERS)[number] }) {
         <FrameView frame={frame} />
       </div>
       <p className="viz-caption" aria-live="polite">{frame.caption}</p>
+      <p className="muted small" style={{ margin: 0 }}>Before you tap Next, say what will change. Guessing first makes it stick.</p>
       {'stats' in frame && frame.stats && <p className="muted small" style={{ margin: 0 }}>{frame.stats}</p>}
 
       <div className="viz-controls">

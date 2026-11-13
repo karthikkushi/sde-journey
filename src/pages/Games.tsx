@@ -92,12 +92,12 @@ function Quiz({ title, game, makeItem }: { title: string; game: string; makeItem
           )
         })}
       </div>
-      {picked && (
-        <div className="card" role="status">
+      <div role="status">{picked && (
+        <div className="card">
           <p><strong>{picked === item.answer ? 'Correct!' : 'Not quite.'}</strong> {item.explain}</p>
           <button className="btn primary" onClick={next}>Next</button>
         </div>
-      )}
+      )}</div>
     </section>
   )
 }
@@ -220,11 +220,11 @@ function OrderBoard({ index, onBack }: { index: number; onBack: () => void }) {
         <button className="btn primary" onClick={check}>Check</button>
         <button className="btn" onClick={() => { setLines(puzzle.lines); setResult(null) }}>Show answer</button>
       </div>
-      {result && (
-        <div className="card" role="status">
+      <div role="status">{result && (
+        <div className="card">
           {result === 'right' ? <strong>Correct! 🎉 Now type it from memory on LeetCode.</strong> : <span>Not yet. Read it top to bottom: can each line run with what came before it?</span>}
         </div>
-      )}
+      )}</div>
     </section>
   )
 }

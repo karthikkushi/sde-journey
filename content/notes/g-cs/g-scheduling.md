@@ -3,7 +3,7 @@ id: g-scheduling
 title: CPU scheduling
 level: core
 phase: 3
-week: 28
+week: 39
 tags: [cs, os, scheduling]
 estMinutes: 25
 ---

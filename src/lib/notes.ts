@@ -13,29 +13,12 @@ export type NoteMeta = {
 }
 export type Note = NoteMeta & { body: string }
 
+import { fencedBlocks, parseFrontmatter } from './markdown'
+export { fencedBlocks, parseFrontmatter } from './markdown'
+
 // Vite reads all the files and bundles their text (eager = no extra network request).
 // Files starting with _ (like _template.md) are skipped.
 const files = import.meta.glob(['/content/notes/**/*.md', '!**/_*.md'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>
-
-/**
- * Split "---\nkey: value\n---\nbody" into fields and body.
- * Supports `key: value` and `key: [a, b, c]`, which is all our notes use.
- */
-export function parseFrontmatter(text: string): { data: Record<string, string | string[]>; body: string } {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(text)
-  if (!match) return { data: {}, body: text }
-  const data: Record<string, string | string[]> = {}
-  for (const line of match[1].split(/\r?\n/)) {
-    const i = line.indexOf(':')
-    if (i < 0) continue
-    const key = line.slice(0, i).trim()
-    const raw = line.slice(i + 1).trim()
-    data[key] = raw.startsWith('[') && raw.endsWith(']')
-      ? raw.slice(1, -1).split(',').map((s) => s.trim()).filter(Boolean)
-      : raw.replace(/^["']|["']$/g, '')
-  }
-  return { data, body: text.slice(match[0].length) }
-}
 
 function toNote(path: string, text: string): Note {
   const { data, body } = parseFrontmatter(text)
@@ -75,12 +58,6 @@ export const SECTIONS: Record<string, string> = {
   J: 'AI engineering',
   K: 'Interview skills',
   L: 'Learning skills',
-}
-
-/** The text inside every ```name fenced block of a note. */
-export function fencedBlocks(body: string, name: string) {
-  const re = new RegExp('^```' + name + '\\s*\\n([\\s\\S]*?)^```', 'gm')
-  return [...body.matchAll(re)].map((m) => m[1])
 }
 
 export type Flashcard = { id: string; noteId: string; front: string; back: string }

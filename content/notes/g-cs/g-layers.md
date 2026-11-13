@@ -3,7 +3,7 @@ id: g-layers
 title: Network layers (OSI and TCP/IP)
 level: core
 phase: 3
-week: 31
+week: 41
 tags: [cs, networking, osi, tcp-ip]
 estMinutes: 25
 ---

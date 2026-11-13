@@ -23,9 +23,9 @@ Live: https://karthikkushi.github.io/sde-journey/
 
 Today starts with your energy check-in and next main task. Pick a daily budget of 25, 45, 90 or 180 minutes; focus time counts against it. Task durations are rough planning estimates, not measured lesson lengths. The full daily plan and unfinished work remain available in expandable sections. One optional catch-up task is suggested when it fits after today's main work.
 
-After ticking a problem, record the attempt: **Needed help**, **Solved independently**, or **Solved again on a later day**. Today brings these back for revision after 1, 7 or 30 days respectively. Same-day recall is disabled. Older solved problems without an assessment become due after 7 days. Unticking a problem clears its revision assessment.
+After ticking a problem, record the attempt: **Needed help**, **Solved independently**, or **Solved again on a later day**. Revision follows a ladder: needed help comes back tomorrow, solved independently in 7 days, then each clean recall in 21 and 60 days, after which the problem retires. A first solve not marked "written by me" comes back tomorrow. Today shows at most 2 redos on weekdays and 4 at weekends, and keeps 5–15 minutes of the daily budget for due cards and redos before new work. Same-day recall is disabled. Unticking a problem clears its revision assessment. A one-line mistake log on each problem feeds the Performance page.
 
-Failed progress saves show a warning with retry and backup options. Keep the tab open and export before reloading. Today reminds you to back up weekly, and Settings records the last requested backup download; check that the file actually appears in your downloads. Existing version-1 backups remain supported.
+Failed progress saves show a warning with retry and backup options. Keep the tab open and export before reloading. If saved data can't be read (damaged, or from a newer version), the app never saves over it and asks you to reload or import. Today reminds you to back up weekly. Existing version-1 backups remain supported.
 
 ## Run it on your computer
 
@@ -69,7 +69,7 @@ A test checks that every note the roadmap links to exists.
 
 ## Back up your progress
 
-Progress lives only in this browser. Go to **Settings → Export** to download a JSON backup (do it every week, and before clearing the browser or changing phones). **Settings → Import** restores it on any device.
+Progress lives only in this browser. Go to **Settings → Export** every week: on a phone it opens the share sheet (save the `.txt` file to Files or Drive, or send it to yourself); on a laptop it downloads a file. **Settings → Import** restores it on any device, and **Undo** reverses an import or reset. On iPhone, Safari deletes site data after 7 days without a visit, and a home-screen app starts empty: export in Safari, then import inside the home-screen app.
 
 ## Where things live
 
