@@ -185,7 +185,7 @@ a.chip:hover { background: var(--accent-soft); color: var(--accent); }
 .energy-check h2 { font-size: 14px; margin: 0 0 2px; }
 .energy-check p { margin: 0; font-size: 12px; }
 .segmented { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px; padding: 4px; border-radius: 10px; background: var(--surface-2); }
-.segmented button { min-height: 40px; padding: 7px 16px; border: 0; border-radius: 7px; background: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); }
+.segmented button { min-height: 44px; padding: 7px 16px; border: 0; border-radius: 7px; background: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--muted); }
 .segmented button.on { background: var(--raised); color: var(--text); box-shadow: 0 1px 4px light-dark(#1d30291a, #00000030); }
 .daily-study { position: relative; border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); background: var(--surface); padding: 28px; overflow: hidden; }
 .daily-study::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
@@ -194,7 +194,7 @@ a.chip:hover { background: var(--accent-soft); color: var(--accent); }
 .session-tag { color: var(--accent); background: var(--accent-soft); padding: 4px 9px; font-size: 11px; font-weight: 600; border-radius: 6px; white-space: nowrap; }
 .daily-study > h2 { font-size: clamp(20px, 2.2vw, 26px); letter-spacing: -0.04em; margin-bottom: 20px; }
 .budget-control { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; padding-bottom: 16px; }
-.budget-control .input { width: auto; max-width: 150px; font-size: 12px; min-height: 40px; background: var(--surface); padding: 6px 10px; }
+.budget-control .input { width: auto; max-width: 150px; font-size: 12px; min-height: 44px; background: var(--surface); padding: 6px 10px; }
 .session-progress { display: flex; align-items: center; gap: 14px; font-size: 11px; color: var(--muted); padding-bottom: 16px; }
 .session-progress .bar { flex: 1; height: 5px; margin: 0; }
 .daily-study > .task { margin: 0 0 22px; padding: 0; border-top: 0; }
@@ -397,7 +397,7 @@ select.input { min-height: 44px; }
 .tt-row.is-now { background: var(--accent-soft); }
 .prompt { white-space: pre-wrap; font-size: 0.85rem; background: var(--surface-2); padding: 12px; border-radius: var(--radius-sm); margin: 12px 0 0; }
 .story, .history { border-top: 1px solid var(--border); padding: 10px 0; }
-.story summary, .history summary { cursor: pointer; font-weight: 600; min-height: 28px; }
+.story summary, .history summary { cursor: pointer; font-weight: 600; min-height: 44px; display: flex; align-items: center; }
 .history dl { margin: 8px 0 0; }
 .history dd { margin: 0 0 8px; }
 .mock-row { border-top: 1px solid var(--border); padding: 10px 0; margin-top: 10px; }
@@ -584,3 +584,22 @@ a.stat:hover { border-color: var(--accent); }
 }
 .file-btn:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
 .review-first { margin: 0 0 16px; padding: 10px 12px; border-radius: var(--radius-sm); background: var(--accent-soft); }
+
+/* ---------- Task labels (DSA / AI / Paper / SQL / ML) ---------- */
+.kind { display: inline-block; margin-right: 8px; padding: 1px 7px; border-radius: 6px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; vertical-align: 2px; }
+.kind-dsa { background: light-dark(#e3f1ea, #0d3326); color: light-dark(#09694e, #81d9b5); }
+.kind-ai { background: light-dark(#ece8fb, #2a2347); color: light-dark(#5b3fc4, #c4b5fd); }
+.kind-paper { background: light-dark(#fbeedd, #3b2a12); color: light-dark(#8a4b06, #f5c27a); }
+.kind-sql { background: light-dark(#e2eefa, #12263d); color: light-dark(#1d5fa6, #9cc8f5); }
+.kind-ml { background: light-dark(#fbe6ee, #3d1726); color: light-dark(#a1264f, #f5a3c0); }
+
+/* ---------- Tap targets: at least 44px tall on phones ----------
+   Small links and chips keep their look, but an invisible strip above and below
+   makes the tappable area 44px (WCAG 2.5.8 needs 24px; 44px is the comfortable size). */
+.brand, .row.muted.small > a, .resource a, .checkpoint-week, a.chip, button.chip, .chip-input, .link-btn, a.muted.small, .muted.small > a, .paper-card h2 a { position: relative; }
+.brand::after, .row.muted.small > a::after, .resource a::after, .checkpoint-week::after, a.chip::after, button.chip::after,
+a.muted.small::after, .muted.small > a::after, .paper-card h2 a::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 44px; transform: translateY(-50%);
+}
+.brand { min-height: 44px; }
+.input { min-height: 44px; }

@@ -1,4 +1,5 @@
 // Turns the roadmap data (content/data/roadmap.ts) into dated weeks and daily tasks.
+import { aiWeek, isPaperWeek } from '../../content/data/aiTrack'
 import { PHASES, START_DATE, TOTAL_WEEKS, WEEKS, type Learn, type WeekSpec } from '../../content/data/roadmap'
 import { addDays, dayOfWeek, daysBetween } from './dates'
 import { problemBySlug } from './problems'
@@ -101,10 +102,15 @@ export function buildWeek(w: WeekSpec, start: string): Day[] {
     if (isWeekday(dow)) {
       // Weekday: one morning task + one light evening task (Friday evening = SQL / CS topic).
       tasks.push(queue.shift() ?? { id: `w${w.n}:d${dow}:s1`, text: 'Re-solve one problem from this week from a blank page', slot: 's1' })
+      // From week 10, Tuesday and Thursday evenings are AI sessions (see content/data/aiTrack.ts).
+      const ai = (dow === 2 || dow === 4) ? aiWeek(w.n) : undefined
+      const session = ai?.sessions[dow === 2 ? 0 : 1]
       tasks.push(
         dow === 5
           ? { id: `w${w.n}:fri`, text: w.friday.text, slot: 's2', learn: w.friday }
-          : { id: `w${w.n}:d${dow}:s2`, text: light[i % 2], slot: 's2' },
+          : session
+            ? { id: `w${w.n}:ai:${dow}`, text: `AI (${ai!.topic}): ${session.text}`, slot: 's2', learn: session }
+            : { id: `w${w.n}:d${dow}:s2`, text: light[i % 2], slot: 's2' },
       )
     } else if (dow === 6) {
       // Saturday: the long 3-hour block.
@@ -116,6 +122,8 @@ export function buildWeek(w: WeekSpec, start: string): Day[] {
       const saturdayLater = dows.slice(i + 1).includes(6) ? 4 : 0
       tasks.push(...queue.splice(0, Math.max(0, spare - saturdayLater)).map(asBlock))
       tasks.push(
+        // Paper Sunday: every other week from week 10. Which paper is next is shown on Today and the Papers page.
+        ...(isPaperWeek(w.n) ? [{ id: `w${w.n}:paper`, text: 'Paper Sunday: read the next paper (abstract, figures, conclusion, method, 5 lines)', slot: 'block' as const, learn: { text: 'Papers', to: '/papers' } }] : []),
         { id: `w${w.n}:sun:check`, text: `Checkpoint: ${w.checkpoint}`, slot: 'review' },
         { id: `w${w.n}:sun:review`, text: 'Weekly review: fill the form', slot: 'review', learn: { text: 'Weekly review', to: '/review' } },
         { id: `w${w.n}:sun:redo`, text: isPython ? 'Redo the exercises you found hard' : 'Redo the problems you got wrong this week', slot: 'review' },
@@ -176,4 +184,20 @@ export function paceOf(done: Record<string, string>, start: string, today: strin
   if (at < today) return { ...base, status: 'behind', days: daysBetween(at, today) }
   const ahead = daysBetween(today, at) - 1
   return { ...base, status: ahead > 0 ? 'ahead' : 'on-track', days: Math.max(0, ahead) }
+}
+
+/** The small coloured label on a task. Tasks that fit none of these (career, backend, reviews) get no label. */
+export type Kind = 'DSA' | 'AI' | 'Paper' | 'SQL' | 'ML'
+export function kindOf(t: Task): Kind | undefined {
+  if (t.id.endsWith(':paper')) return 'Paper'
+  if (t.id.includes(':ai:')) return 'AI'
+  if (t.problem) return problemBySlug(t.problem)?.tag === 'sql' ? 'SQL' : 'DSA'
+  const note = t.learn?.note ?? ''
+  const res = t.learn?.res ?? ''
+  if (note.startsWith('j-')) return 'AI'
+  if (note.startsWith('m-')) return 'ML'
+  if (note.startsWith('e-') || /^SQL\b/.test(t.text) || ['sqlbolt', 'sql50', 'datalemur'].includes(res)) return 'SQL'
+  if (/^[a-d][0-9-]/.test(note) || /^\/(patterns|viz)\//.test(t.learn?.to ?? '')) return 'DSA'
+  if (!t.learn && (t.slot === 's1' || t.slot === 's2' || t.slot === 'block')) return 'DSA' // problems practice, redo blocks, light evening work
+  return undefined
 }

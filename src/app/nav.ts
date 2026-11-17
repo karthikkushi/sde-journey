@@ -8,6 +8,7 @@ export const NAV: NavItem[] = [
   { to: '/roadmap', label: 'Roadmap', icon: 'map', hint: '65 weeks, step by step' },
   { to: '/performance', label: 'Performance', icon: 'chart', hint: 'Pace, graphs, strengths and weak spots' },
   { to: '/notes', label: 'Notes', icon: 'book', hint: 'Basic to advanced notes' },
+  { to: '/papers', label: 'Papers', icon: 'paper', hint: '6 AI papers, one every other Sunday' },
   { to: '/patterns', label: 'Patterns', icon: 'puzzle', hint: 'DSA patterns and clues' },
   { to: '/viz', label: 'Visualizers', icon: 'play', hint: 'See data structures move' },
   { to: '/games', label: 'Games', icon: 'game', hint: 'Pattern Guess, Big-O, Code Order' },
@@ -35,7 +36,7 @@ export const TABS: NavItem[] = [
 
 export const NAV_GROUPS = [
   { label: 'Your day', items: ['/', '/focus', '/timetable', '/review', '/performance'].map(nav) },
-  { label: 'Learn & practise', items: ['/roadmap', '/notes', '/patterns', '/viz', '/cards', '/games', '/resources'].map(nav) },
+  { label: 'Learn & practise', items: ['/roadmap', '/notes', '/patterns', '/viz', '/cards', '/games', '/papers', '/resources'].map(nav) },
   { label: 'Build your future', items: ['/projects', '/career', '/ai-tutor', '/badges'].map(nav) },
   { label: 'Preferences', items: ['/settings'].map(nav) },
 ]

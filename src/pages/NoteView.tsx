@@ -1,13 +1,24 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
+import { SUBJECT_OF_SECTION } from '../../content/data/notebooks'
 import { NoteMarkdown } from '../components/NoteMarkdown'
+import { NotebookButton } from '../components/NotebookButton'
 import { todayIST } from '../lib/dates'
-import { NOTES, noteById, SECTIONS } from '../lib/notes'
+import type { Note } from '../lib/noteParse'
+import { loadNote, NOTE_LIST, noteMeta, SECTIONS } from '../lib/notesIndex'
 import { setText, update, useProgress } from '../store/progress'
 
 export function NoteView() {
   const id = useParams().id ?? ''
   const p = useProgress()
-  const note = noteById(id)
+  const note = noteMeta(id)
+  // The note's text is its own small file: fetch it when the note opens.
+  const [full, setFull] = useState<Note | undefined>()
+  useEffect(() => {
+    let alive = true
+    loadNote(id).then((n) => { if (alive) setFull(n) })
+    return () => { alive = false }
+  }, [id])
   if (!note) {
     return (
       <section className="page">
@@ -18,8 +29,8 @@ export function NoteView() {
     )
   }
 
-  const inSection = NOTES.filter((n) => n.section === note.section)
-  const i = inSection.indexOf(note)
+  const inSection = NOTE_LIST.filter((n) => n.section === note.section)
+  const i = inSection.findIndex((n) => n.id === id)
   const prev = inSection[i - 1]
   const next = inSection[i + 1]
   const finished = !!p.notesDone[id]
@@ -37,8 +48,9 @@ export function NoteView() {
         {note.week > 0 && <Link className="chip" to={`/roadmap/week/${note.week}`}>Week {note.week}</Link>}
         {note.tags.map((t) => <span key={t} className="chip is-muted">#{t}</span>)}
       </div>
+      {SUBJECT_OF_SECTION[note.section] && <div className="row"><NotebookButton subject={SUBJECT_OF_SECTION[note.section]!} /></div>}
 
-      <NoteMarkdown noteId={id} body={note.body} />
+      {full?.id === id ? <NoteMarkdown noteId={id} body={full.body} /> : <p className="muted" role="status">Loading the note…</p>}
 
       <div className="card">
         <label htmlFor={myKey}><h2>My notes</h2></label>

@@ -1,10 +1,14 @@
 // Badges are worked out from your progress (never stored), like XP.
-import { PROJECTS } from '../../content/data/projects'
+import { AI_PROJECTS, PROJECTS } from '../../content/data/projects'
 import { problemBySlug } from './problems'
 import type { Progress } from './progress'
 import { longestStreak } from './streak'
 
 export type Badge = { id: string; name: string; how: string; progress: (p: Progress) => [number, number] }
+
+const papersDone = (p: Progress) => Object.values(p.papers).filter((x) => x.status === 'Done').length
+// An AI badge is earned by ticking the matching AI project step (or, for the first API call, week 12's session).
+const step = (p: Progress, project: string, i: number) => (p.done[`proj:${project}:${i}`] ? 1 : 0)
 
 const solvedSlugs = (p: Progress) => Object.keys(p.done).filter((id) => id.startsWith('p:')).map((id) => id.slice(2))
 
@@ -22,8 +26,14 @@ export const BADGES: Badge[] = [
     id: 'deployed',
     name: 'It is live',
     how: 'Deploy your first project',
-    progress: (p) => [PROJECTS.some((pr) => pr.deployStep !== undefined && p.done[`proj:${pr.id}:${pr.deployStep}`]) ? 1 : 0, 1],
+    progress: (p) => [[...AI_PROJECTS, ...PROJECTS].some((pr) => pr.deployStep !== undefined && p.done[`proj:${pr.id}:${pr.deployStep}`]) ? 1 : 0, 1],
   },
+  { id: 'aiFirstCall', name: 'First API call', how: 'Call an LLM from Python (AI step 1, or week 12\'s AI session)', progress: (p) => [Math.max(step(p, 'ai-chatbot', 1), p.done['w12:ai:4'] ? 1 : 0), 1] },
+  { id: 'aiFirstRag', name: 'First RAG', how: 'Answer from your own notes with sources (AI step 2)', progress: (p) => [step(p, 'ai-rag', 3), 1] },
+  { id: 'aiAgent', name: 'Agent Builder', how: 'Run an agent loop with tools (AI step 3)', progress: (p) => [step(p, 'ai-agent', 3), 1] },
+  { id: 'paper1', name: 'Paper Reader x1', how: 'Finish your first paper', progress: (p) => [Math.min(papersDone(p), 1), 1] },
+  { id: 'paper6', name: 'Paper Reader x6', how: 'Finish all 6 papers', progress: (p) => [Math.min(papersDone(p), 6), 6] },
+  { id: 'evalMaster', name: 'Eval Master', how: 'Run your whole eval set with one command (AI step 4)', progress: (p) => [step(p, 'ai-evals', 3), 1] },
   { id: 'mock1', name: 'First mock', how: 'Log your first mock interview', progress: (p) => [Math.min(p.mocks.length, 1), 1] },
   {
     id: 'focus100',

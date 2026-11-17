@@ -1,6 +1,6 @@
 import { useState, type DragEvent, type ReactNode } from 'react'
 import { Link } from 'react-router'
-import { BIG_O_QUESTIONS, ORDER_PUZZLES, PATTERN_QUESTIONS } from '../../content/data/games'
+import { BIG_O_QUESTIONS, ORDER_PUZZLES, PATTERN_QUESTIONS, TECHNIQUES, TECHNIQUE_QUESTIONS } from '../../content/data/games'
 import { PATTERNS, patternById } from '../lib/patterns'
 import { update, useProgress } from '../store/progress'
 
@@ -27,6 +27,7 @@ export function Games() {
   const games = [
     { to: '/games/pattern', name: 'Pattern Guess', text: 'Read a problem. Pick its pattern.', best: `Best streak: ${g.pattern ?? 0}` },
     { to: '/games/bigo', name: 'Big-O Quiz', text: 'Read the code. Pick its time complexity.', best: `Best streak: ${g.bigo ?? 0}` },
+    { to: '/games/technique', name: 'Which technique?', text: 'Read a scenario. Pick prompting, RAG, fine-tuning or an agent.', best: `Best streak: ${g.technique ?? 0}` },
     { to: '/games/order', name: 'Code Order', text: 'Put the shuffled lines of a solution in order.', best: `Solved: ${solvedOrder} / ${ORDER_PUZZLES.length}` },
   ]
   return (
@@ -130,6 +131,21 @@ export function BigOQuiz() {
     }
   }
   return <Quiz title="Big-O Quiz" game="bigo" makeItem={makeItem} />
+}
+
+// ------------------------------------------------------------------ Which technique?
+export function TechniqueQuiz() {
+  const makeItem = (): QuizItem => {
+    const q = TECHNIQUE_QUESTIONS[Math.floor(Math.random() * TECHNIQUE_QUESTIONS.length)]
+    return {
+      prompt: <p className="study-front">{q.scenario}</p>,
+      options: [...TECHNIQUES],
+      answer: q.answer,
+      explain: <>It is <strong>{q.answer}</strong>. {q.why}</>,
+      topic: q.answer,
+    }
+  }
+  return <Quiz title="Which technique?" game="technique" makeItem={makeItem} />
 }
 
 // ------------------------------------------------------------------ Code Order

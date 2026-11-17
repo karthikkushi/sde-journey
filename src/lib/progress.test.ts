@@ -18,7 +18,7 @@ describe('import / export', () => {
     expect(() => parseProgress(null)).toThrow()
     expect(() => parseProgress([])).toThrow()
     expect(() => parseProgress({ hello: 1 })).toThrow()
-    expect(() => parseProgress({ version: 2 })).toThrow()
+    expect(() => parseProgress({ version: 3 })).toThrow() // a future version
   })
   it('keeps defaults for missing or wrong-shaped fields', () => {
     const p = parseProgress({ version: 1, startDate: 'soon', done: [], mocks: {}, cardReviews: 7 })

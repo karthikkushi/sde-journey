@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { SUBJECTS, studyInstructions } from '../../content/data/notebooks'
 import { PlanDates } from '../components/PlanDates'
+import { BACKUP_PREFIX, listBackups, restoreBackup } from '../lib/backup'
 import { formatLong, todayIST } from '../lib/dates'
 import { backupDue } from '../lib/study'
 import { backupFileName, defaultProgress, parseProgress, type Progress } from '../lib/progress'
-import { getProgress, replaceProgress, update, useProgress } from '../store/progress'
+import { getProgress, replaceProgress, setText, update, useProgress } from '../store/progress'
 
 export function Settings() {
   const [message, setMessage] = useState('')
@@ -58,6 +60,24 @@ export function Settings() {
     }
   }
 
+  async function copyInstructions() {
+    try {
+      await navigator.clipboard.writeText(studyInstructions(p.texts['instructions:about'] ?? ''))
+      setMessage('Study instructions copied. Paste them into your study chat.')
+    } catch {
+      setMessage('Could not copy. Your browser blocked the clipboard; try again after tapping the page.')
+    }
+  }
+
+  const autoBackups = (() => { try { return listBackups(localStorage) } catch { return [] } })()
+  function restoreAuto(key: string) {
+    if (!confirm('Replace ALL progress on this device with this automatic backup?')) return
+    const current = getProgress()
+    if (!restoreBackup(localStorage, key)) return setMessage('That backup could not be read.')
+    setUndo(current)
+    location.reload() // the store reads the restored data on start
+  }
+
   function reset() {
     if (!confirm('Delete ALL progress on this device? Export a backup first.')) return
     if (!confirm('Really delete everything? This cannot be undone.')) return
@@ -93,9 +113,68 @@ export function Settings() {
       <PlanDates />
 
       <div className="card">
+        <h2>Study notebooks</h2>
+        <p className="muted small">
+          Paste the share link of each NotebookLM or Gemini notebook. Notes and roadmap weeks then show an "Open notebook" button.
+          Links stay on this device and go into your backup.
+        </p>
+        <div className="stack">
+          {SUBJECTS.map((s) => <LinkField key={s.id} id={s.id} label={`${s.label} notebook`} hint={s.week > 1 ? `from week ${s.week}` : 'now'} />)}
+          <LinkField id="chat" label="Study chat (your pinned Gemini chat)" hint="opens from Today" />
+        </div>
+      </div>
+
+      <div className="card">
+        <h2>My study instructions</h2>
+        <p className="muted small">
+          Paste these into your study chat or notebook so every answer follows your rules. Your name and city are added here only,
+          and stay on this device (the app's code is public).
+        </p>
+        <label className="stack small" style={{ gap: 6 }}>
+          About me (first line)
+          <input className="input" placeholder="e.g. Asha, a junior developer in Pune," value={p.texts['instructions:about'] ?? ''}
+            onChange={(e) => setText('instructions:about', e.target.value)} />
+        </label>
+        <button className="btn primary" style={{ marginTop: 12 }} onClick={copyInstructions}>Copy my study instructions</button>
+      </div>
+
+      {autoBackups.length > 0 && (
+        <div className="card">
+          <h2>Automatic backups</h2>
+          <p className="muted small">The app copied everything before an update. Restore one only if something looks wrong.</p>
+          {autoBackups.map((key) => (
+            <div key={key} className="row" style={{ justifyContent: 'space-between' }}>
+              <span className="small">{formatLong(key.slice(BACKUP_PREFIX.length))}</span>
+              <button className="btn" onClick={() => restoreAuto(key)}>Restore</button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="card">
         <h2>Danger zone</h2>
         <button className="btn danger" onClick={reset}>Delete all progress</button>
       </div>
     </section>
+  )
+}
+
+/** One https link, saved as you type once it is valid. Anything else shows a short error and is not saved. */
+function LinkField({ id, label, hint }: { id: string; label: string; hint: string }) {
+  const saved = useProgress().links[id] ?? ''
+  const [value, setValue] = useState(saved)
+  const valid = !value || /^https:\/\/\S+$/i.test(value.trim())
+  function change(v: string) {
+    setValue(v)
+    const url = v.trim()
+    if (!url) update((d) => { delete d.links[id] })
+    else if (/^https:\/\/\S+$/i.test(url)) update((d) => { d.links[id] = url })
+  }
+  return (
+    <label className="stack small" style={{ gap: 4 }}>
+      <span>{label} <span className="muted">({hint})</span></span>
+      <input className="input" type="url" inputMode="url" placeholder="https://notebooklm.google.com/notebook/…" value={value} onChange={(e) => change(e.target.value)} aria-invalid={!valid} />
+      {!valid && <span className="warn-text">Paste a full link starting with https://</span>}
+    </label>
   )
 }

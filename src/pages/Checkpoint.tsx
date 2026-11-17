@@ -34,7 +34,7 @@ export function Checkpoint() {
         <ul className="plain-list">
           {weeks.map((w) => (
             <li key={w.n}>
-              <Link to={`/roadmap/week/${w.n}`}>Week {w.n}</Link>: {w.checkpoint}
+              <Link className="checkpoint-week" to={`/roadmap/week/${w.n}`}>Week {w.n}</Link>: {w.checkpoint}
             </li>
           ))}
         </ul>

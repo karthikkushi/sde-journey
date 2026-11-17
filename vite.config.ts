@@ -2,6 +2,34 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+import { readFileSync, readdirSync } from 'node:fs'
+import { resolve } from 'node:path'
+import type { Plugin } from 'vite'
+import { byLearningOrder, cardsOf, toNote } from './src/lib/noteParse.ts'
+
+// A small index of every note (title, level, week, tags, headings for search, flashcards),
+// built from content/notes at build time. Pages use it instead of downloading every note;
+// a note's full text loads only when you open it (src/lib/notesIndex.ts).
+function notesIndex(): Plugin {
+  const ID = 'virtual:notes-index'
+  const dir = resolve(import.meta.dirname, 'content/notes')
+  return {
+    name: 'notes-index',
+    resolveId: (id) => (id === ID ? `\0${ID}` : undefined),
+    load(id) {
+      if (id !== `\0${ID}`) return
+      const files = (readdirSync(dir, { recursive: true }) as string[])
+        .filter((f) => f.endsWith('.md') && !f.split('/').pop()!.startsWith('_'))
+      for (const f of files) this.addWatchFile(resolve(dir, f)) // rebuild the index when a note changes (dev)
+      const notes = files.map((f) => toNote(`/content/notes/${f}`, readFileSync(resolve(dir, f), 'utf8'))).sort(byLearningOrder)
+      const list = notes.map(({ body, ...meta }) => ({
+        ...meta,
+        search: [meta.title, ...meta.tags, ...body.split('\n').filter((l: string) => l.startsWith('#'))].join(' ').toLowerCase(),
+      }))
+      return `export default ${JSON.stringify({ notes: list, cards: notes.flatMap(cardsOf) })}`
+    },
+  }
+}
 
 // The site lives at https://karthikkushi.github.io/sde-journey/
 // so every file path must start with /sde-journey/.
@@ -9,6 +37,7 @@ export default defineConfig({
   base: '/sde-journey/',
   plugins: [
     react(),
+    notesIndex(),
     // Makes the site installable on a phone and usable offline.
     // The service worker caches every built file, so all pages and notes work without internet.
     VitePWA({

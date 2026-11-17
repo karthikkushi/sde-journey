@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router'
-import { NOTES, SECTIONS } from '../lib/notes'
+import { NOTE_LIST, SECTIONS } from '../lib/notesIndex'
 import { useProgress } from '../store/progress'
 import { Icon } from '../components/Icon'
 
@@ -14,22 +14,30 @@ export function Notes() {
   const [level, setLevel] = useState('')
   const [phase, setPhase] = useState('')
 
+  // Titles, tags and headings are searched at once. The full text of every note is fetched
+  // only when you start typing, so the library opens fast.
+  const [bodies, setBodies] = useState<Map<string, string> | null>(null)
+  useEffect(() => {
+    if (!q || bodies) return
+    import('../lib/notes').then((m) => setBodies(new Map(m.NOTES.map((n) => [n.id, n.body.toLowerCase()]))))
+  }, [q, bodies])
+
   const shown = useMemo(() => {
     const words = q.toLowerCase().split(/\s+/).filter(Boolean)
-    return NOTES.filter((n) => {
+    return NOTE_LIST.filter((n) => {
       if (section && n.section !== section) return false
       if (level && n.level !== level) return false
       if (phase && n.phase !== Number(phase)) return false
-      const hay = `${n.title} ${n.tags.join(' ')} ${n.body}`.toLowerCase()
+      const hay = `${n.search} ${bodies?.get(n.id) ?? ''}`
       return words.every((w) => hay.includes(w))
     })
-  }, [q, section, level, phase])
+  }, [q, section, level, phase, bodies])
 
   const sections = [...new Set(shown.map((n) => n.section))]
 
   return (
     <section className="page">
-      <header className="page-heading"><span className="eyebrow">Study library</span><h1>Notes<span className="accent-text">.</span></h1><p>Understand the idea. Practise it. Make it yours.</p><span className="library-count">{Object.keys(done).length} of {NOTES.length} notes finished</span></header>
+      <header className="page-heading"><span className="eyebrow">Study library</span><h1>Notes<span className="accent-text">.</span></h1><p>Understand the idea. Practise it. Make it yours.</p><span className="library-count">{Object.keys(done).length} of {NOTE_LIST.length} notes finished</span></header>
 
       <div className="card stack library-filters">
         <input className="input" type="search" placeholder="Search notes (for example: hash, append, recursion)" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search notes" />

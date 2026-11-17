@@ -14,10 +14,16 @@ export const JOB_STATUSES = ['To apply', 'Applied', 'Online test', 'Interview', 
 export const JOB_CHANNELS = ['Referral', 'Recruiter came to me', 'Applied online', 'Cold message'] as const
 /** A job application. `date` = the day it reached its current status. */
 export type Job = { company: string; role: string; link: string; status: (typeof JOB_STATUSES)[number]; date: string; channel: (typeof JOB_CHANNELS)[number] }
+/** Reading progress for one paper on the Papers page. `steps` = checklist items ticked. */
+export const PAPER_STATUSES = ['Not started', 'Reading', 'Done'] as const
+export type PaperState = { status: (typeof PAPER_STATUSES)[number]; steps: string[] }
 export type ProblemReview = { level: 'helped' | 'independent' | 'recalled'; date: string; streak?: number } // streak: clean recalls in a row
 
+/** Data version. 1 = before the AI Engineer track. 2 = adds papers and notebook links (see migrate below). */
+export const CURRENT_VERSION = 2
+
 export type Progress = {
-  version: 1
+  version: 2
   startDate: string // day 1 of YOUR plan (today, on every visit, until the first plan task is ticked)
   done: Record<string, string> // task id -> date it was ticked
   energy: Record<string, Energy> // date -> energy check-in
@@ -37,10 +43,12 @@ export type Progress = {
   games: Record<string, number> // game id -> best score
   problemReviews: Record<string, ProblemReview>
   lastBackup: string // date a backup download was requested
+  papers: Record<string, PaperState> // paper id -> status and checklist ("My 5 lines" live in texts)
+  links: Record<string, string> // study notebook links by subject, plus "chat" (only https links)
 }
 
 export const defaultProgress = (): Progress => ({
-  version: 1,
+  version: 2,
   startDate: '',
   done: {},
   energy: {},
@@ -60,6 +68,8 @@ export const defaultProgress = (): Progress => ({
   games: {},
   problemReviews: {},
   lastBackup: '',
+  papers: {},
+  links: {},
 })
 
 const isObject = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v)
@@ -71,8 +81,27 @@ const isDate = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{
  * Each field must have the same shape as the default, or the default is kept.
  * Throws if the file is clearly not a backup from this app.
  */
-export function parseProgress(raw: unknown): Progress {
-  if (!isObject(raw) || raw.version !== 1) throw new Error('This file is not an SDE Journey backup.')
+/**
+ * Upgrades for older saved data, one version at a time. Each step only ADDS what the next
+ * version needs; nothing is ever dropped. Add a new line here whenever the shape changes.
+ */
+const MIGRATIONS: Record<number, (raw: Record<string, unknown>) => Record<string, unknown>> = {
+  1: (raw) => ({ ...raw, version: 2, papers: raw.papers ?? {}, links: raw.links ?? {} }), // v1 -> v2: AI track fields start empty
+}
+
+/** Bring any older saved object up to CURRENT_VERSION. Newer or unknown versions are left as they are. */
+export function migrate(raw: Record<string, unknown>) {
+  let current = raw
+  while (typeof current.version === 'number' && current.version < CURRENT_VERSION && MIGRATIONS[current.version]) {
+    current = MIGRATIONS[current.version](current)
+  }
+  return current
+}
+
+export function parseProgress(input: unknown): Progress {
+  if (!isObject(input)) throw new Error('This file is not an SDE Journey backup.')
+  const raw = migrate(input)
+  if (raw.version !== CURRENT_VERSION) throw new Error('This file is not an SDE Journey backup.')
   const result = defaultProgress()
   const out = result as Record<string, unknown>
   for (const [key, fallback] of Object.entries(result)) {
@@ -88,6 +117,10 @@ export function parseProgress(raw: unknown): Progress {
     (value.streak === undefined || (Number.isInteger(value.streak) && Number(value.streak) >= 1)),
   ))
   result.cardLog = result.cardLog.filter((l) => typeof l === 'string' && l.length < 200)
+  // Papers: known statuses only. Links: only https web links (never javascript: or data:).
+  result.papers = Object.fromEntries(Object.entries(result.papers).filter(([, v]) =>
+    isObject(v) && PAPER_STATUSES.includes(v.status as PaperState['status']) && Array.isArray(v.steps) && v.steps.every((x) => typeof x === 'string')))
+  result.links = Object.fromEntries(Object.entries(result.links).filter(([, v]) => typeof v === 'string' && /^https:\/\/\S+$/i.test(v)))
   // Keep only well-formed jobs, and only web links (a backup file could carry a javascript: link).
   result.jobs = (result.jobs as unknown[]).filter((j): j is Job => isObject(j) &&
     typeof j.company === 'string' && typeof j.role === 'string' && isDate(j.date) &&

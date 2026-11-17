@@ -27,6 +27,19 @@ After ticking a problem, record the attempt: **Needed help**, **Solved independe
 
 Failed progress saves show a warning with retry and backup options. Keep the tab open and export before reloading. If saved data can't be read (damaged, or from a newer version), the app never saves over it and asks you to reload or import. Today reminds you to back up weekly. Existing version-1 backups remain supported.
 
+## AI Engineer track
+
+- From week 10, Tuesday and Thursday evenings are AI sessions (the other evenings stay DSA). The 13 topics run from LLM basics to AI system design, weeks 10–52. Edit them in `content/data/aiTrack.ts`.
+- Today shows the current phase's time split and the AI topic, and every task has a small label: DSA, AI, Paper, SQL or ML.
+- **Papers**: six papers, one every other Sunday from week 10, each with a 5-step reading checklist and a "My 5 lines" box. Paper Sunday shows the next paper on Today.
+- **Study notebooks** (Settings): paste a NotebookLM or Gemini link per subject; notes and roadmap weeks show "Open notebook". "Copy my study instructions" copies your study rules; your name and city live only on your device.
+- AI project ladder (above the project ladder), AI checkpoints, AI badges, and the "Which technique?" quiz.
+- Notes load one at a time: a small index is built from `content/notes` at build time (`vite.config.ts`), and each note's text downloads when opened. Everything is still cached for offline use.
+
+## Data versions and automatic backup
+
+Saved progress has a version number (`CURRENT_VERSION` in `src/lib/progress.ts`). When the shape changes, add a step to `MIGRATIONS` there (old version → new) with a test that loads old sample data. Before any upgrade runs, `src/lib/backup.ts` copies every `sdej-` key to `sdeJourney_backup_<date>` (the newest 3 are kept, and Settings can restore one). Storage is never cleared.
+
 ## Run it on your computer
 
 ```bash

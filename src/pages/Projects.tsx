@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router'
-import { EARNING_RULES, PROJECTS } from '../../content/data/projects'
+import { AI_PROJECTS, EARNING_RULES, PROJECTS, type Project } from '../../content/data/projects'
 import { Bar } from '../components/Bar'
 import { CheckRow } from '../components/TaskRow'
 import { useProgress } from '../store/progress'
@@ -10,26 +10,32 @@ const stepId = (projectId: string, i: number) => `proj:${projectId}:${i}`
 export function Projects() {
   const done = useProgress().done
   const tiers = [...new Set(PROJECTS.map((p) => p.tier))]
+  const row = (p: Project) => {
+    const share = p.steps.filter((_, i) => done[stepId(p.id, i)]).length / p.steps.length
+    return (
+      <Link key={p.id} to={`/projects/${p.id}`} className="project-row">
+        <span className="row" style={{ justifyContent: 'space-between' }}>
+          <strong>{p.name}</strong>
+          <span className="muted small">{Math.round(share * 100)}%</span>
+        </span>
+        <span className="muted small">{p.tierName} · {p.phase}</span>
+        <Bar share={share} label={`${p.name} progress`} />
+      </Link>
+    )
+  }
   return (
     <section className="page">
       <h1>Projects</h1>
       <p className="muted" style={{ margin: 0 }}>Climb one step at a time. Write every line yourself. Tiers 1–2 are for learning; your resume gets the two flagships and the RAG app.</p>
+      <div className="card notice-accent">
+        <h2>AI project ladder</h2>
+        <p className="muted small">The AI Engineer track. Each step builds on the one before.</p>
+        {AI_PROJECTS.map(row)}
+      </div>
       {tiers.map((tier) => (
         <div key={tier} className="card">
           <h2>{tier}. {PROJECTS.find((p) => p.tier === tier)!.tierName}</h2>
-          {PROJECTS.filter((p) => p.tier === tier).map((p) => {
-            const share = p.steps.filter((_, i) => done[stepId(p.id, i)]).length / p.steps.length
-            return (
-              <Link key={p.id} to={`/projects/${p.id}`} className="project-row">
-                <span className="row" style={{ justifyContent: 'space-between' }}>
-                  <strong>{p.name}</strong>
-                  <span className="muted small">{Math.round(share * 100)}%</span>
-                </span>
-                <span className="muted small">{p.phase}</span>
-                <Bar share={share} label={`${p.name} progress`} />
-              </Link>
-            )
-          })}
+          {PROJECTS.filter((p) => p.tier === tier).map(row)}
         </div>
       ))}
       <Link className="btn" to="/earning">Earning from skills: honest rules</Link>
@@ -39,7 +45,7 @@ export function Projects() {
 
 export function ProjectView() {
   const id = useParams().id
-  const p = PROJECTS.find((x) => x.id === id)
+  const p = [...AI_PROJECTS, ...PROJECTS].find((x) => x.id === id)
   if (!p) return <section className="page"><h1>No such project</h1></section>
   return (
     <article className="page">

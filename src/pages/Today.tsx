@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { HABITS, MINIMUM_DAY, TOTAL_WEEKS } from '../../content/data/roadmap'
+import { aiWeek, isPaperWeek, phasesForWeek } from '../../content/data/aiTrack'
+import { nextPaper } from '../../content/data/papers'
 import { TIPS } from '../../content/data/tips'
 import { Bar } from '../components/Bar'
 import { Icon } from '../components/Icon'
@@ -58,8 +60,7 @@ export function Today() {
   useEffect(() => {
     let alive = true
     // Wait until the phone is idle: evaluating every note must not block the first tap.
-    // ponytail: still loads all notes for one count; a build-time card index would avoid it.
-    const load = () => Promise.all([import('../lib/notes'), import('../lib/srs')]).then(([notes, srs]) => {
+    const load = () => Promise.all([import('../lib/notesIndex'), import('../lib/srs')]).then(([notes, srs]) => {
       if (alive) setDueCount(srs.dueCards(notes.ALL_CARDS, p, today).length)
     })
     const id = 'requestIdleCallback' in window ? requestIdleCallback(load, { timeout: 3000 }) : setTimeout(load, 1500)
@@ -75,6 +76,8 @@ export function Today() {
   // Today's roadmap tasks (empty before or after the plan).
   const day = pos.status === 'during' ? buildWeek(weekSpec(pos.week), start)[pos.dayIndex] : undefined
   const spec = pos.status === 'during' ? weekSpec(pos.week) : undefined
+  // On paper Sundays (every other Sunday from week 10), show the next paper that is not done.
+  const paperDue = pos.status === 'during' && isPaperWeek(pos.week) && dayOfWeek(today) === 0 ? nextPaper(p.papers) : undefined
   const minimum = (energy === 'tired' || energy === 'low') && !showFull
   const revisions = dueProblems(p, today)
   const cap = redoCap(dayOfWeek(today))
@@ -163,7 +166,24 @@ export function Today() {
             <Link className="text-link" to="/performance">View performance <span aria-hidden="true">↗</span></Link>
           </div>
 
-          {spec && <div className="card week-card"><span className="eyebrow">This week’s direction</span><h2>{spec.title}</h2><p className="muted small">{spec.goal}</p>{pos.status === 'during' && <Link className="text-link" to={`/roadmap/week/${pos.week}`}>Explore the week <span aria-hidden="true">→</span></Link>}</div>}
+          {spec && pos.status === 'during' && (
+            <div className="card week-card">
+              <span className="eyebrow">This week’s direction</span><h2>{spec.title}</h2><p className="muted small">{spec.goal}</p>
+              {/* AI Engineer track: this week's time split, and the AI topic from week 10. */}
+              {phasesForWeek(pos.week).map((ph) => <p key={ph.n} className="small" style={{ margin: '0 0 6px' }}><strong>Phase {ph.n}, {ph.name}:</strong> {ph.split}</p>)}
+              {aiWeek(pos.week) && <p className="small" style={{ margin: '0 0 6px' }}><strong>AI topic:</strong> {aiWeek(pos.week)!.topic} (Tuesday and Thursday evenings)</p>}
+              <Link className="text-link" to={`/roadmap/week/${pos.week}`}>Explore the week <span aria-hidden="true">→</span></Link>
+            </div>
+          )}
+          {paperDue && (
+            <div className="card notice-accent">
+              <span className="eyebrow">Paper Sunday</span>
+              <h2>{paperDue.title}</h2>
+              <p className="muted small">Abstract, figures, conclusion, method, then 5 lines in your own words.</p>
+              <Link className="text-link" to="/papers">Open Papers <span aria-hidden="true">→</span></Link>
+            </div>
+          )}
+          {p.links.chat && <a className="btn" href={p.links.chat} target="_blank" rel="noreferrer"><Icon name="spark" size={18} /> Open study chat ↗</a>}
           {pos.status === 'during' && <PaceCard pace={pace} />}
           <div className="tip"><div className="section-title"><span className="eyebrow">A thought for today</span><button className="icon-btn" aria-label="Show another study tip" onClick={() => setTipOffset((o) => o + 1)}><Icon name="spark" size={18} /></button></div><p>{tip.text}</p><span className="muted small">{tip.topic}</span></div>
           {hasProgress && backupDue(p.lastBackup, today) && <div className="card notice backup-reminder"><Icon name="gear" size={18} /><div><strong>{p.lastBackup ? 'Time for a backup' : 'Keep your progress safe'}</strong><p className="muted small">Save a copy outside this browser.</p><Link className="text-link" to="/settings">Back up progress →</Link></div></div>}
@@ -284,7 +304,8 @@ function DayTasks({ tasks, dow }: { tasks: Task[]; dow: number }) {
     <>
       {slots.map((slot) => (
         <div key={slot} className="card">
-          <h2>{titles[slot] ?? 'Tasks'}</h2>
+          {/* AI evenings (Tue/Thu from week 10) get their own heading. */}
+          <h2>{slot === 's2' && tasks.some((t) => t.slot === 's2' && t.id.includes(':ai:')) ? 'Evening · AI session (8:25–9:25)' : titles[slot] ?? 'Tasks'}</h2>
           {tasks.filter((t) => t.slot === slot).map((t) => <TaskRow key={t.id} task={t} />)}
         </div>
       ))}
