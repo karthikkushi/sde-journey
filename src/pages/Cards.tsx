@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { todayIST } from '../lib/dates'
-import { ALL_CARDS, noteById } from '../lib/notes'
+import { ALL_CARDS, noteMeta } from '../lib/notesIndex'
 import { dueCards, logLine, schedule, type Grade } from '../lib/srs'
 import { getProgress, update, useProgress } from '../store/progress'
 
@@ -50,7 +50,7 @@ export function Cards() {
         </div>
       ) : (
         <>
-          <div className="muted small">Card {index + 1} of {queue.length} · from <Link to={`/notes/${card.noteId}`}>{noteById(card.noteId)?.title}</Link></div>
+          <div className="muted small">Card {index + 1} of {queue.length} · from <Link to={`/notes/${card.noteId}`}>{noteMeta(card.noteId)?.title}</Link></div>
           <button className={`card study-card${flipped ? ' is-flipped' : ''}`} onClick={() => setFlipped(true)} aria-label={flipped ? 'Answer shown' : 'Show the answer'}>
             <div className="study-front">{card.front}</div>
             {flipped ? <div className="study-back">{card.back}</div> : <div className="muted small">Think of the answer, then tap</div>}

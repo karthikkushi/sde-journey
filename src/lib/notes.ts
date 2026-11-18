@@ -1,76 +1,17 @@
-// Loads every note from content/notes/**/*.md at build time.
+// Loads every note's FULL text at build time. Only tests and full-text search use this module;
+// pages use notesIndex.ts (small index + one note at a time).
 // To add a note: create a .md file with frontmatter. Nothing else to change.
-
-export type NoteMeta = {
-  id: string
-  title: string
-  level: 'basic' | 'core' | 'advanced'
-  section: string // A..L, from the folder name
-  phase: number
-  week: number
-  tags: string[]
-  estMinutes: number
-}
-export type Note = NoteMeta & { body: string }
-
-import { fencedBlocks, parseFrontmatter } from './markdown'
+import { byLearningOrder, cardsOf, toNote, type Flashcard, type Note } from './noteParse'
 export { fencedBlocks, parseFrontmatter } from './markdown'
+export { cardsOf, SECTIONS, type Flashcard, type Note, type NoteMeta } from './noteParse'
 
 // Vite reads all the files and bundles their text (eager = no extra network request).
 // Files starting with _ (like _template.md) are skipped.
 const files = import.meta.glob(['/content/notes/**/*.md', '!**/_*.md'], { query: '?raw', import: 'default', eager: true }) as Record<string, string>
 
-function toNote(path: string, text: string): Note {
-  const { data, body } = parseFrontmatter(text)
-  const str = (k: string) => (typeof data[k] === 'string' ? (data[k] as string) : '')
-  const folder = path.split('/').at(-2) ?? '' // e.g. "a-python"
-  return {
-    id: str('id') || (path.split('/').pop() ?? '').replace(/\.md$/, ''),
-    title: str('title'),
-    level: (str('level') || 'basic') as Note['level'],
-    section: folder.charAt(0).toUpperCase(),
-    phase: Number(str('phase')) || 1,
-    week: Number(str('week')) || 0,
-    tags: Array.isArray(data.tags) ? data.tags : [],
-    estMinutes: Number(str('estMinutes')) || 10,
-    body,
-  }
-}
-
-// Learning order: by section, then by the roadmap week the note belongs to.
-export const NOTES: Note[] = Object.entries(files)
-  .map(([path, text]) => toNote(path, text))
-  .sort((a, b) => a.section.localeCompare(b.section) || a.week - b.week || a.id.localeCompare(b.id))
+export const NOTES: Note[] = Object.entries(files).map(([path, text]) => toNote(path, text)).sort(byLearningOrder)
 
 const byId = new Map(NOTES.map((n) => [n.id, n]))
 export const noteById = (id: string) => byId.get(id)
-
-export const SECTIONS: Record<string, string> = {
-  A: 'Python foundations',
-  B: 'Complexity',
-  C: 'Data structures',
-  D: 'Techniques',
-  E: 'SQL',
-  F: 'Backend engineering',
-  G: 'CS fundamentals',
-  H: 'OOP and low-level design',
-  I: 'System design',
-  J: 'AI engineering',
-  K: 'Interview skills',
-  L: 'Learning skills',
-}
-
-export type Flashcard = { id: string; noteId: string; front: string; back: string }
-
-/** Flashcards are written in a note as  ```flashcards  blocks, one "front :: back" per line. */
-export function cardsOf(note: Note): Flashcard[] {
-  return fencedBlocks(note.body, 'flashcards')
-    .flatMap((block) => block.split('\n'))
-    .filter((line) => line.includes('::'))
-    .map((line, i) => {
-      const [front, back] = line.split('::').map((s) => s.trim())
-      return { id: `${note.id}:${i}`, noteId: note.id, front, back }
-    })
-}
 
 export const ALL_CARDS: Flashcard[] = NOTES.flatMap(cardsOf)

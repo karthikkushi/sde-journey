@@ -1,3 +1,5 @@
+// Must stay the FIRST import: it copies saved data before anything else can touch it.
+import './lib/backup'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router'

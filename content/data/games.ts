@@ -206,3 +206,22 @@ export const ORDER_PUZZLES: OrderPuzzle[] = [
     check: 'assert contains_duplicate([1, 2, 3, 1])\nassert not contains_duplicate([1, 2, 3, 4])',
   },
 ]
+
+// "Which technique?": a short scenario, pick prompting, RAG, fine-tuning or an agent.
+export const TECHNIQUES = ['Prompting', 'RAG', 'Fine-tuning', 'Agent'] as const
+export type TechniqueQuestion = { scenario: string; answer: (typeof TECHNIQUES)[number]; why: string }
+
+export const TECHNIQUE_QUESTIONS: TechniqueQuestion[] = [
+  { scenario: 'Summarise any pasted article in 3 bullet points.', answer: 'Prompting', why: 'The model already can do it; a clear instruction is enough.' },
+  { scenario: 'Answer staff questions from 500 pages of company HR policy that change every month.', answer: 'RAG', why: 'The facts live in your documents and change often, so look them up at question time.' },
+  { scenario: 'Reply to customers in your brand\'s exact tone and format, for thousands of messages, with no long prompt.', answer: 'Fine-tuning', why: 'A fixed style and format, at scale, is what fine-tuning teaches best.' },
+  { scenario: 'Book a meeting: check three calendars, find a free slot, then send invites.', answer: 'Agent', why: 'It needs several steps and tools, deciding the next step from each result.' },
+  { scenario: 'Turn a messy address into JSON with street, city and PIN code.', answer: 'Prompting', why: 'A prompt with an example and a JSON format handles it; nothing to look up.' },
+  { scenario: 'A support bot that must quote the latest price list and cite the source.', answer: 'RAG', why: 'Prices change and answers need sources: retrieve the current list.' },
+  { scenario: 'Classify medical scan reports into 40 labels where a good prompt still gets 70% right and you have 20,000 labelled examples.', answer: 'Fine-tuning', why: 'Many labelled examples and a narrow task where prompting stalls: train the model on them.' },
+  { scenario: 'Investigate a failing order: read the logs, query the database, then open a ticket.', answer: 'Agent', why: 'It must use tools in a loop and choose each step from what it finds.' },
+  { scenario: 'Translate a product description from English to Hindi.', answer: 'Prompting', why: 'General skill the model has; just ask clearly.' },
+  { scenario: 'Answer questions about your own study notes.', answer: 'RAG', why: 'The answers are in your notes, which the model has never seen.' },
+  { scenario: 'Make a small model answer like a big one on one narrow task, to cut cost.', answer: 'Fine-tuning', why: 'Fine-tuning a small model on good examples can match a bigger one on a narrow task.' },
+  { scenario: 'Plan a 3-city trip: search trains, compare hotel prices, and build a day-by-day plan.', answer: 'Agent', why: 'Several searches and decisions, each depending on the last result.' },
+]

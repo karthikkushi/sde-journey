@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 import type { Learn } from '../../content/data/roadmap'
 import { resourceById } from '../../content/data/resources'
 import { noteExists } from '../lib/noteIndex'
-import type { Task } from '../lib/plan'
+import { kindOf, type Task } from '../lib/plan'
 import { formatDate, todayIST } from '../lib/dates'
 import type { ProblemReview } from '../lib/progress'
 import { recordProblemReview, REVIEW_LABELS } from '../lib/study'
@@ -26,8 +26,9 @@ export function CheckRow({ id, text, children }: { id: string; text: ReactNode; 
 
 /** A roadmap task with its links (resource, note, page or LeetCode). `note` is an extra line, like its planned day. */
 export function TaskRow({ task, note }: { task: Task; note?: string }) {
+  const kind = kindOf(task)
   return (
-    <CheckRow id={task.id} text={task.text}>
+    <CheckRow id={task.id} text={kind ? <><span className={`kind kind-${kind.toLowerCase()}`}>{kind}</span>{task.text}</> : task.text}>
       {note && <span className="muted small">{note}</span>}
       {task.problem && <ProblemMeta slug={task.problem} />}
       {task.learn && <LearnLink learn={task.learn} />}

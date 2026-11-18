@@ -40,7 +40,7 @@ it('keeps unsaved work available for export and clears the warning after retry s
 })
 
 it('never saves over stored data it cannot read, until the user imports or resets', async () => {
-  const newer = JSON.stringify({ version: 2, done: { 'w1:l0': '2026-11-01' } })
+  const newer = JSON.stringify({ version: 3, done: { 'w1:l0': '2026-11-01' } })
   const saved = new Map([['sdej-progress', newer]])
   vi.stubGlobal('localStorage', { getItem: (key: string) => saved.get(key) ?? null, setItem: (key: string, value: string) => saved.set(key, value) })
   const store = await import('./progress')

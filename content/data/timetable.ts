@@ -14,7 +14,7 @@ export const WEEKDAY: Block[] = [
   { from: '19:00', to: '19:15', label: 'Reset: water, face wash, sit, no phone', kind: 'rest' },
   { from: '19:15', to: '19:55', label: 'Cook', kind: 'life' },
   { from: '19:55', to: '20:25', label: 'Eat and clean', kind: 'life' },
-  { from: '20:25', to: '21:25', label: 'DSA session 2 (Friday: SQL or CS basics)', kind: 'study' },
+  { from: '20:25', to: '21:25', label: 'DSA session 2 (Tue and Thu from week 10: AI session; Friday: SQL or CS basics)', kind: 'study' },
   { from: '21:25', to: '22:15', label: 'Business time', kind: 'study' },
   { from: '22:15', to: '22:30', label: 'Notebook and plan tomorrow', kind: 'rest' },
   { from: '22:30', to: '24:00', label: 'Sleep', kind: 'rest' },

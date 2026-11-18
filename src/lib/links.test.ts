@@ -3,8 +3,10 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { AI_TOPICS } from '../../content/data/aiTrack'
+import { PAPERS } from '../../content/data/papers'
 import { TOTAL_WEEKS, WEEKS, type Learn } from '../../content/data/roadmap'
-import { PROJECTS } from '../../content/data/projects'
+import { AI_PROJECTS, PROJECTS } from '../../content/data/projects'
 import { resourceById } from '../../content/data/resources'
 import { NAV } from '../app/nav'
 import { NOTE_IDS, PATTERN_IDS } from './noteIndex'
@@ -20,11 +22,11 @@ const appSource = readFileSync(join(ROOT, 'src/app/App.tsx'), 'utf8')
 function isPage(path: string) {
   const [, kind, id, extra] = path.split('/')
   if (NAV.some((n) => n.to === path)) return true
-  if (['/patterns/cheatsheet', '/earning', '/games/pattern', '/games/bigo', '/games/order', '/more'].includes(path)) return appSource.includes(`path="${path}"`)
+  if (['/patterns/cheatsheet', '/earning', '/games/pattern', '/games/bigo', '/games/technique', '/games/order', '/more'].includes(path)) return appSource.includes(`path="${path}"`)
   if (kind === 'notes' && id && !extra) return NOTE_IDS.has(id)
   if (kind === 'patterns' && id && !extra) return PATTERN_IDS.has(id)
   if (kind === 'viz' && id && !extra) return VISUALIZERS.some((v) => v.id === id)
-  if (kind === 'projects' && id && !extra) return PROJECTS.some((p) => p.id === id)
+  if (kind === 'projects' && id && !extra) return [...AI_PROJECTS, ...PROJECTS].some((p) => p.id === id)
   if (kind === 'roadmap' && id === 'week') return Number(extra) >= 1 && Number(extra) <= TOTAL_WEEKS
   if (kind === 'checkpoint' && id && !extra) return Number(id) >= 1 && Number(id) <= TOTAL_MONTHS
   return false
@@ -43,6 +45,18 @@ describe('internal links', () => {
       if (l.res) expect(resourceById(l.res), `resource ${l.res}`).toBeDefined()
       if (l.to) expect(isPage(l.to), `page ${l.to}`).toBe(true)
     }
+  })
+
+  it('every AI-track session points to a real note or page', () => {
+    for (const l of AI_TOPICS.flatMap((t) => t.steps)) {
+      if (l.note) expect(NOTE_IDS.has(l.note), `note ${l.note}`).toBe(true)
+      if (l.to) expect(isPage(l.to), `page ${l.to}`).toBe(true)
+    }
+  })
+
+  it('papers link to their arXiv pages', () => {
+    expect(PAPERS).toHaveLength(6)
+    for (const p of PAPERS) expect(p.url, p.id).toMatch(/^https:\/\/arxiv\.org\/abs\/\d{4}\.\d{5}$/)
   })
 
   it('every visualizer links to a real note or pattern', () => {

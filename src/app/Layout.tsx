@@ -14,7 +14,8 @@ export function Layout() {
     document.getElementById('main-content')?.focus({ preventScroll: true })
     // Each page gets its own tab title, so screen readers and the tab list say where you are.
     const page = NAV.filter((n) => (n.to === '/' ? pathname === '/' : pathname.startsWith(n.to))).sort((a, b) => b.to.length - a.to.length)[0]
-    document.title = page ? `${page.label} - SDE Journey` : 'SDE Journey'
+    const label = page?.label ?? (pathname.startsWith('/earning') ? 'Earning from skills' : '')
+    document.title = label ? `${label} - SDE Journey` : 'SDE Journey'
   }, [pathname])
 
   function cycleTheme() {

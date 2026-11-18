@@ -36,10 +36,12 @@ const Games = page(() => import('../pages/Games'), 'Games')
 const PatternGuess = page(() => import('../pages/Games'), 'PatternGuess')
 const BigOQuiz = page(() => import('../pages/Games'), 'BigOQuiz')
 const CodeOrder = page(() => import('../pages/Games'), 'CodeOrder')
+const TechniqueQuiz = page(() => import('../pages/Games'), 'TechniqueQuiz')
 const Cards = page(() => import('../pages/Cards'), 'Cards')
 const Badges = page(() => import('../pages/Badges'), 'Badges')
 const VizList = page(() => import('../pages/Viz'), 'VizList')
 const VizView = page(() => import('../pages/Viz'), 'VizView')
+const Papers = page(() => import('../pages/Papers'), 'Papers')
 
 // Pages that are built. Everything else in NAV shows "coming soon".
 const PAGES: Record<string, ReactNode> = {
@@ -59,6 +61,7 @@ const PAGES: Record<string, ReactNode> = {
   '/badges': <Badges />,
   '/viz': <VizList />,
   '/settings': <Settings />,
+  '/papers': <Papers />,
 }
 
 const loading = <p className="muted" style={{ padding: 16 }}>Loading…</p>
@@ -84,6 +87,7 @@ export default function App() {
           <Route path="/earning" element={<Earning />} />
           <Route path="/games/pattern" element={<PatternGuess />} />
           <Route path="/games/bigo" element={<BigOQuiz />} />
+          <Route path="/games/technique" element={<TechniqueQuiz />} />
           <Route path="/games/order" element={<CodeOrder />} />
           <Route path="/viz/:id" element={<VizView />} />
           <Route path="/more" element={<More />} />

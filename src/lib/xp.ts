@@ -13,6 +13,7 @@ export const XP = {
   mock: 50, // mock interview logged
   recall: 15, // a past problem solved again from a blank page: the work that makes skills stick
   honest: 5, // an honest "Needed help" log: noticing a gap is progress too
+  paperStep: 10, // each paper checklist step, like a roadmap task (AI sessions already count as tasks)
 }
 
 export function totalXp(p: Progress) {
@@ -27,6 +28,7 @@ export function totalXp(p: Progress) {
   xp += p.cardReviews * XP.card
   xp += Object.keys(p.weekly).length * XP.weekly
   xp += p.mocks.length * XP.mock
+  for (const paper of Object.values(p.papers)) xp += paper.steps.length * XP.paperStep
   for (const r of Object.values(p.problemReviews)) xp += r.level === 'recalled' ? XP.recall * (r.streak ?? 1) : r.level === 'helped' ? XP.honest : 0
   return xp
 }

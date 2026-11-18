@@ -1,6 +1,8 @@
 import { Link, useParams } from 'react-router'
 import { TOTAL_WEEKS } from '../../content/data/roadmap'
+import { aiWeek } from '../../content/data/aiTrack'
 import { Bar } from '../components/Bar'
+import { NotebookButton } from '../components/NotebookButton'
 import { LearnLink, TaskRow } from '../components/TaskRow'
 import { DAY_NAMES, formatDate, todayIST } from '../lib/dates'
 import { buildWeek, doneShare, monthOfWeek, phasesOfWeek, planStartOf, weekSpec } from '../lib/plan'
@@ -29,6 +31,12 @@ export function Week() {
         {phasesOfWeek(n).map((ph) => <span key={ph.n} className="chip is-accent">Phase {ph.n} · {ph.name}</span>)}
         <span className="chip">{formatDate(days[0].date)} – {formatDate(days[6].date)}</span>
       </div>
+      <div className="row">
+        <NotebookButton subject={n <= 6 ? 'python' : 'dsa'} />
+        {n >= 7 && n <= 26 && <NotebookButton subject="sql" />}
+        {aiWeek(n) && <NotebookButton subject="ai" />}
+      </div>
+      {aiWeek(n) && <p className="small" style={{ margin: 0 }}><strong>AI topic this week:</strong> {aiWeek(n)!.topic} (Tuesday and Thursday evenings)</p>}
 
       <div className="card">
         <p><strong>Goal:</strong> {spec.goal}</p>
