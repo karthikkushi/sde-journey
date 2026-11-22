@@ -56,9 +56,9 @@ export const WEEKS: WeekSpec[] = [
   {
     n: 1, title: 'Python start: functions and variables', goal: 'See how Python runs your code, one line at a time.',
     learn: [
-      R('Skim Python in Y minutes, up to Control Flow (about 20 min; you already code in C#)', 'lxy'),
+      R('YouTube: Mosh, Python in 1 hour, first half (type along with him)', 'mosh1h'),
       N('Read: How a computer runs code', 'a01-how-code-runs'),
-      R('Python tutorial sections 3 and 4.7–4.9: try every example in the REPL', 'pytut'),
+      R('YouTube: Mosh, Python in 1 hour, second half (type along with him)', 'mosh1h'),
       N('Read: Variables and memory', 'a02-variables-memory'),
       R('Run 3 small programs in Python Tutor and watch each step', 'pythontutor'),
       N('Read: Lists (part 1: what a list is)', 'a09-lists'),
@@ -74,14 +74,14 @@ export const WEEKS: WeekSpec[] = [
       N('Learning: how to learn (so it stays)', 'l-how-to-learn'),
       N('Learning: studying after a full working day', 'l-energy-after-office'),
     ],
-    checkpoint: 'Python basics skimmed. 5 list exercises written by me, no AI.',
+    checkpoint: 'Mosh Python in 1 hour done. 5 list exercises written by me, no AI.',
   },
   {
     n: 2, title: 'Conditionals, loops, and how a list sits in memory', goal: 'Write loops without looking anything up.',
     learn: [
-      R('Python tutorial 4.1–4.6: if, for, range, break/else (note what differs from C#)', 'pytut'),
+      R('YouTube: Mosh full course, the if / else part (pick it from the chapters list under the video)', 'moshfull'),
       N('Read: if / else', 'a05-if-else'),
-      R('Python tutorial section 5: lists, tuples, dicts, sets (skim, try each example)', 'pydocs-ds'),
+      R('YouTube: Mosh full course, the loops and lists parts (chapters list under the video)', 'moshfull'),
       N('Read: Loops', 'a06-loops'),
       T('Visualizer: what happens when a list grows (append)', '/viz/list-append'),
       D('Loop set 1: print 1 to 10, even numbers to 50, table of 7, sum 1 to 100, count vowels'),
@@ -99,10 +99,10 @@ export const WEEKS: WeekSpec[] = [
   {
     n: 3, title: 'Exceptions, libraries, strings', goal: 'Read error messages calmly. Handle text well.',
     learn: [
-      R('Python tutorial section 8: errors and exceptions (compare with C# try/catch)', 'pytut'),
+      R('YouTube: Mosh full course, the exceptions part (chapters list under the video)', 'moshfull'),
       N('Read: Exceptions', 'a20-exceptions'),
       N('Read: Reading error messages', 'a23-reading-errors'),
-      R('Python tutorial section 6 (modules), then skim section 10 (standard library tour)', 'pytut'),
+      R('YouTube: Mosh full course, the modules and packages parts (chapters list under the video)', 'moshfull'),
       N('Read: Numbers and strings', 'a03-numbers-strings'),
       D('String drill: one line each for upper, lower, strip, split, join, replace, find'),
       D('Write: count words, title-case a name, check if text is only digits'),
@@ -863,7 +863,7 @@ export const WEEKS: WeekSpec[] = [
 // ------------------------------------------------------------------ MONTHLY CHECKPOINTS
 // Shown on /checkpoint/<month>. The three life checks are added to every month.
 export const MONTH_CHECKS: Record<number, string[]> = {
-  1: ['Python basics skimmed (Python in Y minutes, tutorial sections 3–4)', '5 list exercises written by me, no AI', 'I can explain what a variable and a list are'],
+  1: ['Mosh Python in 1 hour video done', '5 list exercises written by me, no AI', 'I can explain what a variable and a list are'],
   2: ['Loops, functions, list and dict code without copying', 'First 10 LeetCode easy problems solved', 'I can commit and push with Git'],
   3: ['I can solve easy problems alone', 'I can solve some mediums with a hint', 'SQL: SELECT, JOIN, GROUP BY without notes', 'AI: I can call an LLM API from Python and explain tokens'],
   4: ['I can spot two pointers and sliding window problems', 'Stack and binary search mediums with a hint', 'AI: I can explain RAG and draw its flow without notes'],

@@ -13,9 +13,11 @@ export type Resource = {
 
 export const RESOURCES: Resource[] = [
   // Python
-  { id: 'lxy', name: 'Learn X in Y minutes: Python', url: 'https://learnxinyminutes.com/python/', topic: 'Python', goodFor: 'All of Python syntax on one page. Fast if you already know another language.', when: 'Week 1', role: 'main' },
+  { id: 'mosh1h', name: 'Mosh: Python for Beginners in 1 hour (YouTube)', url: 'https://www.youtube.com/watch?v=kqtD5dpn9C8', topic: 'Python', goodFor: 'Fast, clear video of all the basics. Type along with it.', when: 'Week 1', role: 'main' },
+  { id: 'moshfull', name: 'Mosh: Python Full Course for Beginners (YouTube)', url: 'https://www.youtube.com/watch?v=_uQrJ0TkZlc', topic: 'Python', goodFor: 'One long video with chapters. Watch only the chapter the plan names.', when: 'Weeks 2–3', role: 'main' },
+  { id: 'lxy', name: 'Learn X in Y minutes: Python', url: 'https://learnxinyminutes.com/python/', topic: 'Python', goodFor: 'All of Python syntax on one page, for a quick look-up.', when: 'Any time', role: 'backup' },
   { id: 'cs50p', name: 'CS50P: Harvard Python course', url: 'https://cs50.harvard.edu/python/', topic: 'Python', goodFor: 'Slow video lectures from zero. Only if a topic does not click.', when: 'Optional, weeks 1–6', role: 'backup' },
-  { id: 'pytut', name: 'Python official tutorial', url: 'https://docs.python.org/3/tutorial/', topic: 'Python', goodFor: 'Exact rules of the language, with short examples to try.', when: 'Weeks 1–6', role: 'main' },
+  { id: 'pytut', name: 'Python official tutorial', url: 'https://docs.python.org/3/tutorial/', topic: 'Python', goodFor: 'Exact rules of the language, with short examples to try.', when: 'Weeks 1–6', role: 'backup' },
   { id: 'pythontutor', name: 'Python Tutor', url: 'https://pythontutor.com', topic: 'Python', goodFor: 'Watch your code run line by line and see memory boxes.', when: 'Every week', role: 'main' },
   { id: 'exercism', name: 'Exercism Python track', url: 'https://exercism.org/tracks/python', topic: 'Python', goodFor: 'Small exercises with free mentor feedback. Friday practice.', when: 'Weeks 1–6', role: 'main' },
   { id: 'pydocs-ds', name: 'Python docs: data structures', url: 'https://docs.python.org/3/tutorial/datastructures.html', topic: 'Python', goodFor: 'List methods, dicts, sets, comprehensions in one page.', when: 'Weeks 2–4', role: 'backup' },
